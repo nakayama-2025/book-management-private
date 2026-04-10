@@ -14,1073 +14,1073 @@
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
     <style>
-:root {
-    --primary: #4F46E5;
-    --primary-hover: #4338ca;
-    --bg-body: #F3F4F6;
-    --bg-surface: #FFFFFF;
-    --text-main: #1F2937;
-    --text-muted: #6B7280;
-    --border: #E5E7EB;
-
-    --status-ok: #10B981;
-    --status-warn: #F59E0B;
-    --status-crit: #EF4444;
-
-    /* Area Colors */
-    --area-a: #3B82F6;
-    /* Blue */
-    --area-b: #10B981;
-    /* Green */
-    --area-c: #EAB308;
-    /* Yellow */
-    --area-d: #F97316;
-    /* Vermilion/Orange */
-    --area-e: #C084FC;
-    /* Light Purple */
-    --area-f: #06B6D4;
-    /* Cyan */
-    --area-g: #EC4899;
-    /* Pink */
-
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    --radius: 12px;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Inter', 'Noto Sans JP', sans-serif;
-    margin: 0;
-    background-color: var(--bg-body);
-    color: var(--text-main);
-    height: 100vh;
-    overflow: hidden;
-}
-
-#app {
-    display: flex;
-    height: 100%;
-}
-
-/* Sidebar (Desktop) */
-.sidebar {
-    width: 260px;
-    background: var(--bg-surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem;
-    display: none;
-    /* Mobile first hidden */
-}
-
-@media(min-width: 768px) {
-    .sidebar {
-        display: flex;
-    }
-
-    .bottom-nav {
-        display: none !important;
-    }
-}
-
-.brand {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-}
-
-.sidebar nav {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-radius: var(--radius);
-    border: none;
-    background: transparent;
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: left;
-}
-
-.nav-item:hover {
-    background: #F9FAFB;
-    color: var(--primary);
-}
-
-.nav-item.active {
-    background: #EEF2FF;
-    color: var(--primary);
-}
-
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-}
-
-.avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-}
-
-.info {
-    display: flex;
-    flex-direction: column;
-}
-
-.info .name {
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.info .role {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-}
-
-/* Main Content */
-.main-content {
-    flex: 1;
-    overflow-y: auto;
-    position: relative;
-    padding-bottom: 80px;
-    /* Space for bottom nav */
-}
-
-.view {
-    display: none;
-    padding: 1.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    animation: fadeIn 0.3s ease;
-}
-
-.view.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-h1 {
-    margin: 0;
-    font-size: 1.5rem;
-}
-
-/* Dashboard */
-.search-panel {
-    background: var(--bg-surface);
-    padding: 1rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 1.5rem;
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.search-box {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    background: #F9FAFB;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-}
-
-.search-box input {
-    border: none;
-    background: transparent;
-    outline: none;
-    margin-left: 0.5rem;
-    width: 100%;
-    font-size: 1rem;
-}
-
-.filters select {
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    outline: none;
-    background: white;
-}
-
-.table-container {
-    background: var(--bg-surface);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    white-space: nowrap;
-}
-
-th {
-    text-align: left;
-    padding: 1rem;
-    color: var(--text-muted);
-    font-weight: 500;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.85rem;
-}
-
-td {
-    padding: 1rem;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.95rem;
-}
-
-.status-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 99px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.status-ok {
-    background: #DCFCE7;
-    color: #166534;
-}
-
-.status-empty {
-    background: #F3F4F6;
-    color: #374151;
-}
-
-.age-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 6px;
-}
-
-.age-new {
-    background: var(--status-ok);
-}
-
-.age-mid {
-    background: var(--status-warn);
-}
-
-.age-old {
-    background: var(--status-crit);
-}
-
-/* Forms */
-.form-card {
-    background: var(--bg-surface);
-    padding: 2rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-}
-
-.full-width {
-    grid-column: span 2;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 1rem;
-    font-family: inherit;
-    transition: border-color 0.2s;
-}
-
-.form-group input:focus {
-    border-color: var(--primary);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-.loc-inputs {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.form-actions {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn-primary:hover {
-    background: var(--primary-hover);
-}
-
-.btn-text {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.btn-sm {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.85rem;
-}
-
-/* Map */
-.map-controls {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    /* Allow wrapping on small screens */
-}
-
-.chip {
-    background: white;
-    border: 1px solid var(--border);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
-}
-
-/* Dynamic Area Coloring */
-.chip[data-area="A"].active {
-    background: var(--area-a);
-    border-color: var(--area-a);
-    color: white;
-}
-
-.chip[data-area="B"].active {
-    background: var(--area-b);
-    border-color: var(--area-b);
-    color: white;
-}
-
-.chip[data-area="C"].active {
-    background: var(--area-c);
-    border-color: var(--area-c);
-    color: black;
-}
-
-/* Yellow specific */
-.chip[data-area="D"].active {
-    background: var(--area-d);
-    border-color: var(--area-d);
-    color: white;
-}
-
-.chip[data-area="E"].active {
-    background: var(--area-e);
-    border-color: var(--area-e);
-    color: white;
-}
-
-.chip[data-area="F"].active {
-    background: var(--area-f);
-    border-color: var(--area-f);
-    color: white;
-}
-
-.chip[data-area="G"].active {
-    background: var(--area-g);
-    border-color: var(--area-g);
-    color: white;
-}
-
-.shelf-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    justify-content: center;
-    gap: 1rem;
-    padding: 1rem 0;
-}
-
-.required {
-    color: red;
-    font-weight: bold;
-}
-
-.shelf-cell {
-    background: white;
-    border-radius: 8px;
-    padding: 1rem;
-    text-align: center;
-    border: 2px solid transparent;
-    /* Default border */
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: var(--shadow-sm);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Grid borders based on area */
-.shelf-grid[data-active-area="A"] .shelf-cell {
-    border-color: var(--area-a);
-}
-
-.shelf-grid[data-active-area="B"] .shelf-cell {
-    border-color: var(--area-b);
-}
-
-.shelf-grid[data-active-area="C"] .shelf-cell {
-    border-color: var(--area-c);
-}
-
-.shelf-grid[data-active-area="D"] .shelf-cell {
-    border-color: var(--area-d);
-}
-
-.shelf-grid[data-active-area="E"] .shelf-cell {
-    border-color: var(--area-e);
-}
-
-.shelf-grid[data-active-area="F"] .shelf-cell {
-    border-color: var(--area-f);
-}
-
-.shelf-grid[data-active-area="G"] .shelf-cell {
-    border-color: var(--area-g);
-}
-
-.shelf-cell:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-.shelf-cell.occupied {
-    /* Occupied style overrides border specific? Or just background. 
-       Let's keep the area border color but fill background lightly */
-    background: #F3F4F6;
-}
-
-.shelf-grid[data-active-area="A"] .shelf-cell.occupied {
-    background: #EFF6FF;
-}
-
-.shelf-grid[data-active-area="B"] .shelf-cell.occupied {
-    background: #ECFDF5;
-}
-
-.shelf-grid[data-active-area="C"] .shelf-cell.occupied {
-    background: #FFFBEB;
-}
-
-.shelf-grid[data-active-area="D"] .shelf-cell.occupied {
-    background: #FFF7ED;
-}
-
-.shelf-grid[data-active-area="E"] .shelf-cell.occupied {
-    background: #FAF5FF;
-}
-
-.shelf-grid[data-active-area="F"] .shelf-cell.occupied {
-    background: #ECFEFF;
-}
-
-.shelf-grid[data-active-area="G"] .shelf-cell.occupied {
-    background: #FDF2F8;
-}
-
-.shelf-cell.grayed-out {
-    background-color: #E5E7EB;
-    border-color: #D1D5DB !important;
-    color: #9CA3AF;
-    /* pointer-events: none; removed to allow selection for enabling */
-    opacity: 0.6;
-}
-
-.shelf-cell.full {
-    border-color: var(--status-warn);
-}
-
-.shelf-cell .code {
-    font-weight: 700;
-    display: block;
-    margin-bottom: 0.5rem;
-}
-
-.shelf-cell .count {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-/* Mobile Bottom Nav */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-around;
-    padding: 0.75rem;
-    z-index: 100;
-}
-
-.bottom-nav .nav-item {
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: 0.7rem;
-    padding: 0;
-}
-
-.bottom-nav ion-icon {
-    font-size: 1.5rem;
-}
-
-/* Modal */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 200;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal.open {
-    display: flex;
-}
-
-.modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: var(--radius);
-    width: 90%;
-    max-width: 400px;
-}
-
-.modal-content input,
-.modal-content textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin: 1rem 0;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
-
-.loading-spinner {
-    padding: 2rem;
-    text-align: center;
-    color: var(--text-muted);
-    display: none;
-}
-
-.loading-spinner.active {
-    display: block;
-}
-
-/* Image Preview & Upload */
-.image-upload-area {
-    margin-bottom: 1rem;
-}
-
-.image-preview {
-    width: 100%;
-    height: 150px;
-    background: #f9fafb;
-    border: 2px dashed var(--border);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
-}
-
-.image-preview img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-
-.image-preview span {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-}
-
-.hidden-file-input {
-    display: none;
-}
-
-/* Paper Selection */
-.paper-selector {
-    background: #F3F4F6;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    border: 1px solid var(--border);
-}
-
-.paper-selector h4 {
-    margin: 0 0 0.5rem 0;
-    font-size: 0.9rem;
-    color: var(--text-main);
-}
-
-/* Map Overview Section */
-.map-overview-section {
-    background: var(--bg-surface);
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 1.5rem;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.section-header h2 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: var(--text-main);
-}
-
-.text-muted {
-    color: var(--text-muted);
-}
-
-.text-sm {
-    font-size: 0.85rem;
-}
-
-.map-image-container {
-    width: 100%;
-    cursor: zoom-in;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    transition: all 0.2s;
-    background: white;
-    display: flex;
-    justify-content: center;
-}
-
-.map-image-container:hover {
-    border-color: var(--primary);
-    box-shadow: var(--shadow-md);
-}
-
-.shelf-map-img {
-    width: 100%;
-    height: auto;
-    display: block;
-    max-height: 400px;
-    object-fit: contain;
-}
-
-/* Image Modal */
-.image-modal {
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(4px);
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-.image-modal.open {
-    display: flex;
-}
-
-.modal-content-image {
-    position: relative;
-    max-width: 95vw;
-    max-height: 95vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-map-img {
-    max-width: 100%;
-    max-height: 90vh;
-    border-radius: 8px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-.close-btn {
-    position: absolute;
-    top: -40px;
-    right: 0;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 2rem;
-    cursor: pointer;
-    z-index: 1010;
-}
-
-.shelf-cell.selected {
-    border-color: var(--primary) !important;
-    background-color: #E0E7FF !important;
-    box-shadow: 0 0 0 4px var(--primary-hover);
-    z-index: 10;
-}
-
-.camera-icon {
-    font-size: 1.5rem;
-    color: var(--text-muted);
-    cursor: pointer;
-    margin-left: 0.5rem;
-    padding: 0.25rem;
-    border-radius: 50%;
-    transition: background 0.2s;
-}
-
-.camera-icon:hover {
-    background: #E5E7EB;
-    color: var(--text-main);
-}
-
-.map-overlays {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-}
-
-.map-hitbox {
-    position: absolute;
-    cursor: pointer;
-    pointer-events: auto;
-    background: rgba(255, 255, 255, 0.0);
-    border: 2px solid transparent;
-    transition: all 0.2s;
-}
-
-.map-hitbox:hover {
-    background: rgba(79, 70, 229, 0.1);
-    border-color: var(--primary);
-}
-
-.toggle-switch {
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-}
-
-.toggle-switch input {
-    margin-right: 0.5rem;
-    cursor: pointer;
-}
-
-.toggle-label {
-    font-size: 0.85rem;
-    color: var(--text-main);
-}
-
-.btn-danger {
-    background: white;
-    border: 1px solid #EF4444;
-    color: #EF4444;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-danger:hover {
-    background: #FEE2E2;
-}
-</style>
-    <script>
-/**
- * Configuration & State
- */
-const CONFIG = {
-    USE_REAL_API: true, // trueにするとGASと直接通信します
-    // ↓ ここにご自身の GAS デプロイURL を貼り付けてください
-    GAS_WEB_APP_URL: "YOUR_GAS_DEPLOYMENT_URL",
-};
-
-let appState = {
-    inventory: [],
-    logs: [],
-    currentView: 'dashboard',
-    filter: { text: '', area: '', status: '有効' },
-    mergedShelves: false,
-    selectedShelves: [], // for map selection
-    disabledShelves: [] // loaded from DB
-};
-
-const SHELF_CONFIG = {
-    'A': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
-    'B': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
-    'C': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
-    'D': { rows: ['天', '上', '中', '下', '底'], cols: 5 },
-    'E': { rows: ['天', '上', '中', '下', '底'], cols: 4 },
-    'F': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
-    'G': { rows: ['天', '底'], cols: 4 }
-};
-
-/**
- * Initialization
- */
-document.addEventListener('DOMContentLoaded', () => {
-    // Check URL Params for QR Code Entry
-    const urlParams = new URLSearchParams(window.location.search);
-    const locParam = urlParams.get('loc');
-
-    if (locParam) {
-        // Mode: Register via QR
-        router('register');
-        parseLocCode(locParam);
-    } else {
-        router('dashboard');
-        refreshData();
-        handleTypeChange();
-    }
-});
-
-/**
- * Routing
- */
-function router(viewName) {
-    // Hide all views
-    document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-
-    // Show target
-    document.getElementById(`view-${viewName}`).classList.add('active');
-
-    // Update Nav
-    // Note: Simple logic, might need adjustment for mobile/desktop separation
-    const navs = document.querySelectorAll(`.nav-item[onclick="router('${viewName}')"]`);
-    navs.forEach(n => n.classList.add('active'));
-
-    appState.currentView = viewName;
-
-    if (viewName === 'map') {
-        renderMap();
-    } else if (viewName === 'logs') {
-        renderLogs();
-    }
-}
-
-function jumpToArea(area) {
-    router('dashboard');
-    document.getElementById('filterArea').value = area;
-    filterItems();
-    
-    const viewModal = document.getElementById('mapViewModal');
-    if (viewModal) {
-        viewModal.classList.remove('open');
-    }
-}
-
-/**
- * Data Handling
- */
-async function refreshData() {
-    toggleLoading(true);
-    try {
-        const response = await API.getData();
-        if (response.status === 'success') {
-            // Support both formats for backward compat if needed, but here we change mock
-            if (response.data.inventory) {
-                appState.inventory = response.data.inventory;
-                appState.disabledShelves = response.data.disabled || [];
-            } else {
-                appState.inventory = response.data; // fallback
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338ca;
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+
+            --status-ok: #10B981;
+            --status-warn: #F59E0B;
+            --status-crit: #EF4444;
+
+            /* Area Colors */
+            --area-a: #3B82F6;
+            /* Blue */
+            --area-b: #10B981;
+            /* Green */
+            --area-c: #EAB308;
+            /* Yellow */
+            --area-d: #F97316;
+            /* Vermilion/Orange */
+            --area-e: #C084FC;
+            /* Light Purple */
+            --area-f: #06B6D4;
+            /* Cyan */
+            --area-g: #EC4899;
+            /* Pink */
+
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #app {
+            display: flex;
+            height: 100%;
+        }
+
+        /* Sidebar (Desktop) */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            display: none;
+            /* Mobile first hidden */
+        }
+
+        @media(min-width: 768px) {
+            .sidebar {
+                display: flex;
             }
+
+            .bottom-nav {
+                display: none !important;
+            }
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar nav {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .nav-item:hover {
+            background: #F9FAFB;
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: #EEF2FF;
+            color: var(--primary);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info .name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .info .role {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+            padding-bottom: 80px;
+            /* Space for bottom nav */
+        }
+
+        .view {
+            display: none;
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        /* Dashboard */
+        .search-panel {
+            background: var(--bg-surface);
+            padding: 1rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: #F9FAFB;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            margin-left: 0.5rem;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .filters select {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            outline: none;
+            background: white;
+        }
+
+        .table-container {
+            background: var(--bg-surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-ok {
+            background: #DCFCE7;
+            color: #166534;
+        }
+
+        .status-empty {
+            background: #F3F4F6;
+            color: #374151;
+        }
+
+        .age-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .age-new {
+            background: var(--status-ok);
+        }
+
+        .age-mid {
+            background: var(--status-warn);
+        }
+
+        .age-old {
+            background: var(--status-crit);
+        }
+
+        /* Forms */
+        .form-card {
+            background: var(--bg-surface);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .loc-inputs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .form-actions {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-text {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        /* Map */
+        .map-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            /* Allow wrapping on small screens */
+        }
+
+        .chip {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        /* Dynamic Area Coloring */
+        .chip[data-area="A"].active {
+            background: var(--area-a);
+            border-color: var(--area-a);
+            color: white;
+        }
+
+        .chip[data-area="B"].active {
+            background: var(--area-b);
+            border-color: var(--area-b);
+            color: white;
+        }
+
+        .chip[data-area="C"].active {
+            background: var(--area-c);
+            border-color: var(--area-c);
+            color: black;
+        }
+
+        /* Yellow specific */
+        .chip[data-area="D"].active {
+            background: var(--area-d);
+            border-color: var(--area-d);
+            color: white;
+        }
+
+        .chip[data-area="E"].active {
+            background: var(--area-e);
+            border-color: var(--area-e);
+            color: white;
+        }
+
+        .chip[data-area="F"].active {
+            background: var(--area-f);
+            border-color: var(--area-f);
+            color: white;
+        }
+
+        .chip[data-area="G"].active {
+            background: var(--area-g);
+            border-color: var(--area-g);
+            color: white;
+        }
+
+        .shelf-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem 0;
+        }
+
+        .required {
+            color: red;
+            font-weight: bold;
+        }
+
+        .shelf-cell {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            border: 2px solid transparent;
+            /* Default border */
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Grid borders based on area */
+        .shelf-grid[data-active-area="A"] .shelf-cell {
+            border-color: var(--area-a);
+        }
+
+        .shelf-grid[data-active-area="B"] .shelf-cell {
+            border-color: var(--area-b);
+        }
+
+        .shelf-grid[data-active-area="C"] .shelf-cell {
+            border-color: var(--area-c);
+        }
+
+        .shelf-grid[data-active-area="D"] .shelf-cell {
+            border-color: var(--area-d);
+        }
+
+        .shelf-grid[data-active-area="E"] .shelf-cell {
+            border-color: var(--area-e);
+        }
+
+        .shelf-grid[data-active-area="F"] .shelf-cell {
+            border-color: var(--area-f);
+        }
+
+        .shelf-grid[data-active-area="G"] .shelf-cell {
+            border-color: var(--area-g);
+        }
+
+        .shelf-cell:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .shelf-cell.occupied {
+            /* Occupied style overrides border specific? Or just background. 
+       Let's keep the area border color but fill background lightly */
+            background: #F3F4F6;
+        }
+
+        .shelf-grid[data-active-area="A"] .shelf-cell.occupied {
+            background: #EFF6FF;
+        }
+
+        .shelf-grid[data-active-area="B"] .shelf-cell.occupied {
+            background: #ECFDF5;
+        }
+
+        .shelf-grid[data-active-area="C"] .shelf-cell.occupied {
+            background: #FFFBEB;
+        }
+
+        .shelf-grid[data-active-area="D"] .shelf-cell.occupied {
+            background: #FFF7ED;
+        }
+
+        .shelf-grid[data-active-area="E"] .shelf-cell.occupied {
+            background: #FAF5FF;
+        }
+
+        .shelf-grid[data-active-area="F"] .shelf-cell.occupied {
+            background: #ECFEFF;
+        }
+
+        .shelf-grid[data-active-area="G"] .shelf-cell.occupied {
+            background: #FDF2F8;
+        }
+
+        .shelf-cell.grayed-out {
+            background-color: #E5E7EB;
+            border-color: #D1D5DB !important;
+            color: #9CA3AF;
+            /* pointer-events: none; removed to allow selection for enabling */
+            opacity: 0.6;
+        }
+
+        .shelf-cell.full {
+            border-color: var(--status-warn);
+        }
+
+        .shelf-cell .code {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .shelf-cell .count {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Mobile Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem;
+            z-index: 100;
+        }
+
+        .bottom-nav .nav-item {
+            flex-direction: column;
+            gap: 0.25rem;
+            font-size: 0.7rem;
+            padding: 0;
+        }
+
+        .bottom-nav ion-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .loading-spinner {
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            display: none;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        /* Image Preview & Upload */
+        .image-upload-area {
+            margin-bottom: 1rem;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 150px;
+            background: #f9fafb;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .image-preview span {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .hidden-file-input {
+            display: none;
+        }
+
+        /* Paper Selection */
+        .paper-selector {
+            background: #F3F4F6;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .paper-selector h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        /* Map Overview Section */
+        .map-overview-section {
+            background: var(--bg-surface);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .text-sm {
+            font-size: 0.85rem;
+        }
+
+        .map-image-container {
+            width: 100%;
+            cursor: zoom-in;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+            background: white;
+            display: flex;
+            justify-content: center;
+        }
+
+        .map-image-container:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .shelf-map-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            max-height: 400px;
+            object-fit: contain;
+        }
+
+        /* Image Modal */
+        .image-modal {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-modal.open {
+            display: flex;
+        }
+
+        .modal-content-image {
+            position: relative;
+            max-width: 95vw;
+            max-height: 95vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-map-img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1010;
+        }
+
+        .shelf-cell.selected {
+            border-color: var(--primary) !important;
+            background-color: #E0E7FF !important;
+            box-shadow: 0 0 0 4px var(--primary-hover);
+            z-index: 10;
+        }
+
+        .camera-icon {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            margin-left: 0.5rem;
+            padding: 0.25rem;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .camera-icon:hover {
+            background: #E5E7EB;
+            color: var(--text-main);
+        }
+
+        .map-overlays {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .map-hitbox {
+            position: absolute;
+            cursor: pointer;
+            pointer-events: auto;
+            background: rgba(255, 255, 255, 0.0);
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .map-hitbox:hover {
+            background: rgba(79, 70, 229, 0.1);
+            border-color: var(--primary);
+        }
+
+        .toggle-switch {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle-switch input {
+            margin-right: 0.5rem;
+            cursor: pointer;
+        }
+
+        .toggle-label {
+            font-size: 0.85rem;
+            color: var(--text-main);
+        }
+
+        .btn-danger {
+            background: white;
+            border: 1px solid #EF4444;
+            color: #EF4444;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #FEE2E2;
+        }
+    </style>
+    <script>
+        /**
+         * Configuration & State
+         */
+        const CONFIG = {
+            USE_REAL_API: true, // trueにするとGASと直接通信します
+            // ↓ ここにご自身の GAS デプロイURL を貼り付けてください
+            GAS_WEB_APP_URL: "YOUR_GAS_DEPLOYMENT_URL",
+        };
+
+        let appState = {
+            inventory: [],
+            logs: [],
+            currentView: 'dashboard',
+            filter: { text: '', area: '', status: '有効' },
+            mergedShelves: false,
+            selectedShelves: [], // for map selection
+            disabledShelves: [] // loaded from DB
+        };
+
+        const SHELF_CONFIG = {
+            'A': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
+            'B': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
+            'C': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
+            'D': { rows: ['天', '上', '中', '下', '底'], cols: 5 },
+            'E': { rows: ['天', '上', '中', '下', '底'], cols: 4 },
+            'F': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
+            'G': { rows: ['天', '底'], cols: 4 }
+        };
+
+        /**
+         * Initialization
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check URL Params for QR Code Entry
+            const urlParams = new URLSearchParams(window.location.search);
+            const locParam = urlParams.get('loc');
+
+            if (locParam) {
+                // Mode: Register via QR
+                router('register');
+                parseLocCode(locParam);
+            } else {
+                router('dashboard');
+                refreshData();
+                handleTypeChange();
+            }
+        });
+
+        /**
+         * Routing
+         */
+        function router(viewName) {
+            // Hide all views
+            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+            // Show target
+            document.getElementById(`view-${viewName}`).classList.add('active');
+
+            // Update Nav
+            // Note: Simple logic, might need adjustment for mobile/desktop separation
+            const navs = document.querySelectorAll(`.nav-item[onclick="router('${viewName}')"]`);
+            navs.forEach(n => n.classList.add('active'));
+
+            appState.currentView = viewName;
+
+            if (viewName === 'map') {
+                renderMap();
+            } else if (viewName === 'logs') {
+                renderLogs();
+            }
+        }
+
+        function jumpToArea(area) {
+            router('dashboard');
+            document.getElementById('filterArea').value = area;
+            filterItems();
+
+            const viewModal = document.getElementById('mapViewModal');
+            if (viewModal) {
+                viewModal.classList.remove('open');
+            }
+        }
+
+        /**
+         * Data Handling
+         */
+        async function refreshData() {
+            toggleLoading(true);
+            try {
+                const response = await API.getData();
+                if (response.status === 'success') {
+                    // Support both formats for backward compat if needed, but here we change mock
+                    if (response.data.inventory) {
+                        appState.inventory = response.data.inventory;
+                        appState.disabledShelves = response.data.disabled || [];
+                    } else {
+                        appState.inventory = response.data; // fallback
+                    }
+                    renderTable();
+                } else {
+                    console.error(response.message);
+                }
+            } catch (e) {
+                console.error(e);
+            } finally {
+                toggleLoading(false);
+            }
+            // Fetch logs separately in real app, or part of same resp
+            if (!CONFIG.USE_REAL_API) {
+                appState.logs = await MockBackend.getLogs();
+            }
+        }
+
+        function filterItems() {
+            appState.filter.text = document.getElementById('searchInput').value.toLowerCase();
+            appState.filter.area = document.getElementById('filterArea').value;
+            appState.filter.status = document.getElementById('filterStatus').value;
             renderTable();
-        } else {
-            console.error(response.message);
-        }
-    } catch (e) {
-        console.error(e);
-    } finally {
-        toggleLoading(false);
-    }
-    // Fetch logs separately in real app, or part of same resp
-    if (!CONFIG.USE_REAL_API) {
-        appState.logs = await MockBackend.getLogs();
-    }
-}
-
-function filterItems() {
-    appState.filter.text = document.getElementById('searchInput').value.toLowerCase();
-    appState.filter.area = document.getElementById('filterArea').value;
-    appState.filter.status = document.getElementById('filterStatus').value;
-    renderTable();
-}
-
-async function loadShelfStateFromServer() {
-    const res = await fetch("/api/shelf_state");
-    const data = await res.json();
-
-    // 全棚を一旦初期化
-    document.querySelectorAll(".shelf").forEach(el => {
-        el.classList.remove("disabled");
-    });
-
-    // DBの状態を反映
-    data.forEach(row => {
-        if (row.status === "disabled") {
-            const el = document.querySelector(`[data-shelf-id="${row.shelf_id}"]`);
-            if (el) el.classList.add("disabled");
-        }
-    });
-}
-
-async function setShelfStateOnServer(shelf_id, status) {
-    const res = await fetch("/api/shelf_state", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ shelf_id, status })
-    });
-
-    const json = await res.json();
-    if (!json.ok) {
-        throw new Error(json.error || "棚状態の保存に失敗しました");
-    }
-}
-
-async function saveDisabledShelvesToServer(disabledList) {
-    const res = await fetch("/api/disabled_shelves", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ disabled: disabledList })
-    });
-    const json = await res.json();
-    if (!json.ok) throw new Error(json.error || "disabled_shelves 保存に失敗");
-}
-
-/**
- * Rendering
- */
-function renderTable() {
-    const tbody = document.querySelector('#inventoryTable tbody');
-    tbody.innerHTML = '';
-
-    const filtered = appState.inventory.filter(item => {
-        const matchText = (item.name + item.slip_no + item.id + (item.isbn || '')).toLowerCase().includes(appState.filter.text);
-        const matchArea = appState.filter.area ? item.area === appState.filter.area : true;
-        const matchStatus = appState.filter.status === 'all' ? true : item.status === appState.filter.status;
-        return matchText && matchArea && matchStatus;
-    });
-
-    if (filtered.length === 0) {
-        document.getElementById('emptyState').style.display = 'block';
-        return;
-    }
-    document.getElementById('emptyState').style.display = 'none';
-
-    filtered.forEach(item => {
-        const ageColor = getAgeColor(item.date_in);
-        const tr = document.createElement('tr');
-
-        // Image Indicator (if exists)
-        let imgIcon = '';
-        if (item.image_url) {
-            imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${item.image_url}')"></ion-icon> `;
         }
 
-        tr.innerHTML = `
+        async function loadShelfStateFromServer() {
+            const res = await fetch("/api/shelf_state");
+            const data = await res.json();
+
+            // 全棚を一旦初期化
+            document.querySelectorAll(".shelf").forEach(el => {
+                el.classList.remove("disabled");
+            });
+
+            // DBの状態を反映
+            data.forEach(row => {
+                if (row.status === "disabled") {
+                    const el = document.querySelector(`[data-shelf-id="${row.shelf_id}"]`);
+                    if (el) el.classList.add("disabled");
+                }
+            });
+        }
+
+        async function setShelfStateOnServer(shelf_id, status) {
+            const res = await fetch("/api/shelf_state", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ shelf_id, status })
+            });
+
+            const json = await res.json();
+            if (!json.ok) {
+                throw new Error(json.error || "棚状態の保存に失敗しました");
+            }
+        }
+
+        async function saveDisabledShelvesToServer(disabledList) {
+            const res = await fetch("/api/disabled_shelves", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ disabled: disabledList })
+            });
+            const json = await res.json();
+            if (!json.ok) throw new Error(json.error || "disabled_shelves 保存に失敗");
+        }
+
+        /**
+         * Rendering
+         */
+        function renderTable() {
+            const tbody = document.querySelector('#inventoryTable tbody');
+            tbody.innerHTML = '';
+
+            const filtered = appState.inventory.filter(item => {
+                const matchText = (item.name + item.slip_no + item.id + (item.isbn || '')).toLowerCase().includes(appState.filter.text);
+                const matchArea = appState.filter.area ? item.area === appState.filter.area : true;
+                const matchStatus = appState.filter.status === 'all' ? true : item.status === appState.filter.status;
+                return matchText && matchArea && matchStatus;
+            });
+
+            if (filtered.length === 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                return;
+            }
+            document.getElementById('emptyState').style.display = 'none';
+
+            filtered.forEach(item => {
+                const ageColor = getAgeColor(item.date_in);
+                const tr = document.createElement('tr');
+
+                // Image Indicator (if exists)
+                let imgIcon = '';
+                if (item.image_url) {
+                    imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${item.image_url}')"></ion-icon> `;
+                }
+
+                tr.innerHTML = `
             <td><span class="status-badge ${item.status === '有効' ? 'status-ok' : 'status-empty'}">${item.status}</span></td>
             <td><strong>${item.loc_code}</strong></td>
             <td>
@@ -1100,179 +1100,179 @@ function renderTable() {
                 <button class="btn-sm btn-text" onclick="openEditModal('${item.id}')"><ion-icon name="create-outline"></ion-icon></button>
             </td>
         `;
-        tbody.appendChild(tr);
-    });
-}
+                tbody.appendChild(tr);
+            });
+        }
 
-async function quickStockOp(id, multiplier) {
-    const input = document.getElementById(`qty-diff-${id}`);
-    const val = parseInt(input.value);
-    if (!val || val <= 0) {
-        alert("数量を入力してください");
-        return;
-    }
+        async function quickStockOp(id, multiplier) {
+            const input = document.getElementById(`qty-diff-${id}`);
+            const val = parseInt(input.value);
+            if (!val || val <= 0) {
+                alert("数量を入力してください");
+                return;
+            }
 
-    // Logic: If multiplier is -1 (shipping), we subtract. If 1 (adding/return), we add.
-    const qtyDiff = val * multiplier;
+            // Logic: If multiplier is -1 (shipping), we subtract. If 1 (adding/return), we add.
+            const qtyDiff = val * multiplier;
 
-    // We reuse 'ship' endpoint logic for subtraction or add a new one. 
-    // Let's use a generic 'updateStock' logic.
-    const res = await API.post('ship', {
-        qty_diff: -qtyDiff, // ship API subtracts 'qty_diff'. So if we want to add, we pass negative diff? No, let's look at logic.
-        // Current 'ship' logic: item.qty -= payload.qty_diff
-        // So for "Out" (multiplier -1), we pass +val. 
-        // For "In" (multiplier 1), we pass -val.
-        // wait, quickStockOp passes multiplier. 
-        // If multiplier is -1 (Out), we want qty to decrease. 
-        // qty_diff in backend is subtracted: `item.qty -= payload.qty_diff`
-        // So for "Out", we send positive value `val`.
-        // For "In", we send negative value `-val`.
+            // We reuse 'ship' endpoint logic for subtraction or add a new one. 
+            // Let's use a generic 'updateStock' logic.
+            const res = await API.post('ship', {
+                qty_diff: -qtyDiff, // ship API subtracts 'qty_diff'. So if we want to add, we pass negative diff? No, let's look at logic.
+                // Current 'ship' logic: item.qty -= payload.qty_diff
+                // So for "Out" (multiplier -1), we pass +val. 
+                // For "In" (multiplier 1), we pass -val.
+                // wait, quickStockOp passes multiplier. 
+                // If multiplier is -1 (Out), we want qty to decrease. 
+                // qty_diff in backend is subtracted: `item.qty -= payload.qty_diff`
+                // So for "Out", we send positive value `val`.
+                // For "In", we send negative value `-val`.
 
-        qty_diff: (multiplier === -1) ? val : -val,
-        memo: (multiplier === -1) ? 'クイック出庫' : 'クイック入庫',
-        user: 'User'
-    });
+                qty_diff: (multiplier === -1) ? val : -val,
+                memo: (multiplier === -1) ? 'クイック出庫' : 'クイック入庫',
+                user: 'User'
+            });
 
-    if (res.status === 'success') {
-        refreshData();
-    }
-}
-
-
-function showImage(url) {
-    if (url.startsWith('data:')) {
-        // Mock mode (base64)
-        const w = window.open("");
-        w.document.write(`<img src="${url}" style="max-width:100%">`);
-    } else {
-        window.open(url, '_blank');
-    }
-}
+            if (res.status === 'success') {
+                refreshData();
+            }
+        }
 
 
-function setMapArea(area) {
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    const target = document.querySelector(`.chip[data-area="${area}"]`);
-    if (target) target.classList.add('active');
-    appState.selectedShelves = []; // Clear selection on switch
-    renderMap();
-}
+        function showImage(url) {
+            if (url.startsWith('data:')) {
+                // Mock mode (base64)
+                const w = window.open("");
+                w.document.write(`<img src="${url}" style="max-width:100%">`);
+            } else {
+                window.open(url, '_blank');
+            }
+        }
 
-function renderMap() {
-    const activeArea = document.querySelector('.chip.active').getAttribute('data-area') || 'A';
-    const config = SHELF_CONFIG[activeArea];
-    if (!config) return;
 
-    // Update Map Container style for coloring
-    const grid = document.getElementById('shelfGrid');
-    grid.setAttribute('data-active-area', activeArea);
-    grid.innerHTML = '';
+        function setMapArea(area) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            const target = document.querySelector(`.chip[data-area="${area}"]`);
+            if (target) target.classList.add('active');
+            appState.selectedShelves = []; // Clear selection on switch
+            renderMap();
+        }
 
-    // Dynamic Grid Columns
-    grid.style.gridTemplateColumns = `repeat(${config.cols}, 1fr)`;
+        function renderMap() {
+            const activeArea = document.querySelector('.chip.active').getAttribute('data-area') || 'A';
+            const config = SHELF_CONFIG[activeArea];
+            if (!config) return;
 
-    const rows = config.rows; // Now 5 rows
+            // Update Map Container style for coloring
+            const grid = document.getElementById('shelfGrid');
+            grid.setAttribute('data-active-area', activeArea);
+            grid.innerHTML = '';
 
-    // We need to know disabled shelves for this area
-    // In mock data, we will simulate this.
-    // For now, let's assume appState.disabledShelves contains full loc codes "A-天-1"
+            // Dynamic Grid Columns
+            grid.style.gridTemplateColumns = `repeat(${config.cols}, 1fr)`;
 
-    rows.forEach(shelf => {
-        for (let col = 1; col <= config.cols; col++) {
-            let locCode = `${activeArea}-${shelf}-${col}`;
+            const rows = config.rows; // Now 5 rows
 
-            // Filter items
-            const items = appState.inventory.filter(i => i.loc_code === locCode && i.status === '有効');
-            const isOccupied = items.length > 0;
-            const isDisabled = appState.disabledShelves.includes(locCode);
-            const isSelected = appState.selectedShelves.includes(locCode);
+            // We need to know disabled shelves for this area
+            // In mock data, we will simulate this.
+            // For now, let's assume appState.disabledShelves contains full loc codes "A-天-1"
 
-            const cell = document.createElement('div');
-            cell.className = `shelf-cell ${isOccupied ? 'occupied' : ''} ${isDisabled ? 'grayed-out' : ''} ${isSelected ? 'selected' : ''}`;
+            rows.forEach(shelf => {
+                for (let col = 1; col <= config.cols; col++) {
+                    let locCode = `${activeArea}-${shelf}-${col}`;
 
-            cell.onclick = (e) => {
-                // If checking stock logic
-                // e.stopPropagation();
-                handleShelfClick(locCode, isOccupied);
-            };
+                    // Filter items
+                    const items = appState.inventory.filter(i => i.loc_code === locCode && i.status === '有効');
+                    const isOccupied = items.length > 0;
+                    const isDisabled = appState.disabledShelves.includes(locCode);
+                    const isSelected = appState.selectedShelves.includes(locCode);
 
-            cell.innerHTML = `
+                    const cell = document.createElement('div');
+                    cell.className = `shelf-cell ${isOccupied ? 'occupied' : ''} ${isDisabled ? 'grayed-out' : ''} ${isSelected ? 'selected' : ''}`;
+
+                    cell.onclick = (e) => {
+                        // If checking stock logic
+                        // e.stopPropagation();
+                        handleShelfClick(locCode, isOccupied);
+                    };
+
+                    cell.innerHTML = `
                 <span class="code">${shelf}-${col}</span>
                 <span class="count">${isDisabled ? '-' : (isOccupied ? items.length + '件' : '空')}</span>
             `;
-            grid.appendChild(cell);
+                    grid.appendChild(cell);
+                }
+            });
         }
-    });
-}
 
-function handleShelfClick(locCode, isOccupied) {
-    // Toggle selection
-    if (appState.selectedShelves.includes(locCode)) {
-        appState.selectedShelves = appState.selectedShelves.filter(s => s !== locCode);
-    } else {
-        appState.selectedShelves.push(locCode);
-    }
-    renderMap();
-}
+        function handleShelfClick(locCode, isOccupied) {
+            // Toggle selection
+            if (appState.selectedShelves.includes(locCode)) {
+                appState.selectedShelves = appState.selectedShelves.filter(s => s !== locCode);
+            } else {
+                appState.selectedShelves.push(locCode);
+            }
+            renderMap();
+        }
 
-async function toggleShelfStatus(disable) {
-    if (appState.selectedShelves.length === 0) return;
+        async function toggleShelfStatus(disable) {
+            if (appState.selectedShelves.length === 0) return;
 
-    // disable の時だけ「在庫がある棚は不可」チェック
-    if (disable) {
-        const errorLocs = appState.selectedShelves.filter(loc =>
-            appState.inventory.some(i => i.loc_code === loc && i.status === "有効")
-        );
-        if (errorLocs.length > 0) {
-            alert(`以下の棚には在庫があるため、使用不可(グレーアウト)にできません:
+            // disable の時だけ「在庫がある棚は不可」チェック
+            if (disable) {
+                const errorLocs = appState.selectedShelves.filter(loc =>
+                    appState.inventory.some(i => i.loc_code === loc && i.status === "有効")
+                );
+                if (errorLocs.length > 0) {
+                    alert(`以下の棚には在庫があるため、使用不可(グレーアウト)にできません:
 ${errorLocs.join(", ")}`);
-            return;
+                    return;
+                }
+            }
+
+            // 次の disabled 配列を作る（ローカルの状態更新）
+            let newDisabled;
+            if (disable) {
+                newDisabled = [...new Set([...appState.disabledShelves, ...appState.selectedShelves])];
+            } else {
+                newDisabled = appState.disabledShelves.filter(s => !appState.selectedShelves.includes(s));
+            }
+
+            try {
+                // ★サーバーへ一括保存（全置換）
+                await saveDisabledShelvesToServer(newDisabled);
+
+                // UI反映
+                appState.disabledShelves = newDisabled;
+                appState.selectedShelves = [];
+
+                renderMap();          // まず見た目を即反映
+                // await refreshData(); // 必要なら同期用に（inventoryも更新したい時）
+            } catch (e) {
+                console.error(e);
+                alert("棚状態の保存に失敗しました。Flask起動とURL( http://127.0.0.1:5000 )を確認してください。");
+            }
         }
-    }
 
-    // 次の disabled 配列を作る（ローカルの状態更新）
-    let newDisabled;
-    if (disable) {
-        newDisabled = [...new Set([...appState.disabledShelves, ...appState.selectedShelves])];
-    } else {
-        newDisabled = appState.disabledShelves.filter(s => !appState.selectedShelves.includes(s));
-    }
+        // --- Scanner ---
+        let html5QrcodeScanner = null;
 
-    try {
-        // ★サーバーへ一括保存（全置換）
-        await saveDisabledShelvesToServer(newDisabled);
+        function startScanner() {
+            document.getElementById('scannerModal').classList.add('open');
+            if (html5QrcodeScanner) return; // already running?
 
-        // UI反映
-        appState.disabledShelves = newDisabled;
-        appState.selectedShelves = [];
+            // Use Html5Qrcode class
+            const html5QrCode = new Html5Qrcode("reader");
+            html5QrcodeScanner = html5QrCode;
 
-        renderMap();          // まず見た目を即反映
-        // await refreshData(); // 必要なら同期用に（inventoryも更新したい時）
-    } catch (e) {
-        console.error(e);
-        alert("棚状態の保存に失敗しました。Flask起動とURL( http://127.0.0.1:5000 )を確認してください。");
-    }
-}
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-// --- Scanner ---
-let html5QrcodeScanner = null;
-
-function startScanner() {
-    document.getElementById('scannerModal').classList.add('open');
-    if (html5QrcodeScanner) return; // already running?
-
-    // Use Html5Qrcode class
-    const html5QrCode = new Html5Qrcode("reader");
-    html5QrcodeScanner = html5QrCode;
-
-    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-
-    html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
-        .catch(err => {
-            console.error("Error starting scanner", err);
-            // カメラ起動失敗時（GASのiframe制限など）のフォールバックUIを表示
-            const readerDiv = document.getElementById('reader');
-            readerDiv.innerHTML = `
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+                .catch(err => {
+                    console.error("Error starting scanner", err);
+                    // カメラ起動失敗時（GASのiframe制限など）のフォールバックUIを表示
+                    const readerDiv = document.getElementById('reader');
+                    readerDiv.innerHTML = `
                 <div style="padding: 1.5rem; background: white; text-align: center; border-radius: 8px;">
                     <p style="color: var(--status-crit); font-size: 0.9rem; margin-bottom: 0.5rem; font-weight: bold;">カメラの直接起動が制限されています</p>
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">下記のボタンを押して、スマホの標準カメラでバーコードを撮影してください。</p>
@@ -1283,88 +1283,88 @@ function startScanner() {
                     <input type="file" accept="image/*" capture="camera" id="qr-fallback-input" style="display:none;" onchange="handleFallbackScan(event)">
                 </div>
             `;
-        });
-}
+                });
+        }
 
-window.handleFallbackScan = function(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+        window.handleFallbackScan = function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-    if (!html5QrcodeScanner) {
-        html5QrcodeScanner = new Html5Qrcode("reader");
-    }
+            if (!html5QrcodeScanner) {
+                html5QrcodeScanner = new Html5Qrcode("reader");
+            }
 
-    const readerDiv = document.getElementById('reader');
-    readerDiv.innerHTML = '<div style="padding: 3rem 1rem; background: #fff; text-align: center; color: var(--primary); font-weight: bold;">画像からバーコードを解析中...<br><br><div class="loading-spinner active" style="display:inline-block;"></div></div>';
+            const readerDiv = document.getElementById('reader');
+            readerDiv.innerHTML = '<div style="padding: 3rem 1rem; background: #fff; text-align: center; color: var(--primary); font-weight: bold;">画像からバーコードを解析中...<br><br><div class="loading-spinner active" style="display:inline-block;"></div></div>';
 
-    html5QrcodeScanner.scanFile(file, true)
-        .then(decodedText => {
-            onScanSuccess(decodedText);
-        })
-        .catch(err => {
-            alert("バーコードが読み取れませんでした。ピントを合わせて再度撮影してください。");
+            html5QrcodeScanner.scanFile(file, true)
+                .then(decodedText => {
+                    onScanSuccess(decodedText);
+                })
+                .catch(err => {
+                    alert("バーコードが読み取れませんでした。ピントを合わせて再度撮影してください。");
+                    document.getElementById('scannerModal').classList.remove('open');
+                });
+        };
+
+        function stopScanner() {
             document.getElementById('scannerModal').classList.remove('open');
-        });
-};
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().then((ignore) => {
+                    // QR Code scanning is stopped.
+                    html5QrcodeScanner.clear();
+                    html5QrcodeScanner = null;
+                }).catch((err) => {
+                    // Stop failed, handle it.
+                });
+            }
+        }
 
-function stopScanner() {
-    document.getElementById('scannerModal').classList.remove('open');
-    if (html5QrcodeScanner) {
-        html5QrcodeScanner.stop().then((ignore) => {
-            // QR Code scanning is stopped.
-            html5QrcodeScanner.clear();
-            html5QrcodeScanner = null;
-        }).catch((err) => {
-            // Stop failed, handle it.
-        });
-    }
-}
+        function onScanSuccess(decodedText, decodedResult) {
+            // 2段バーコード（ISBN=978/979〜、Cコード=192〜等）のうち、ISBN以外は無視してスキャン続行
+            // ただし在庫ID(ID-)の直接読み取りは許可
+            if (!decodedText.startsWith("978") && !decodedText.startsWith("979") && !decodedText.startsWith("ID-")) {
+                return;
+            }
 
-function onScanSuccess(decodedText, decodedResult) {
-    // 2段バーコード（ISBN=978/979〜、Cコード=192〜等）のうち、ISBN以外は無視してスキャン続行
-    // ただし在庫ID(ID-)の直接読み取りは許可
-    if (!decodedText.startsWith("978") && !decodedText.startsWith("979") && !decodedText.startsWith("ID-")) {
-        return; 
-    }
-    
-    // Hit!
-    stopScanner();
-    const cleanScanText = cleanIsbn(decodedText);
-    
-    // 検索窓に流し込んで自動検索
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.value = cleanScanText;
-        filterItems();
-    }
+            // Hit!
+            stopScanner();
+            const cleanScanText = cleanIsbn(decodedText);
 
-    // Check DB
-    const hits = appState.inventory.filter(i => {
-        if (i.status !== '有効') return false;
-        if (i.id === decodedText) return true;
-        if (i.isbn && cleanIsbn(i.isbn) === cleanScanText) return true;
-        return false;
-    });
+            // 検索窓に流し込んで自動検索
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = cleanScanText;
+                filterItems();
+            }
 
-    if (hits.length > 0) {
-        showScanResultCard(hits[0]);
-    } else {
-        alert(`未登録または在庫のないISBNです: ${decodedText}`);
-    }
-}
+            // Check DB
+            const hits = appState.inventory.filter(i => {
+                if (i.status !== '有効') return false;
+                if (i.id === decodedText) return true;
+                if (i.isbn && cleanIsbn(i.isbn) === cleanScanText) return true;
+                return false;
+            });
 
-function showScanResultCard(hit) {
-    let card = document.getElementById('scanResultCard');
-    if (!card) {
-        card = document.createElement('div');
-        card.id = 'scanResultCard';
-        card.className = 'modal';
-        document.body.appendChild(card);
-    }
-    
-    let coverImg = hit.image_url ? `<img src="${hit.image_url}" alt="表紙" style="max-height: 200px; max-width: 100%; border-radius: 8px; margin-bottom: 1rem; box-shadow: var(--shadow-md); object-fit: contain;">` : `<div style="height: 150px; background: #f3f4f6; border-radius: 8px; display:flex; align-items:center; justify-content:center; color: var(--text-muted); margin-bottom: 1rem;"><ion-icon name="image-outline" style="font-size: 3rem;"></ion-icon></div>`;
+            if (hits.length > 0) {
+                showScanResultCard(hits[0]);
+            } else {
+                alert(`未登録または在庫のないISBNです: ${decodedText}`);
+            }
+        }
 
-    card.innerHTML = `
+        function showScanResultCard(hit) {
+            let card = document.getElementById('scanResultCard');
+            if (!card) {
+                card = document.createElement('div');
+                card.id = 'scanResultCard';
+                card.className = 'modal';
+                document.body.appendChild(card);
+            }
+
+            let coverImg = hit.image_url ? `<img src="${hit.image_url}" alt="表紙" style="max-height: 200px; max-width: 100%; border-radius: 8px; margin-bottom: 1rem; box-shadow: var(--shadow-md); object-fit: contain;">` : `<div style="height: 150px; background: #f3f4f6; border-radius: 8px; display:flex; align-items:center; justify-content:center; color: var(--text-muted); margin-bottom: 1rem;"><ion-icon name="image-outline" style="font-size: 3rem;"></ion-icon></div>`;
+
+            card.innerHTML = `
         <div class="modal-content" style="text-align: center; max-width: 350px;">
             <h3 style="margin-top: 0; color: var(--primary); font-size: 1.2rem;">書籍を特定しました</h3>
             ${coverImg}
@@ -1385,822 +1385,822 @@ function showScanResultCard(hit) {
             </div>
         </div>
     `;
-    
-    card.classList.add('open');
-}
 
-function goToMapLocation(locCode) {
-    const parts = locCode.split('-');
-    if (parts.length >= 3) {
-        router('map');
-        setMapArea(parts[0]);
-        
-        // ハイライトの初期化
-        document.querySelectorAll('.shelf-cell').forEach(c => {
-            c.style.border = "";
-            c.style.boxShadow = "";
-            c.style.transform = "";
-        });
-        
-        setTimeout(() => {
-            const cells = document.querySelectorAll('.shelf-cell');
-            cells.forEach(c => {
-                const elShelf = c.querySelector('.code');
-                if (elShelf && elShelf.innerText === (`${parts[1]}-${parts[2]}`)) {
-                    // 対象セルを強調ハイライト
-                    c.style.border = "4px solid red";
-                    c.style.boxShadow = "0 0 15px rgba(255, 0, 0, 0.6)";
-                    c.style.transform = "scale(1.05)";
-                    c.scrollIntoView({ behavior: "smooth", block: "center" });
-                }
+            card.classList.add('open');
+        }
+
+        function goToMapLocation(locCode) {
+            const parts = locCode.split('-');
+            if (parts.length >= 3) {
+                router('map');
+                setMapArea(parts[0]);
+
+                // ハイライトの初期化
+                document.querySelectorAll('.shelf-cell').forEach(c => {
+                    c.style.border = "";
+                    c.style.boxShadow = "";
+                    c.style.transform = "";
+                });
+
+                setTimeout(() => {
+                    const cells = document.querySelectorAll('.shelf-cell');
+                    cells.forEach(c => {
+                        const elShelf = c.querySelector('.code');
+                        if (elShelf && elShelf.innerText === (`${parts[1]}-${parts[2]}`)) {
+                            // 対象セルを強調ハイライト
+                            c.style.border = "4px solid red";
+                            c.style.boxShadow = "0 0 15px rgba(255, 0, 0, 0.6)";
+                            c.style.transform = "scale(1.05)";
+                            c.scrollIntoView({ behavior: "smooth", block: "center" });
+                        }
+                    });
+                }, 500);
+            }
+        }
+
+        /**
+         * Logic Helpers
+         */
+        function getAgeColor(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffDays = (now - date) / (1000 * 60 * 60 * 24);
+
+            if (diffDays < 180) return 'age-new'; // 0.5y
+            if (diffDays < 365) return 'age-mid'; // 1y
+            if (diffDays < 730) return 'age-mid'; // 2y (using same yellow for mid range)
+            return 'age-old'; // > 2y
+        }
+
+        function parseLocCode(code) {
+            // Expected format: Area-Shelf-Col (e.g. A-天-1)
+            const parts = code.split('-');
+            if (parts.length === 3) {
+                document.getElementById('regArea').value = parts[0];
+                updateLocOptions();
+                document.getElementById('regShelf').value = parts[1];
+                document.getElementById('regCol').value = parts[2];
+                document.getElementById('loc-display-header').textContent = code;
+            }
+        }
+
+        /**
+         * Forms & Actions
+         */
+        async function handleRegister(e) {
+            e.preventDefault();
+            const formData = {
+                area: document.getElementById('regArea').value,
+                shelf: document.getElementById('regShelf').value,
+                column: document.getElementById('regCol').value,
+                name: document.getElementById('regName').value,
+                type: document.getElementById('regType').value,
+                qty: parseInt(document.getElementById('regQty').value), // FIX: Parse INT
+                size: document.getElementById('regSize').value,
+                date_in: document.getElementById('regDate').value,
+                slip_no: document.getElementById('regSlip').value,
+                client: document.getElementById('regClient').value,
+                memo: document.getElementById('regMemo').value,
+                memo: document.getElementById('regMemo').value,
+                isbn: document.getElementById('regISBN').value, // ISBN
+                book_id: document.getElementById('regBookId').value, // Book ID
+                sales: document.getElementById('regSales').value, // Sales Rep
+                image_data: currentImageBase64, // Add image data
+                loc_code: null
+            };
+
+            const res = await API.post('register', formData);
+            if (res.status === 'success') {
+                alert('登録しました');
+                document.getElementById('registerForm').reset();
+                currentImageBase64 = null;
+                document.getElementById('imagePreview').innerHTML = '<span><ion-icon name="image-outline"></ion-icon> クリックして画像を選択</span>';
+                router('dashboard');
+                refreshData();
+            }
+        }
+
+        let currentShipId = null;
+        function openShipModal(id) {
+            currentShipId = id;
+            const item = appState.inventory.find(i => i.id === id);
+            document.getElementById('shipTargetName').textContent = item.name;
+            document.getElementById('shipModal').classList.add('open');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        async function submitShip() {
+            const qty = document.getElementById('shipQty').value;
+            const memo = document.getElementById('shipMemo').value;
+
+            if (!qty) return;
+
+            const res = await API.post('ship', {
+                qty_diff: qty,
+                memo: memo,
+                user: 'User' // Mock user
             });
-        }, 500);
-    }
-}
 
-/**
- * Logic Helpers
- */
-function getAgeColor(dateStr) {
-    if (!dateStr) return '';
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diffDays = (now - date) / (1000 * 60 * 60 * 24);
-
-    if (diffDays < 180) return 'age-new'; // 0.5y
-    if (diffDays < 365) return 'age-mid'; // 1y
-    if (diffDays < 730) return 'age-mid'; // 2y (using same yellow for mid range)
-    return 'age-old'; // > 2y
-}
-
-function parseLocCode(code) {
-    // Expected format: Area-Shelf-Col (e.g. A-天-1)
-    const parts = code.split('-');
-    if (parts.length === 3) {
-        document.getElementById('regArea').value = parts[0];
-        updateLocOptions();
-        document.getElementById('regShelf').value = parts[1];
-        document.getElementById('regCol').value = parts[2];
-        document.getElementById('loc-display-header').textContent = code;
-    }
-}
-
-/**
- * Forms & Actions
- */
-async function handleRegister(e) {
-    e.preventDefault();
-    const formData = {
-        area: document.getElementById('regArea').value,
-        shelf: document.getElementById('regShelf').value,
-        column: document.getElementById('regCol').value,
-        name: document.getElementById('regName').value,
-        type: document.getElementById('regType').value,
-        qty: parseInt(document.getElementById('regQty').value), // FIX: Parse INT
-        size: document.getElementById('regSize').value,
-        date_in: document.getElementById('regDate').value,
-        slip_no: document.getElementById('regSlip').value,
-        client: document.getElementById('regClient').value,
-        memo: document.getElementById('regMemo').value,
-        memo: document.getElementById('regMemo').value,
-        isbn: document.getElementById('regISBN').value, // ISBN
-        book_id: document.getElementById('regBookId').value, // Book ID
-        sales: document.getElementById('regSales').value, // Sales Rep
-        image_data: currentImageBase64, // Add image data
-        loc_code: null
-    };
-
-    const res = await API.post('register', formData);
-    if (res.status === 'success') {
-        alert('登録しました');
-        document.getElementById('registerForm').reset();
-        currentImageBase64 = null;
-        document.getElementById('imagePreview').innerHTML = '<span><ion-icon name="image-outline"></ion-icon> クリックして画像を選択</span>';
-        router('dashboard');
-        refreshData();
-    }
-}
-
-let currentShipId = null;
-function openShipModal(id) {
-    currentShipId = id;
-    const item = appState.inventory.find(i => i.id === id);
-    document.getElementById('shipTargetName').textContent = item.name;
-    document.getElementById('shipModal').classList.add('open');
-}
-
-function closeModal(id) {
-    document.getElementById(id).classList.remove('open');
-}
-
-async function submitShip() {
-    const qty = document.getElementById('shipQty').value;
-    const memo = document.getElementById('shipMemo').value;
-
-    if (!qty) return;
-
-    const res = await API.post('ship', {
-        qty_diff: qty,
-        memo: memo,
-        user: 'User' // Mock user
-    });
-
-    if (res.status === 'success') {
-        closeModal('shipModal');
-        refreshData();
-    }
-}
+            if (res.status === 'success') {
+                closeModal('shipModal');
+                refreshData();
+            }
+        }
 
 
-function openEditModal(id) {
-    const item = appState.inventory.find(i => i.id === id);
-    if (!item) return;
-    document.getElementById('editId').value = item.id;
-    document.getElementById('editStatus').value = item.status;
-    document.getElementById('editName').value = item.name;
-    document.getElementById('editQty').value = item.qty;
+        function openEditModal(id) {
+            const item = appState.inventory.find(i => i.id === id);
+            if (!item) return;
+            document.getElementById('editId').value = item.id;
+            document.getElementById('editStatus').value = item.status;
+            document.getElementById('editName').value = item.name;
+            document.getElementById('editQty').value = item.qty;
 
-    // Location Fields
-    const areaSel = document.getElementById('editArea');
-    const shelfSel = document.getElementById('editShelf');
-    const colSel = document.getElementById('editCol');
+            // Location Fields
+            const areaSel = document.getElementById('editArea');
+            const shelfSel = document.getElementById('editShelf');
+            const colSel = document.getElementById('editCol');
 
-    // Populate Areas (Static)
-    // Assuming options are already there or need manual populating? 
-    // They are not in HTML yet. I will update HTML to include them.
-    // For now, let's just set values, assuming options exist.
-    areaSel.value = item.area;
+            // Populate Areas (Static)
+            // Assuming options are already there or need manual populating? 
+            // They are not in HTML yet. I will update HTML to include them.
+            // For now, let's just set values, assuming options exist.
+            areaSel.value = item.area;
 
-    // Trigger update for shelf/col options based on area
-    updateEditLocOptions(item.area);
+            // Trigger update for shelf/col options based on area
+            updateEditLocOptions(item.area);
 
-    // Set values after options update
-    shelfSel.value = item.shelf;
-    colSel.value = item.column;
+            // Set values after options update
+            shelfSel.value = item.shelf;
+            colSel.value = item.column;
 
-    document.getElementById('editModal').classList.add('open');
-}
+            document.getElementById('editModal').classList.add('open');
+        }
 
-function updateEditLocOptions(area) {
-    const config = SHELF_CONFIG[area];
-    const shelfSelect = document.getElementById('editShelf');
-    const colSelect = document.getElementById('editCol');
+        function updateEditLocOptions(area) {
+            const config = SHELF_CONFIG[area];
+            const shelfSelect = document.getElementById('editShelf');
+            const colSelect = document.getElementById('editCol');
 
-    if (!config) return;
+            if (!config) return;
 
-    // Save current if needed, but we usually overwrite
-    shelfSelect.innerHTML = '';
-    config.rows.forEach(r => {
-        const op = document.createElement('option');
-        op.value = r;
-        op.textContent = r;
-        shelfSelect.appendChild(op);
-    });
+            // Save current if needed, but we usually overwrite
+            shelfSelect.innerHTML = '';
+            config.rows.forEach(r => {
+                const op = document.createElement('option');
+                op.value = r;
+                op.textContent = r;
+                shelfSelect.appendChild(op);
+            });
 
-    colSelect.innerHTML = '';
-    for (let c = 1; c <= config.cols; c++) {
-        if (config.skip && config.skip.includes(String(c))) continue;
-        const op = document.createElement('option');
-        op.value = c;
-        op.textContent = c;
-        colSelect.appendChild(op);
-    }
-}
+            colSelect.innerHTML = '';
+            for (let c = 1; c <= config.cols; c++) {
+                if (config.skip && config.skip.includes(String(c))) continue;
+                const op = document.createElement('option');
+                op.value = c;
+                op.textContent = c;
+                colSelect.appendChild(op);
+            }
+        }
 
-async function submitEdit() {
-    const id = document.getElementById('editId').value;
-    const status = document.getElementById('editStatus').value;
-    const name = document.getElementById('editName').value;
-    const qty = document.getElementById('editQty').value;
+        async function submitEdit() {
+            const id = document.getElementById('editId').value;
+            const status = document.getElementById('editStatus').value;
+            const name = document.getElementById('editName').value;
+            const qty = document.getElementById('editQty').value;
 
-    // New Loc
-    const area = document.getElementById('editArea').value;
-    const shelf = document.getElementById('editShelf').value;
-    const col = document.getElementById('editCol').value;
-    const loc_code = `${area}-${shelf}-${col}`;
+            // New Loc
+            const area = document.getElementById('editArea').value;
+            const shelf = document.getElementById('editShelf').value;
+            const col = document.getElementById('editCol').value;
+            const loc_code = `${area}-${shelf}-${col}`;
 
-    if (!id || !name || !qty) {
-        alert("必須項目が空です");
-        return;
-    }
+            if (!id || !name || !qty) {
+                alert("必須項目が空です");
+                return;
+            }
 
-    const res = await API.post('edit', {
-        id: id,
-        status: status,
-        name: name,
-        qty: qty,
-        // Add location update
-        area: area,
-        shelf: shelf,
-        column: col,
-        loc_code: loc_code
-    });
+            const res = await API.post('edit', {
+                id: id,
+                status: status,
+                name: name,
+                qty: qty,
+                // Add location update
+                area: area,
+                shelf: shelf,
+                column: col,
+                loc_code: loc_code
+            });
 
-    if (res.status === 'success') {
-        closeModal('editModal');
-        refreshData();
-    }
-}
+            if (res.status === 'success') {
+                closeModal('editModal');
+                refreshData();
+            }
+        }
 
-// function submitEdit() // End of function
+        // function submitEdit() // End of function
 
-async function deleteItem() {
-    if (!confirm('本当に削除しますか？')) return;
-    const id = document.getElementById('editId').value;
-    const res = await API.post('delete', { id });
-    if (res.status === 'success') {
-        closeModal('editModal');
-        refreshData();
-    }
-}
+        async function deleteItem() {
+            if (!confirm('本当に削除しますか？')) return;
+            const id = document.getElementById('editId').value;
+            const res = await API.post('delete', { id });
+            if (res.status === 'success') {
+                closeModal('editModal');
+                refreshData();
+            }
+        }
 
-function renderLogs() {
-    const tbody = document.querySelector('#logsTable tbody');
-    tbody.innerHTML = '';
+        function renderLogs() {
+            const tbody = document.querySelector('#logsTable tbody');
+            tbody.innerHTML = '';
 
-    // Sort logs desc
-    const sorted = [...appState.logs].sort((a, b) => new Date(b.date) - new Date(a.date));
+            // Sort logs desc
+            const sorted = [...appState.logs].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    sorted.forEach(log => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+            sorted.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
             <td>${log.date}</td>
             <td>${log.action}</td>
             <td>${log.target_name}</td>
             <td>${log.details}</td>
             <td>${log.user}</td>
         `;
-        tbody.appendChild(tr);
-    });
-}
+                tbody.appendChild(tr);
+            });
+        }
 
-// --- CSV & Data Management ---
+        // --- CSV & Data Management ---
 
-function exportCSV() {
-    const items = appState.inventory;
-    if (items.length === 0) {
-        alert("データがありません");
-        return;
-    }
-
-    // Define Header
-    const fields = [
-        "id", "status", "area", "shelf", "column", "name", "qty",
-        "date_in", "type", "size", "slip_no", "client", "isbn", "memo", "loc_code"
-    ];
-
-    // Convert to CSV
-    const csv = Papa.unparse({
-        fields: fields,
-        data: items
-    });
-
-    // Add BOM for Excel
-    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-    const blob = new Blob([bom, csv], { type: "text/csv;charset=utf-8;" });
-
-    // Download
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `stocker_export_${dateStr}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-function importCSV(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        complete: async function (results) {
-            if (results.errors.length > 0) {
-                console.warn("CSV Parse Errors:", results.errors);
-                alert("CSV読み込み中にエラーが発生しました。コンソールを確認してください。");
+        function exportCSV() {
+            const items = appState.inventory;
+            if (items.length === 0) {
+                alert("データがありません");
+                return;
             }
 
-            const rows = results.data;
-            let successCount = 0;
+            // Define Header
+            const fields = [
+                "id", "status", "area", "shelf", "column", "name", "qty",
+                "date_in", "type", "size", "slip_no", "client", "isbn", "memo", "loc_code"
+            ];
 
-            if (confirm(`${rows.length}件のデータを読み込みますか？
+            // Convert to CSV
+            const csv = Papa.unparse({
+                fields: fields,
+                data: items
+            });
+
+            // Add BOM for Excel
+            const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+            const blob = new Blob([bom, csv], { type: "text/csv;charset=utf-8;" });
+
+            // Download
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `stocker_export_${dateStr}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function importCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: async function (results) {
+                    if (results.errors.length > 0) {
+                        console.warn("CSV Parse Errors:", results.errors);
+                        alert("CSV読み込み中にエラーが発生しました。コンソールを確認してください。");
+                    }
+
+                    const rows = results.data;
+                    let successCount = 0;
+
+                    if (confirm(`${rows.length}件のデータを読み込みますか？
 既存のIDがある場合は上書き、なければ新規登録されます。`)) {
-                toggleLoading(true);
-                // Batch process could be better, but loop is simple for now
-                const upsertList = rows.map(row => {
-                    // Cleanup fields if necessary
-                    return {
-                        id: row.id, // if empty, backend should generate? No, for import usually we keep ID if provided.
-                        status: row.status || '有効',
-                        area: row.area,
-                        shelf: row.shelf,
-                        column: row.column,
-                        name: row.name,
-                        qty: parseInt(row.qty) || 0,
-                        date_in: row.date_in,
-                        type: row.type,
-                        size: row.size,
-                        slip_no: row.slip_no,
-                        client: row.client,
-                        isbn: row.isbn,
-                        memo: row.memo,
-                        // loc_code will be reconstructed by backend or here
-                        loc_code: row.loc_code || `${row.area}-${row.shelf}-${row.column}`
-                    };
-                });
+                        toggleLoading(true);
+                        // Batch process could be better, but loop is simple for now
+                        const upsertList = rows.map(row => {
+                            // Cleanup fields if necessary
+                            return {
+                                id: row.id, // if empty, backend should generate? No, for import usually we keep ID if provided.
+                                status: row.status || '有効',
+                                area: row.area,
+                                shelf: row.shelf,
+                                column: row.column,
+                                name: row.name,
+                                qty: parseInt(row.qty) || 0,
+                                date_in: row.date_in,
+                                type: row.type,
+                                size: row.size,
+                                slip_no: row.slip_no,
+                                client: row.client,
+                                isbn: row.isbn,
+                                memo: row.memo,
+                                // loc_code will be reconstructed by backend or here
+                                loc_code: row.loc_code || `${row.area}-${row.shelf}-${row.column}`
+                            };
+                        });
 
-                await API.post('bulk_upsert', { items: upsertList });
+                        await API.post('bulk_upsert', { items: upsertList });
 
-                toggleLoading(false);
-                alert("読み込みが完了しました");
-                event.target.value = ''; // reset
+                        toggleLoading(false);
+                        alert("読み込みが完了しました");
+                        event.target.value = ''; // reset
+                        refreshData();
+                    }
+                }
+            });
+        }
+
+        function cleanIsbn(isbn) {
+            if (!isbn) return "";
+            return isbn.replace(/[^0-9X]/gi, "");
+        }
+
+        async function bulkImportImages(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            toggleLoading(true);
+            let updates = [];
+
+            for (let f of files) {
+                const fname = f.name;
+                const namePart = fname.substring(0, fname.lastIndexOf('.')) || fname;
+                const cleanName = cleanIsbn(namePart);
+
+                try {
+                    const base64 = await readFileAsBase64(f);
+                    // サーバー側 (Code.gs) でISBNマッチングを行うため isbn を送信
+                    updates.push({ isbn: cleanName, image_data: base64 });
+                } catch (err) {
+                    console.error("Image Read Error", fname, err);
+                }
+            }
+
+            if (updates.length > 0) {
+                const res = await API.post('bulk_image_update', { updates: updates });
+                if (res && res.status === 'success') {
+                    alert(`GAS(サーバー)側で照合を行い、${res.count}件のデータに画像を適用しました。`);
+                } else {
+                    alert("画像の一括更新に失敗しました。");
+                }
                 refreshData();
+            } else {
+                alert("有効な画像ファイルが見つかりませんでした。ファイル名は「ISBN(ハイフンなし).jpg」などにしてください。");
+            }
+
+            event.target.value = '';
+            toggleLoading(false);
+        }
+
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.onerror = e => reject(e);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function toggleLoading(show) {
+            const el = document.getElementById('loading');
+            if (show) el.classList.add('active');
+            else el.classList.remove('active');
+        }
+
+        // --- Paper Master Data ---
+        const PAPER_MASTER_RAW = [
+            ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "63kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "68kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "73kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "135kg", "125枚包"],
+            ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "40.5kg", "500枚包"],
+            ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "43.5kg", "500枚包"],
+            ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "46.5kg", "500枚包"],
+            ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "43.5kg", "500枚包"],
+            ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "47kg", "500枚包"],
+            ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "50.5kg", "500枚包"],
+            ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "62.5kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "76.5kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "93.5kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "70kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "135kg", "125枚包"],
+            ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "44.5kg", "500枚包"],
+            ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "48.5kg", "500枚包"],
+            ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "62.5kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "76.5kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "93.5kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(788×1091)T目", "180kg", "125枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "45kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "55kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "70kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "135kg", "125枚包"],
+            ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "28.5kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "35kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "44.5kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "31kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "38kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "48.5kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "62.5kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "76.5kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "93.5kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "45Kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "55kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "70kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "135Kg", "125枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "28.5Kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "35kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "44.5kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "86.5Kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "31Kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "38Kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "48.5Kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "62.5Kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "76.5Kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "93.5Kg", "250枚包"],
+            ["コートグリーン100", "A判(625×880)T目", "40.5kg", "500枚包"],
+            ["コートグリーン100", "A判(625×880)T目", "43.5kg", "500枚包"],
+            ["コートグリーン100", "A判(625×880)T目", "46.5kg", "500枚包"],
+            ["コートグリーン100", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["コートグリーン100", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["コートグリーン100", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["コートマットグリーン", "A判(625×880)T目", "44.5kg", "500枚包"],
+            ["コートマットグリーン", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["コートマットグリーン", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["コートマットグリーン", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["パールコート", "A判(625×880)T目", "40.5kg", "500枚包"],
+            ["パールコート", "A判(625×880)T目", "43.5kg", "500枚包"],
+            ["パールコート", "A判(625×880)T目", "46.5kg", "500枚包"],
+            ["パールコート", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["パールコート", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["パールコート", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["ニューVマット", "A判(625×880)T目", "40.5kg", "500枚包"],
+            ["ニューVマット", "A判(625×880)T目", "43.5kg", "500枚包"],
+            ["ニューVマット", "A判(625×880)T目", "46.5kg", "500枚包"],
+            ["ニューVマット", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["ニューVマット", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["ニューVマット", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["テイクGA110T", "2切", "63kg", "250枚包"],
+            ["テイクGA110T", "2切", "68kg", "250枚包"],
+            ["テイクGA110T", "2切", "73kg", "250枚包"],
+            ["テイクGA110T", "2切", "90kg", "250枚包"],
+            ["テイクGA110T", "2切", "110kg", "250枚包"],
+            ["テイクGA110T", "2切", "135kg", "125枚包"],
+            ["オペラクリームウルトラ", "AT", "57.5kg", "-"],
+            ["アートポスト", "菊Y", "125kg", "-"],
+            ["シルバーダイヤ", "AY", "86.5kg", "-"],
+            ["b7バルキー", "AT", "46.5kg", "-"],
+            ["色上質", "4/6判", "特厚(若草)", "-"],
+            ["色上質", "4/6判", "特厚(鶯)", "-"],
+            ["色上質", "4/6判", "特厚(ピュアライトクリーム)", "-"],
+            ["色上質", "4/6判", "特厚(やまぶき)", "-"],
+            ["色上質", "A判", "特厚(レモン)", "-"],
+            ["色上質", "A判", "特厚(淡象牙)", "-"]
+        ];
+
+        function initPaperSelect() {
+            const nameSelect = document.getElementById('paperNameSelect');
+            // Unique names
+            const names = [...new Set(PAPER_MASTER_RAW.map(row => row[0]))];
+            names.forEach(n => {
+                const op = document.createElement('option');
+                op.value = n;
+                op.textContent = n;
+                nameSelect.appendChild(op);
+            });
+        }
+
+        function addNewPaperMaster() {
+            const newName = prompt("新しい用紙名を入力してください:");
+            if (newName) {
+                // Add dummy entry to master for now
+                PAPER_MASTER_RAW.push([newName, "-", "-", "-"]);
+                initPaperSelect(); // Refresh
+                // Select the new one
+                document.getElementById('paperNameSelect').value = newName;
+                updatePaperSpecs();
             }
         }
-    });
-}
 
-function cleanIsbn(isbn) {
-    if (!isbn) return "";
-    return isbn.replace(/[^0-9X]/gi, "");
-}
+        function updatePaperSpecs() {
+            const name = document.getElementById('paperNameSelect').value;
+            const specSelect = document.getElementById('paperSpecSelect');
+            specSelect.innerHTML = '<option value="">-</option>';
 
-async function bulkImportImages(event) {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
+            if (!name) return;
 
-    toggleLoading(true);
-    let updates = [];
-
-    for (let f of files) {
-        const fname = f.name;
-        const namePart = fname.substring(0, fname.lastIndexOf('.')) || fname;
-        const cleanName = cleanIsbn(namePart);
-
-        try {
-            const base64 = await readFileAsBase64(f);
-            // サーバー側 (Code.gs) でISBNマッチングを行うため isbn を送信
-            updates.push({ isbn: cleanName, image_data: base64 });
-        } catch (err) {
-            console.error("Image Read Error", fname, err);
+            const relevant = PAPER_MASTER_RAW.filter(r => r[0] === name);
+            relevant.forEach((r, idx) => {
+                const op = document.createElement('option');
+                // Value works as index in the relevant array
+                op.value = idx;
+                const sizeShort = r[1].split(/[（(]/)[0]; // simple display
+                op.textContent = `${r[1]} / ${r[2]}`;
+                specSelect.appendChild(op);
+            });
         }
-    }
 
-    if (updates.length > 0) {
-        const res = await API.post('bulk_image_update', { updates: updates });
-        if (res && res.status === 'success') {
-            alert(`GAS(サーバー)側で照合を行い、${res.count}件のデータに画像を適用しました。`);
-        } else {
-            alert("画像の一括更新に失敗しました。");
-        }
-        refreshData();
-    } else {
-        alert("有効な画像ファイルが見つかりませんでした。ファイル名は「ISBN(ハイフンなし).jpg」などにしてください。");
-    }
+        function fillPaperData() {
+            const name = document.getElementById('paperNameSelect').value;
+            const specIdx = document.getElementById('paperSpecSelect').value;
+            if (!name || specIdx === "") return;
 
-    event.target.value = '';
-    toggleLoading(false);
-}
+            const row = PAPER_MASTER_RAW.filter(r => r[0] === name)[parseInt(specIdx)];
 
-function readFileAsBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = e => resolve(e.target.result);
-        reader.onerror = e => reject(e);
-        reader.readAsDataURL(file);
-    });
-}
+            document.getElementById('regName').value = `${row[0]} ${row[2]}`;
+            document.getElementById('regSize').value = row[1];
 
-function toggleLoading(show) {
-    const el = document.getElementById('loading');
-    if (show) el.classList.add('active');
-    else el.classList.remove('active');
-}
-
-// --- Paper Master Data ---
-const PAPER_MASTER_RAW = [
-    ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "63kg", "250枚包"],
-    ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "68kg", "250枚包"],
-    ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "73kg", "250枚包"],
-    ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
-    ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
-    ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "135kg", "125枚包"],
-    ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "40.5kg", "500枚包"],
-    ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "43.5kg", "500枚包"],
-    ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "46.5kg", "500枚包"],
-    ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
-    ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
-    ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "86.5kg", "250枚包"],
-    ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "43.5kg", "500枚包"],
-    ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "47kg", "500枚包"],
-    ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "50.5kg", "500枚包"],
-    ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "62.5kg", "250枚包"],
-    ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "76.5kg", "250枚包"],
-    ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "93.5kg", "250枚包"],
-    ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "70kg", "250枚包"],
-    ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
-    ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
-    ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "135kg", "125枚包"],
-    ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "44.5kg", "500枚包"],
-    ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
-    ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
-    ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "86.5kg", "250枚包"],
-    ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "48.5kg", "500枚包"],
-    ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "62.5kg", "250枚包"],
-    ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "76.5kg", "250枚包"],
-    ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "93.5kg", "250枚包"],
-    ["OKプリンス上質(王子製紙)", "4/6判(788×1091)T目", "180kg", "125枚包"],
-    ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "45kg", "500枚包"],
-    ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "55kg", "500枚包"],
-    ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "70kg", "250枚包"],
-    ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
-    ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
-    ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "135kg", "125枚包"],
-    ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "28.5kg", "500枚包"],
-    ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "35kg", "500枚包"],
-    ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "44.5kg", "500枚包"],
-    ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
-    ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
-    ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "86.5kg", "250枚包"],
-    ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "31kg", "500枚包"],
-    ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "38kg", "500枚包"],
-    ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "48.5kg", "500枚包"],
-    ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "62.5kg", "250枚包"],
-    ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "76.5kg", "250枚包"],
-    ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "93.5kg", "250枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "45Kg", "500枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "55kg", "500枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "70kg", "250枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "135Kg", "125枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "28.5Kg", "500枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "35kg", "500枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "44.5kg", "500枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "86.5Kg", "250枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "31Kg", "500枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "38Kg", "500枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "48.5Kg", "500枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "62.5Kg", "250枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "76.5Kg", "250枚包"],
-    ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "93.5Kg", "250枚包"],
-    ["コートグリーン100", "A判(625×880)T目", "40.5kg", "500枚包"],
-    ["コートグリーン100", "A判(625×880)T目", "43.5kg", "500枚包"],
-    ["コートグリーン100", "A判(625×880)T目", "46.5kg", "500枚包"],
-    ["コートグリーン100", "A判(625×880)T目", "57.5kg", "250枚包"],
-    ["コートグリーン100", "A判(625×880)T目", "70.5kg", "250枚包"],
-    ["コートグリーン100", "A判(625×880)T目", "86.5kg", "250枚包"],
-    ["コートマットグリーン", "A判(625×880)T目", "44.5kg", "500枚包"],
-    ["コートマットグリーン", "A判(625×880)T目", "57.5kg", "250枚包"],
-    ["コートマットグリーン", "A判(625×880)T目", "70.5kg", "250枚包"],
-    ["コートマットグリーン", "A判(625×880)T目", "86.5kg", "250枚包"],
-    ["パールコート", "A判(625×880)T目", "40.5kg", "500枚包"],
-    ["パールコート", "A判(625×880)T目", "43.5kg", "500枚包"],
-    ["パールコート", "A判(625×880)T目", "46.5kg", "500枚包"],
-    ["パールコート", "A判(625×880)T目", "57.5kg", "250枚包"],
-    ["パールコート", "A判(625×880)T目", "70.5kg", "250枚包"],
-    ["パールコート", "A判(625×880)T目", "86.5kg", "250枚包"],
-    ["ニューVマット", "A判(625×880)T目", "40.5kg", "500枚包"],
-    ["ニューVマット", "A判(625×880)T目", "43.5kg", "500枚包"],
-    ["ニューVマット", "A判(625×880)T目", "46.5kg", "500枚包"],
-    ["ニューVマット", "A判(625×880)T目", "57.5kg", "250枚包"],
-    ["ニューVマット", "A判(625×880)T目", "70.5kg", "250枚包"],
-    ["ニューVマット", "A判(625×880)T目", "86.5kg", "250枚包"],
-    ["テイクGA110T", "2切", "63kg", "250枚包"],
-    ["テイクGA110T", "2切", "68kg", "250枚包"],
-    ["テイクGA110T", "2切", "73kg", "250枚包"],
-    ["テイクGA110T", "2切", "90kg", "250枚包"],
-    ["テイクGA110T", "2切", "110kg", "250枚包"],
-    ["テイクGA110T", "2切", "135kg", "125枚包"],
-    ["オペラクリームウルトラ", "AT", "57.5kg", "-"],
-    ["アートポスト", "菊Y", "125kg", "-"],
-    ["シルバーダイヤ", "AY", "86.5kg", "-"],
-    ["b7バルキー", "AT", "46.5kg", "-"],
-    ["色上質", "4/6判", "特厚(若草)", "-"],
-    ["色上質", "4/6判", "特厚(鶯)", "-"],
-    ["色上質", "4/6判", "特厚(ピュアライトクリーム)", "-"],
-    ["色上質", "4/6判", "特厚(やまぶき)", "-"],
-    ["色上質", "A判", "特厚(レモン)", "-"],
-    ["色上質", "A判", "特厚(淡象牙)", "-"]
-];
-
-function initPaperSelect() {
-    const nameSelect = document.getElementById('paperNameSelect');
-    // Unique names
-    const names = [...new Set(PAPER_MASTER_RAW.map(row => row[0]))];
-    names.forEach(n => {
-        const op = document.createElement('option');
-        op.value = n;
-        op.textContent = n;
-        nameSelect.appendChild(op);
-    });
-}
-
-function addNewPaperMaster() {
-    const newName = prompt("新しい用紙名を入力してください:");
-    if (newName) {
-        // Add dummy entry to master for now
-        PAPER_MASTER_RAW.push([newName, "-", "-", "-"]);
-        initPaperSelect(); // Refresh
-        // Select the new one
-        document.getElementById('paperNameSelect').value = newName;
-        updatePaperSpecs();
-    }
-}
-
-function updatePaperSpecs() {
-    const name = document.getElementById('paperNameSelect').value;
-    const specSelect = document.getElementById('paperSpecSelect');
-    specSelect.innerHTML = '<option value="">-</option>';
-
-    if (!name) return;
-
-    const relevant = PAPER_MASTER_RAW.filter(r => r[0] === name);
-    relevant.forEach((r, idx) => {
-        const op = document.createElement('option');
-        // Value works as index in the relevant array
-        op.value = idx;
-        const sizeShort = r[1].split(/[（(]/)[0]; // simple display
-        op.textContent = `${r[1]} / ${r[2]}`;
-        specSelect.appendChild(op);
-    });
-}
-
-function fillPaperData() {
-    const name = document.getElementById('paperNameSelect').value;
-    const specIdx = document.getElementById('paperSpecSelect').value;
-    if (!name || specIdx === "") return;
-
-    const row = PAPER_MASTER_RAW.filter(r => r[0] === name)[parseInt(specIdx)];
-
-    document.getElementById('regName').value = `${row[0]} ${row[2]}`;
-    document.getElementById('regSize').value = row[1];
-
-    // Auto-fill memo with packaging info if available
-    const pack = row[3];
-    if (pack && pack !== '-') {
-        const currentMemo = document.getElementById('regMemo').value;
-        if (!currentMemo.includes(pack)) {
-            document.getElementById('regMemo').value = (currentMemo ? currentMemo + '
+            // Auto-fill memo with packaging info if available
+            const pack = row[3];
+            if (pack && pack !== '-') {
+                const currentMemo = document.getElementById('regMemo').value;
+                if (!currentMemo.includes(pack)) {
+                    document.getElementById('regMemo').value = (currentMemo ? currentMemo + '
 ' : '') + `梱包: ${pack}`;
-        }
-    }
-}
-
-function handleTypeChange() {
-    const type = document.getElementById('regType').value;
-
-    // Toggle Paper Selection
-    const paperContainer = document.getElementById('paperSelectContainer');
-    if (type === '用紙') {
-        paperContainer.style.display = 'block';
-        if (document.getElementById('paperNameSelect').options.length <= 1) initPaperSelect();
-    } else {
-        paperContainer.style.display = 'none';
-        // Clear if hidden? Maybe not, to allow undo.
-    }
-
-    // Toggle Image Upload (Books) & ISBN & BookID
-    const imageContainer = document.getElementById('imageUploadContainer');
-    const isbnContainer = document.getElementById('isbnInputContainer');
-    const bookIdContainer = document.getElementById('bookIdInputContainer');
-
-    if (type === '書籍') {
-        imageContainer.style.display = 'block';
-        isbnContainer.style.display = 'block';
-        if (bookIdContainer) bookIdContainer.style.display = 'block';
-    } else {
-        imageContainer.style.display = 'none';
-        isbnContainer.style.display = 'none';
-        if (bookIdContainer) bookIdContainer.style.display = 'none';
-    }
-}
-
-let currentImageBase64 = null;
-function handleImageSelect(event) {
-    const file = event.target.files[0];
-    if (file) {
-        // 2MB Limit check?
-        if (file.size > 2 * 1024 * 1024) {
-            alert("画像サイズが大きすぎます(2MB以下推奨)");
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            currentImageBase64 = e.target.result;
-            document.getElementById('imagePreview').innerHTML = `<img src="${currentImageBase64}">`;
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
-/**
- * API Abstraction (GAS vs Mock)
- */
-class API {
-    static getInitialData() {
-        return {
-            inventory: [
-                {
-                    id: '101', status: '有効', loc_code: 'A-中-1', area: 'A', shelf: '中', column: '1',
-                    name: 'OKトップコート＋', qty: 500, date_in: '2025-01-10', type: '用紙', size: '菊判/93.5kg',
-                    slip_no: 'SL-001', client: '自社', memo: 'サンプル'
-                },
-                {
-                    id: '102', status: '有効', loc_code: 'B-上-3', area: 'B', shelf: '上', column: '3',
-                    name: 'Python実践入門', qty: 12, date_in: '2024-11-05', type: '書籍', size: 'A5',
-                    slip_no: '-', client: '-', isbn: '978-4-1234-5678-9', memo: ''
                 }
-            ],
-            logs: [],
-            disabledShelves: []
-        };
-    }
+            }
+        }
 
-    static async getData() {
-        if (CONFIG.USE_REAL_API && CONFIG.GAS_WEB_APP_URL !== "YOUR_GAS_DEPLOYMENT_URL") {
-            try {
-                // GASから在庫一覧を取得
-                const res = await fetch(`${CONFIG.GAS_WEB_APP_URL}?action=getData`, {
-                    method: 'GET',
-                    redirect: 'follow' // GASのクロスドメインリダイレクトに必須
-                });
-                const json = await res.json();
-                
-                // Python側の棚無効化設定は維持（必要な場合）
+        function handleTypeChange() {
+            const type = document.getElementById('regType').value;
+
+            // Toggle Paper Selection
+            const paperContainer = document.getElementById('paperSelectContainer');
+            if (type === '用紙') {
+                paperContainer.style.display = 'block';
+                if (document.getElementById('paperNameSelect').options.length <= 1) initPaperSelect();
+            } else {
+                paperContainer.style.display = 'none';
+                // Clear if hidden? Maybe not, to allow undo.
+            }
+
+            // Toggle Image Upload (Books) & ISBN & BookID
+            const imageContainer = document.getElementById('imageUploadContainer');
+            const isbnContainer = document.getElementById('isbnInputContainer');
+            const bookIdContainer = document.getElementById('bookIdInputContainer');
+
+            if (type === '書籍') {
+                imageContainer.style.display = 'block';
+                isbnContainer.style.display = 'block';
+                if (bookIdContainer) bookIdContainer.style.display = 'block';
+            } else {
+                imageContainer.style.display = 'none';
+                isbnContainer.style.display = 'none';
+                if (bookIdContainer) bookIdContainer.style.display = 'none';
+            }
+        }
+
+        let currentImageBase64 = null;
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // 2MB Limit check?
+                if (file.size > 2 * 1024 * 1024) {
+                    alert("画像サイズが大きすぎます(2MB以下推奨)");
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    currentImageBase64 = e.target.result;
+                    document.getElementById('imagePreview').innerHTML = `<img src="${currentImageBase64}">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        /**
+         * API Abstraction (GAS vs Mock)
+         */
+        class API {
+            static getInitialData() {
+                return {
+                    inventory: [
+                        {
+                            id: '101', status: '有効', loc_code: 'A-中-1', area: 'A', shelf: '中', column: '1',
+                            name: 'OKトップコート＋', qty: 500, date_in: '2025-01-10', type: '用紙', size: '菊判/93.5kg',
+                            slip_no: 'SL-001', client: '自社', memo: 'サンプル'
+                        },
+                        {
+                            id: '102', status: '有効', loc_code: 'B-上-3', area: 'B', shelf: '上', column: '3',
+                            name: 'Python実践入門', qty: 12, date_in: '2024-11-05', type: '書籍', size: 'A5',
+                            slip_no: '-', client: '-', isbn: '978-4-1234-5678-9', memo: ''
+                        }
+                    ],
+                    logs: [],
+                    disabledShelves: []
+                };
+            }
+
+            static async getData() {
+                if (CONFIG.USE_REAL_API && CONFIG.GAS_WEB_APP_URL !== "YOUR_GAS_DEPLOYMENT_URL") {
+                    try {
+                        // GASから在庫一覧を取得
+                        const res = await fetch(`${CONFIG.GAS_WEB_APP_URL}?action=getData`, {
+                            method: 'GET',
+                            redirect: 'follow' // GASのクロスドメインリダイレクトに必須
+                        });
+                        const json = await res.json();
+
+                        // Python側の棚無効化設定は維持（必要な場合）
+                        let disabled = [];
+                        try {
+                            const shelfRes = await fetch("/api/shelf_state");
+                            const list = await shelfRes.json();
+                            disabled = list.filter(x => x.status === "disabled").map(x => x.shelf_id);
+                        } catch (e) { }
+
+                        if (json.status === 'success') {
+                            json.data.disabled = disabled;
+                        }
+                        return json;
+                    } catch (err) {
+                        console.error("GAS API Error:", err);
+                        alert("GAS APIへの接続に失敗しました。URLを確認してください。");
+                        return { status: 'error' };
+                    }
+                }
+
+                await new Promise(r => setTimeout(r, 200)); // 少し短縮（任意）
+
+                // inventory は当面 localStorage のまま（後でAPI化）
+                let db = JSON.parse(localStorage.getItem('mock_db'));
+                if (!db) {
+                    db = this.getInitialData();
+                    localStorage.setItem('mock_db', JSON.stringify(db));
+                }
+
+                // ★ disabled はサーバーから取得
                 let disabled = [];
                 try {
-                    const shelfRes = await fetch("/api/shelf_state");
-                    const list = await shelfRes.json();
+                    const res = await fetch("/api/shelf_state");
+                    const list = await res.json();
                     disabled = list.filter(x => x.status === "disabled").map(x => x.shelf_id);
-                } catch(e) {}
-                
-                if (json.status === 'success') {
-                    json.data.disabled = disabled;
+                } catch (e) {
+                    console.warn("disabledShelves API failed, fallback to local:", e);
+                    disabled = db.disabledShelves || [];
                 }
-                return json;
-            } catch (err) {
-                console.error("GAS API Error:", err);
-                alert("GAS APIへの接続に失敗しました。URLを確認してください。");
-                return { status: 'error' };
+
+                return { status: 'success', data: { inventory: db.inventory, disabled } };
+            }
+
+            static async getLogs() {
+                let db = JSON.parse(localStorage.getItem('mock_db')) || this.getInitialData();
+                return db.logs;
+            }
+
+            static async post(action, payload) {
+                if (CONFIG.USE_REAL_API && CONFIG.GAS_API_URL !== "YOUR_GAS_DEPLOYMENT_URL") {
+                    try {
+                        // POST時はGASが text/plain として受け取るようなCORS工夫が必要な場合があります
+                        const res = await fetch(CONFIG.GAS_API_URL, {
+                            method: 'POST',
+                            body: JSON.stringify({ action: action, payload: payload })
+                        });
+                        return await res.json();
+                    } catch (err) {
+                        console.error("GAS Post Error:", err);
+                        alert("データの送信に失敗しました。GASのURL等を確認してください。");
+                        return { status: 'error' };
+                    }
+                }
+
+                await new Promise(r => setTimeout(r, 600));
+                let db = JSON.parse(localStorage.getItem('mock_db')) || this.getInitialData();
+                const now = new Date().toLocaleString('ja-JP');
+
+                if (action === 'register') {
+                    payload.id = Date.now().toString();
+                    payload.status = '有効';
+                    payload.loc_code = `${payload.area}-${payload.shelf}-${payload.column}`;
+                    if (payload.image_data) {
+                        payload.image_url = payload.image_data;
+                        delete payload.image_data;
+                    }
+                    db.inventory.push(payload);
+                    db.logs.push({ date: now, action: '入庫', target_name: payload.name, details: `新規: ${payload.qty}`, user: 'User' });
+
+                } else if (action === 'ship') {
+                    const idx = db.inventory.findIndex(i => i.id === payload.id);
+                    if (idx > -1) {
+                        const item = db.inventory[idx];
+                        // Ensure qty is treated as number
+                        item.qty = parseInt(item.qty);
+                        item.qty -= payload.qty_diff;
+                        if (item.qty <= 0) item.status = '空き';
+                        db.logs.push({ date: now, action: '出庫', target_name: item.name, details: `出庫: -${payload.qty_diff} (残 ${item.qty}) / ${payload.memo}`, user: payload.user || 'User' });
+                    }
+                } else if (action === 'edit') {
+                    const idx = db.inventory.findIndex(i => i.id === payload.id);
+                    if (idx > -1) {
+                        const item = db.inventory[idx];
+                        item.status = payload.status;
+                        item.name = payload.name;
+                        item.qty = parseInt(payload.qty); // Ensure new qty is int
+
+                        // Update location if provided
+                        if (payload.loc_code) {
+                            item.area = payload.area;
+                            item.shelf = payload.shelf;
+                            item.column = payload.column;
+                            item.loc_code = payload.loc_code;
+                        }
+
+                        db.logs.push({ date: now, action: '編集', target_name: item.name, details: `編集: ${payload.status}, Loc:${item.loc_code}, Qty:${payload.qty}`, user: 'User' });
+                    }
+                } else if (action === 'delete') {
+                    const idx = db.inventory.findIndex(i => i.id === payload.id);
+                    if (idx > -1) {
+                        const name = db.inventory[idx].name;
+                        db.inventory.splice(idx, 1);
+                        db.logs.push({ date: now, action: '削除', target_name: name, details: '削除されました', user: 'User' });
+                    }
+                } else if (action === 'update_disabled') {
+                    db.disabledShelves = payload.disabled;
+                } else if (action === 'bulk_upsert') {
+                    const items = payload.items;
+                    let count = 0;
+                    items.forEach(newItem => {
+                        // If ID is provided, try to find
+                        let idx = -1;
+                        if (newItem.id) {
+                            idx = db.inventory.findIndex(i => i.id === newItem.id);
+                        }
+
+                        if (idx > -1) {
+                            // Update existing
+                            newItem.qty = parseInt(newItem.qty); // ensure int
+                            db.inventory[idx] = { ...db.inventory[idx], ...newItem };
+                        } else {
+                            // Insert new
+                            if (!newItem.id) newItem.id = Date.now().toString() + Math.floor(Math.random() * 1000);
+                            newItem.qty = parseInt(newItem.qty);
+                            // Ensure loc_code
+                            if (!newItem.loc_code) newItem.loc_code = `${newItem.area}-${newItem.shelf}-${newItem.column}`;
+                            // Status default
+                            if (!newItem.status) newItem.status = '有効';
+
+                            db.inventory.push(newItem);
+                        }
+                        count++;
+                    });
+                    db.logs.push({ date: now, action: '一括取込', target_name: `${count}件`, details: 'CSVインポート', user: 'User' });
+
+                } else if (action === 'bulk_image_update') {
+                    const updates = payload.updates;
+                    updates.forEach(upd => {
+                        const item = db.inventory.find(i => i.id === upd.id);
+                        if (item) {
+                            item.image_url = upd.image_data;
+                        }
+                    });
+                    db.logs.push({ date: now, action: '画像一括', target_name: `${updates.length}件`, details: '画像マッチング更新', user: 'User' });
+                }
+
+                localStorage.setItem('mock_db', JSON.stringify(db));
+                return { status: 'success' };
             }
         }
 
-        await new Promise(r => setTimeout(r, 200)); // 少し短縮（任意）
-
-        // inventory は当面 localStorage のまま（後でAPI化）
-        let db = JSON.parse(localStorage.getItem('mock_db'));
-        if (!db) {
-            db = this.getInitialData();
-            localStorage.setItem('mock_db', JSON.stringify(db));
+        /**
+         * Map Modal
+         */
+        function openMapModal() {
+            document.getElementById('mapViewModal').classList.add('open');
         }
 
-        // ★ disabled はサーバーから取得
-        let disabled = [];
-        try {
-            const res = await fetch("/api/shelf_state");
-            const list = await res.json();
-            disabled = list.filter(x => x.status === "disabled").map(x => x.shelf_id);
-        } catch (e) {
-            console.warn("disabledShelves API failed, fallback to local:", e);
-            disabled = db.disabledShelves || [];
-        }
-
-        return { status: 'success', data: { inventory: db.inventory, disabled } };
-    }
-
-    static async getLogs() {
-        let db = JSON.parse(localStorage.getItem('mock_db')) || this.getInitialData();
-        return db.logs;
-    }
-
-    static async post(action, payload) {
-        if (CONFIG.USE_REAL_API && CONFIG.GAS_API_URL !== "YOUR_GAS_DEPLOYMENT_URL") {
-            try {
-                // POST時はGASが text/plain として受け取るようなCORS工夫が必要な場合があります
-                const res = await fetch(CONFIG.GAS_API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: action, payload: payload })
-                });
-                return await res.json();
-            } catch (err) {
-                console.error("GAS Post Error:", err);
-                alert("データの送信に失敗しました。GASのURL等を確認してください。");
-                return { status: 'error' };
-            }
-        }
-
-        await new Promise(r => setTimeout(r, 600));
-        let db = JSON.parse(localStorage.getItem('mock_db')) || this.getInitialData();
-        const now = new Date().toLocaleString('ja-JP');
-
-        if (action === 'register') {
-            payload.id = Date.now().toString();
-            payload.status = '有効';
-            payload.loc_code = `${payload.area}-${payload.shelf}-${payload.column}`;
-            if (payload.image_data) {
-                payload.image_url = payload.image_data;
-                delete payload.image_data;
-            }
-            db.inventory.push(payload);
-            db.logs.push({ date: now, action: '入庫', target_name: payload.name, details: `新規: ${payload.qty}`, user: 'User' });
-
-        } else if (action === 'ship') {
-            const idx = db.inventory.findIndex(i => i.id === payload.id);
-            if (idx > -1) {
-                const item = db.inventory[idx];
-                // Ensure qty is treated as number
-                item.qty = parseInt(item.qty);
-                item.qty -= payload.qty_diff;
-                if (item.qty <= 0) item.status = '空き';
-                db.logs.push({ date: now, action: '出庫', target_name: item.name, details: `出庫: -${payload.qty_diff} (残 ${item.qty}) / ${payload.memo}`, user: payload.user || 'User' });
-            }
-        } else if (action === 'edit') {
-            const idx = db.inventory.findIndex(i => i.id === payload.id);
-            if (idx > -1) {
-                const item = db.inventory[idx];
-                item.status = payload.status;
-                item.name = payload.name;
-                item.qty = parseInt(payload.qty); // Ensure new qty is int
-
-                // Update location if provided
-                if (payload.loc_code) {
-                    item.area = payload.area;
-                    item.shelf = payload.shelf;
-                    item.column = payload.column;
-                    item.loc_code = payload.loc_code;
-                }
-
-                db.logs.push({ date: now, action: '編集', target_name: item.name, details: `編集: ${payload.status}, Loc:${item.loc_code}, Qty:${payload.qty}`, user: 'User' });
-            }
-        } else if (action === 'delete') {
-            const idx = db.inventory.findIndex(i => i.id === payload.id);
-            if (idx > -1) {
-                const name = db.inventory[idx].name;
-                db.inventory.splice(idx, 1);
-                db.logs.push({ date: now, action: '削除', target_name: name, details: '削除されました', user: 'User' });
-            }
-        } else if (action === 'update_disabled') {
-            db.disabledShelves = payload.disabled;
-        } else if (action === 'bulk_upsert') {
-            const items = payload.items;
-            let count = 0;
-            items.forEach(newItem => {
-                // If ID is provided, try to find
-                let idx = -1;
-                if (newItem.id) {
-                    idx = db.inventory.findIndex(i => i.id === newItem.id);
-                }
-
-                if (idx > -1) {
-                    // Update existing
-                    newItem.qty = parseInt(newItem.qty); // ensure int
-                    db.inventory[idx] = { ...db.inventory[idx], ...newItem };
-                } else {
-                    // Insert new
-                    if (!newItem.id) newItem.id = Date.now().toString() + Math.floor(Math.random() * 1000);
-                    newItem.qty = parseInt(newItem.qty);
-                    // Ensure loc_code
-                    if (!newItem.loc_code) newItem.loc_code = `${newItem.area}-${newItem.shelf}-${newItem.column}`;
-                    // Status default
-                    if (!newItem.status) newItem.status = '有効';
-
-                    db.inventory.push(newItem);
-                }
-                count++;
-            });
-            db.logs.push({ date: now, action: '一括取込', target_name: `${count}件`, details: 'CSVインポート', user: 'User' });
-
-        } else if (action === 'bulk_image_update') {
-            const updates = payload.updates;
-            updates.forEach(upd => {
-                const item = db.inventory.find(i => i.id === upd.id);
-                if (item) {
-                    item.image_url = upd.image_data;
-                }
-            });
-            db.logs.push({ date: now, action: '画像一括', target_name: `${updates.length}件`, details: '画像マッチング更新', user: 'User' });
-        }
-
-        localStorage.setItem('mock_db', JSON.stringify(db));
-        return { status: 'success' };
-    }
-}
-
-/**
- * Map Modal
- */
-function openMapModal() {
-    document.getElementById('mapViewModal').classList.add('open');
-}
-
-</script>
+    </script>
 </head>
 
 <body>
@@ -2273,334 +2273,385 @@ function openMapModal() {
                     </div>
                     <div class="map-image-container" style="padding: 1rem 0;">
 
-<svg viewBox="0 0 375 500" width="100%" height="auto" style="display:block; margin: 0 auto; max-width: 100%; border-radius: 16px; background: #f8fafc;">
-    <defs>
-        <filter id="mapShadow" x="-10%" y="-10%" width="120%" height="120%">
-            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.1"/>
-        </filter>
-        <style>
-            .map-shelf { stroke-width: 2; transition: all 0.2s ease; cursor: pointer; filter: url(#mapShadow); rx: 12px; ry: 12px; }
-            .map-shelf:hover { stroke-width: 4; opacity: 0.9; }
-            .shelf-a { fill: var(--area-a, #3B82F6); stroke: #1D4ED8; }
-            .shelf-b { fill: var(--area-b, #10B981); stroke: #047857; }
-            .shelf-c { fill: var(--area-c, #EAB308); stroke: #B45309; }
-            .shelf-d { fill: var(--area-d, #F97316); stroke: #C2410C; }
-            .shelf-e { fill: var(--area-e, #C084FC); stroke: #7E22CE; }
-            .shelf-f { fill: var(--area-f, #06B6D4); stroke: #0E7490; }
-            .shelf-g { fill: var(--area-g, #EC4899); stroke: #BE185D; }
-            .shelf-text { font-family: sans-serif; font-weight: bold; font-size: 26px; fill: #ffffff; pointer-events: none; }
-            /* a tag handles clicks directly in SVG safely */
-            a.shelf-link { outline: none; -webkit-tap-highlight-color: transparent; }
-        </style>
-    </defs>
-    
-    <!-- Shelf A -->
-    <a href="javascript:void(0)" onclick="jumpToArea('A')" class="shelf-link">
-        <rect class="map-shelf shelf-a" x="20" y="30" width="100" height="140" />
-        <text class="shelf-text" x="70" y="110" text-anchor="middle">A</text>
-    </a>
+                        <svg viewBox="0 0 375 500" width="100%" height="auto"
+                            style="display:block; margin: 0 auto; max-width: 100%; border-radius: 16px; background: #f8fafc;">
+                            <defs>
+                                <filter id="mapShadow" x="-10%" y="-10%" width="120%" height="120%">
+                                    <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000"
+                                        flood-opacity="0.1" />
+                                </filter>
+                                <style>
+                                    .map-shelf {
+                                        stroke-width: 2;
+                                        transition: all 0.2s ease;
+                                        cursor: pointer;
+                                        filter: url(#mapShadow);
+                                        rx: 12px;
+                                        ry: 12px;
+                                    }
 
-    <!-- Shelf B -->
-    <a href="javascript:void(0)" onclick="jumpToArea('B')" class="shelf-link">
-        <rect class="map-shelf shelf-b" x="140" y="30" width="215" height="60" />
-        <text class="shelf-text" x="247.5" y="68" text-anchor="middle">B</text>
-    </a>
+                                    .map-shelf:hover {
+                                        stroke-width: 4;
+                                        opacity: 0.9;
+                                    }
 
-    <!-- Shelf C -->
-    <a href="javascript:void(0)" onclick="jumpToArea('C')" class="shelf-link">
-        <rect class="map-shelf shelf-c" x="140" y="110" width="215" height="60" />
-        <text class="shelf-text" x="247.5" y="148" text-anchor="middle">C</text>
-    </a>
+                                    .shelf-a {
+                                        fill: var(--area-a, #3B82F6);
+                                        stroke: #1D4ED8;
+                                    }
 
-    <!-- Shelf D -->
-    <a href="javascript:void(0)" onclick="jumpToArea('D')" class="shelf-link">
-        <rect class="map-shelf shelf-d" x="20" y="190" width="165" height="60" />
-        <text class="shelf-text" x="102.5" y="228" text-anchor="middle">D</text>
-    </a>
+                                    .shelf-b {
+                                        fill: var(--area-b, #10B981);
+                                        stroke: #047857;
+                                    }
 
-    <!-- Shelf E -->
-    <a href="javascript:void(0)" onclick="jumpToArea('E')" class="shelf-link">
-        <rect class="map-shelf shelf-e" x="205" y="190" width="150" height="60" />
-        <text class="shelf-text" x="280" y="228" text-anchor="middle">E</text>
-    </a>
+                                    .shelf-c {
+                                        fill: var(--area-c, #EAB308);
+                                        stroke: #B45309;
+                                    }
 
-    <!-- Shelf F -->
-    <a href="javascript:void(0)" onclick="jumpToArea('F')" class="shelf-link">
-        <rect class="map-shelf shelf-f" x="20" y="270" width="230" height="60" />
-        <text class="shelf-text" x="135" y="308" text-anchor="middle">F</text>
-    </a>
+                                    .shelf-d {
+                                        fill: var(--area-d, #F97316);
+                                        stroke: #C2410C;
+                                    }
 
-    <!-- Shelf G -->
-    <a href="javascript:void(0)" onclick="jumpToArea('G')" class="shelf-link">
-        <rect class="map-shelf shelf-g" x="270" y="270" width="85" height="200" />
-        <text class="shelf-text" x="312.5" y="378" text-anchor="middle">G</text>
-    </a>
-</svg>
+                                    .shelf-e {
+                                        fill: var(--area-e, #C084FC);
+                                        stroke: #7E22CE;
+                                    }
 
-</div>
+                                    .shelf-f {
+                                        fill: var(--area-f, #06B6D4);
+                                        stroke: #0E7490;
+                                    }
+
+                                    .shelf-g {
+                                        fill: var(--area-g, #EC4899);
+                                        stroke: #BE185D;
+                                    }
+
+                                    .shelf-text {
+                                        font-family: sans-serif;
+                                        font-weight: bold;
+                                        font-size: 26px;
+                                        fill: #ffffff;
+                                        pointer-events: none;
+                                    }
+
+                                    /* a tag handles clicks directly in SVG safely */
+                                    a.shelf-link {
+                                        outline: none;
+                                        -webkit-tap-highlight-color: transparent;
+                                    }
+                                </style>
+                            </defs>
+
+                            <!-- Shelf A -->
+                            <a href="javascript:void(0)" onclick="jumpToArea('A')" class="shelf-link">
+                                <rect class="map-shelf shelf-a" x="20" y="30" width="100" height="140" />
+                                <text class="shelf-text" x="70" y="110" text-anchor="middle">A</text>
+                            </a>
+
+                            <!-- Shelf B -->
+                            <a href="javascript:void(0)" onclick="jumpToArea('B')" class="shelf-link">
+                                <rect class="map-shelf shelf-b" x="140" y="30" width="215" height="60" />
+                                <text class="shelf-text" x="247.5" y="68" text-anchor="middle">B</text>
+                            </a>
+
+                            <!-- Shelf C -->
+                            <a href="javascript:void(0)" onclick="jumpToArea('C')" class="shelf-link">
+                                <rect class="map-shelf shelf-c" x="140" y="110" width="215" height="60" />
+                                <text class="shelf-text" x="247.5" y="148" text-anchor="middle">C</text>
+                            </a>
+
+                            <!-- Shelf D -->
+                            <a href="javascript:void(0)" onclick="jumpToArea('D')" class="shelf-link">
+                                <rect class="map-shelf shelf-d" x="20" y="190" width="165" height="60" />
+                                <text class="shelf-text" x="102.5" y="228" text-anchor="middle">D</text>
+                            </a>
+
+                            <!-- Shelf E -->
+                            <a href="javascript:void(0)" onclick="jumpToArea('E')" class="shelf-link">
+                                <rect class="map-shelf shelf-e" x="205" y="190" width="150" height="60" />
+                                <text class="shelf-text" x="280" y="228" text-anchor="middle">E</text>
+                            </a>
+
+                            <!-- Shelf F -->
+                            <a href="javascript:void(0)" onclick="jumpToArea('F')" class="shelf-link">
+                                <rect class="map-shelf shelf-f" x="20" y="270" width="230" height="60" />
+                                <text class="shelf-text" x="135" y="308" text-anchor="middle">F</text>
+                            </a>
+
+                            <!-- Shelf G -->
+                            <a href="javascript:void(0)" onclick="jumpToArea('G')" class="shelf-link">
+                                <rect class="map-shelf shelf-g" x="270" y="270" width="85" height="200" />
+                                <text class="shelf-text" x="312.5" y="378" text-anchor="middle">G</text>
+                            </a>
+                        </svg>
+
                     </div>
                 </div>
+    </div>
 
-                <div class="search-panel">
-                    <div class="input-group search-box">
-                        <ion-icon name="search"></ion-icon>
-                        <input type="text" id="searchInput" placeholder="名称、伝票No、ID、ISBNで検索..." onkeyup="filterItems()">
-                        <ion-icon name="camera-outline" class="camera-icon" onclick="startScanner()"
-                            title="バーコードスキャン"></ion-icon>
-                    </div>
-                    <div class="filters">
-                        <div class="legend-text"
-                            style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; margin-right: auto; padding-left: 1rem;">
-                            <span class="age-dot age-new"></span>入荷～半年
-                            <span class="age-dot age-mid"></span>半年～2年
-                            <span class="age-dot age-old"></span>2年以上
+    <div class="search-panel">
+        <div class="input-group search-box">
+            <ion-icon name="search"></ion-icon>
+            <input type="text" id="searchInput" placeholder="名称、伝票No、ID、ISBNで検索..." onkeyup="filterItems()">
+            <ion-icon name="camera-outline" class="camera-icon" onclick="startScanner()" title="バーコードスキャン"></ion-icon>
+        </div>
+        <div class="filters">
+            <div class="legend-text"
+                style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; margin-right: auto; padding-left: 1rem;">
+                <span class="age-dot age-new"></span>入荷～半年
+                <span class="age-dot age-mid"></span>半年～2年
+                <span class="age-dot age-old"></span>2年以上
+            </div>
+            <select id="filterArea" onchange="filterItems()">
+                <option value="">全エリア</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+                <option value="G">G</option>
+            </select>
+            <select id="filterStatus" onchange="filterItems()">
+                <option value="有効">在庫あり</option>
+                <option value="空き">空き</option>
+                <option value="all">全て</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table id="inventoryTable">
+            <thead>
+                <tr>
+                    <th>ステータス</th>
+                    <th>場所</th>
+                    <th>名称 / 用紙名</th>
+                    <th>数量</th>
+                    <th>入荷日 (経過)</th>
+                    <th>種別</th>
+                    <th>入出庫 / 編集</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Javascript populates this -->
+            </tbody>
+        </table>
+        <div id="loading" class="loading-spinner">
+            <div class="spinner"></div> Loading data...
+        </div>
+        <div id="emptyState" class="empty-state" style="display:none">
+            <ion-icon name="file-tray-outline"></ion-icon>
+            <p>データが見つかりません</p>
+        </div>
+    </div>
+    </section>
+
+    <!-- VIEW: REGISTER (Add New) -->
+    <section id="view-register" class="view">
+        <header class="top-bar">
+            <h1>新規登録 <span id="loc-display-header" class="badge-loc"></span></h1>
+        </header>
+
+        <div class="form-card">
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-grid">
+                    <!-- Location Section -->
+                    <div class="form-group full-width">
+                        <label>置き場 (自動入力)</label>
+                        <div class="loc-inputs">
+                            <select id="regArea" required onchange="updateLocOptions()">
+                                <option value="" disabled selected>エリア</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                                <option value="F">F</option>
+                                <option value="G">G</option>
+                            </select>
+                            <select id="regShelf" required>
+                                <option value="" disabled selected>段</option>
+                                <option value="天">天</option>
+                                <option value="上">上</option>
+                                <option value="中">中</option>
+                                <option value="下">下</option>
+                                <option value="底">底</option>
+                            </select>
+                            <select id="regCol" required>
+                                <option value="" disabled selected>列</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
                         </div>
-                        <select id="filterArea" onchange="filterItems()">
-                            <option value="">全エリア</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                            <option value="E">E</option>
-                            <option value="F">F</option>
-                            <option value="G">G</option>
-                        </select>
-                        <select id="filterStatus" onchange="filterItems()">
-                            <option value="有効">在庫あり</option>
-                            <option value="空き">空き</option>
-                            <option value="all">全て</option>
-                        </select>
                     </div>
-                </div>
 
-                <div class="table-container">
-                    <table id="inventoryTable">
-                        <thead>
-                            <tr>
-                                <th>ステータス</th>
-                                <th>場所</th>
-                                <th>名称 / 用紙名</th>
-                                <th>数量</th>
-                                <th>入荷日 (経過)</th>
-                                <th>種別</th>
-                                <th>入出庫 / 編集</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Javascript populates this -->
-                        </tbody>
-                    </table>
-                    <div id="loading" class="loading-spinner">
-                        <div class="spinner"></div> Loading data...
-                    </div>
-                    <div id="emptyState" class="empty-state" style="display:none">
-                        <ion-icon name="file-tray-outline"></ion-icon>
-                        <p>データが見つかりません</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- VIEW: REGISTER (Add New) -->
-            <section id="view-register" class="view">
-                <header class="top-bar">
-                    <h1>新規登録 <span id="loc-display-header" class="badge-loc"></span></h1>
-                </header>
-
-                <div class="form-card">
-                    <form id="registerForm" onsubmit="handleRegister(event)">
+                    <!-- Paper Selection (Hidden by default) -->
+                    <div id="paperSelectContainer" class="full-width paper-selector" style="display:none">
+                        <h4>用紙マスター選択</h4>
                         <div class="form-grid">
-                            <!-- Location Section -->
-                            <div class="form-group full-width">
-                                <label>置き場 (自動入力)</label>
-                                <div class="loc-inputs">
-                                    <select id="regArea" required onchange="updateLocOptions()">
-                                        <option value="" disabled selected>エリア</option>
-                                        <option value="A">A</option>
-                                        <option value="B">B</option>
-                                        <option value="C">C</option>
-                                        <option value="D">D</option>
-                                        <option value="E">E</option>
-                                        <option value="F">F</option>
-                                        <option value="G">G</option>
+                            <div class="form-group">
+                                <label>品名</label>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <select id="paperNameSelect" onchange="updatePaperSpecs()" style="flex:1">
+                                        <option value="">選択してください</option>
                                     </select>
-                                    <select id="regShelf" required>
-                                        <option value="" disabled selected>段</option>
-                                        <option value="天">天</option>
-                                        <option value="上">上</option>
-                                        <option value="中">中</option>
-                                        <option value="下">下</option>
-                                        <option value="底">底</option>
-                                    </select>
-                                    <select id="regCol" required>
-                                        <option value="" disabled selected>列</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
+                                    <button type="button" class="btn-sm btn-secondary"
+                                        onclick="addNewPaperMaster()">+</button>
                                 </div>
                             </div>
-
-                            <!-- Paper Selection (Hidden by default) -->
-                            <div id="paperSelectContainer" class="full-width paper-selector" style="display:none">
-                                <h4>用紙マスター選択</h4>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label>品名</label>
-                                        <div style="display: flex; gap: 0.5rem;">
-                                            <select id="paperNameSelect" onchange="updatePaperSpecs()" style="flex:1">
-                                                <option value="">選択してください</option>
-                                            </select>
-                                            <button type="button" class="btn-sm btn-secondary"
-                                                onclick="addNewPaperMaster()">+</button>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>規格 (サイズ/連量)</label>
-                                        <select id="paperSpecSelect" onchange="fillPaperData()">
-                                            <option value="">-</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Basic Info -->
                             <div class="form-group">
-                                <label>名称 (用紙/書籍名) <span class="required">*</span></label>
-                                <input type="text" id="regName" required placeholder="例: 上質紙 90kg">
-                            </div>
-                            <div class="form-group">
-                                <label>種別</label>
-                                <select id="regType" onchange="handleTypeChange()">
-                                    <option value="用紙">用紙</option>
-                                    <option value="書籍">書籍</option>
-                                    <option value="受託">受託</option>
-                                    <option value="その他">その他</option>
+                                <label>規格 (サイズ/連量)</label>
+                                <select id="paperSpecSelect" onchange="fillPaperData()">
+                                    <option value="">-</option>
                                 </select>
                             </div>
-                            <!-- ISBN Input (Books) -->
-                            <div class="form-group" id="isbnInputContainer" style="display:none;">
-                                <label>ISBN</label>
-                                <input type="text" id="regISBN" placeholder="978-...">
-                            </div>
-                            <div class="form-group">
-                                <label>数量 <span class="required">*</span></label>
-                                <input type="number" id="regQty" required min="1" placeholder="0">
-                            </div>
-                            <div class="form-group">
-                                <label>サイズ</label>
-                                <input type="text" id="regSize" placeholder="例: k判">
-                            </div>
-
-                            <!-- Additional Info -->
-                            <div class="form-group">
-                                <label>入荷日</label>
-                                <input type="date" id="regDate" required>
-                            </div>
-                            <div class="form-group">
-                                <label>伝票No</label>
-                                <input type="text" id="regSlip">
-                            </div>
-                            <div class="form-group">
-                                <label>クライアント</label>
-                                <input type="text" id="regClient">
-                            </div>
-                            <div class="form-group full-width">
-                                <label>備考</label>
-                                <textarea id="regMemo" rows="2"></textarea>
-                            </div>
-
-                            <!-- Image Upload (Visible for Books) -->
-                            <div id="imageUploadContainer" class="form-group full-width" style="display:none">
-                                <label>表紙画像 (書籍のみ)</label>
-                                <div class="image-upload-area" onclick="document.getElementById('regShowFile').click()">
-                                    <div class="image-preview" id="imagePreview">
-                                        <span><ion-icon name="image-outline"></ion-icon> クリックして画像を選択</span>
-                                    </div>
-                                    <input type="file" id="regShowFile" class="hidden-file-input"
-                                        accept="image/jpeg,image/png" capture="camera" onchange="handleImageSelect(event)">
-                                </div>
-                            </div>
                         </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn-text" onclick="router('dashboard')">キャンセル</button>
-                            <button type="submit" class="btn-primary">登録する</button>
+                    </div>
+
+                    <!-- Basic Info -->
+                    <div class="form-group">
+                        <label>名称 (用紙/書籍名) <span class="required">*</span></label>
+                        <input type="text" id="regName" required placeholder="例: 上質紙 90kg">
+                    </div>
+                    <div class="form-group">
+                        <label>種別</label>
+                        <select id="regType" onchange="handleTypeChange()">
+                            <option value="用紙">用紙</option>
+                            <option value="書籍">書籍</option>
+                            <option value="受託">受託</option>
+                            <option value="その他">その他</option>
+                        </select>
+                    </div>
+                    <!-- ISBN Input (Books) -->
+                    <div class="form-group" id="isbnInputContainer" style="display:none;">
+                        <label>ISBN</label>
+                        <input type="text" id="regISBN" placeholder="978-...">
+                    </div>
+                    <div class="form-group">
+                        <label>数量 <span class="required">*</span></label>
+                        <input type="number" id="regQty" required min="1" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>サイズ</label>
+                        <input type="text" id="regSize" placeholder="例: k判">
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div class="form-group">
+                        <label>入荷日</label>
+                        <input type="date" id="regDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>伝票No</label>
+                        <input type="text" id="regSlip">
+                    </div>
+                    <div class="form-group">
+                        <label>クライアント</label>
+                        <input type="text" id="regClient">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>備考</label>
+                        <textarea id="regMemo" rows="2"></textarea>
+                    </div>
+
+                    <!-- Image Upload (Visible for Books) -->
+                    <div id="imageUploadContainer" class="form-group full-width" style="display:none">
+                        <label>表紙画像 (書籍のみ)</label>
+                        <div class="image-upload-area" onclick="document.getElementById('regShowFile').click()">
+                            <div class="image-preview" id="imagePreview">
+                                <span><ion-icon name="image-outline"></ion-icon> クリックして画像を選択</span>
+                            </div>
+                            <input type="file" id="regShowFile" class="hidden-file-input" accept="image/jpeg,image/png"
+                                capture="camera" onchange="handleImageSelect(event)">
                         </div>
-                    </form>
-                </div>
-            </section>
-
-            <!-- VIEW: MAP -->
-            <section id="view-map" class="view">
-                <header class="top-bar">
-                    <h1>棚マップ <span id="mapAreaTitle"></span></h1>
-                    <div class="map-controls">
-                        <button class="chip active" data-area="A" onclick="setMapArea('A')">A</button>
-                        <button class="chip" data-area="B" onclick="setMapArea('B')">B</button>
-                        <button class="chip" data-area="C" onclick="setMapArea('C')">C</button>
-                        <button class="chip" data-area="D" onclick="setMapArea('D')">D</button>
-                        <button class="chip" data-area="E" onclick="setMapArea('E')">E</button>
-                        <button class="chip" data-area="F" onclick="setMapArea('F')">F</button>
-                        <button class="chip" data-area="G" onclick="setMapArea('G')">G</button>
-                    </div>
-                    <div class="map-toggles"
-                        style="margin-top: 0.5rem; text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
-                        <button class="btn-sm btn-secondary" onclick="toggleShelfStatus(true)">選択不可(グレー)にする</button>
-                        <button class="btn-sm btn-secondary" onclick="toggleShelfStatus(false)">使用可能にする(グレー解除)</button>
-                    </div>
-                </header>
-                <div class="map-container">
-                    <div id="shelfGrid" class="shelf-grid" data-active-area="A">
-                        <!-- Javascript populates -->
                     </div>
                 </div>
-            </section>
-
-            <!-- VIEW: LOGS -->
-            <section id="view-logs" class="view">
-                <header class="top-bar">
-                    <h1>操作ログ</h1>
-                    <button class="btn-secondary" onclick="renderLogs()"><ion-icon name="refresh"></ion-icon></button>
-                </header>
-                <div class="table-container">
-                    <table id="logsTable">
-                        <thead>
-                            <tr>
-                                <th>日時</th>
-                                <th>操作</th>
-                                <th>対象</th>
-                                <th>内容/数量</th>
-                                <th>担当</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Javascript populates -->
-                        </tbody>
-                    </table>
+                <div class="form-actions">
+                    <button type="button" class="btn-text" onclick="router('dashboard')">キャンセル</button>
+                    <button type="submit" class="btn-primary">登録する</button>
                 </div>
-            </section>
-        </main>
+            </form>
+        </div>
+    </section>
 
-        <!-- Mobile Bottom Nav -->
-        <nav class="bottom-nav">
-            <button class="nav-item active" onclick="router('dashboard')">
-                <ion-icon name="list"></ion-icon>
-                <span>一覧</span>
-            </button>
-            <button class="nav-item" onclick="router('register')">
-                <ion-icon name="add-circle"></ion-icon>
-                <span>登録</span>
-            </button>
-            <button class="nav-item" onclick="router('map')">
-                <ion-icon name="grid"></ion-icon>
-                <span>マップ</span>
-            </button>
-            <button class="nav-item" onclick="router('logs')">
-                <ion-icon name="time"></ion-icon>
-                <span>履歴</span>
-            </button>
-        </nav>
+    <!-- VIEW: MAP -->
+    <section id="view-map" class="view">
+        <header class="top-bar">
+            <h1>棚マップ <span id="mapAreaTitle"></span></h1>
+            <div class="map-controls">
+                <button class="chip active" data-area="A" onclick="setMapArea('A')">A</button>
+                <button class="chip" data-area="B" onclick="setMapArea('B')">B</button>
+                <button class="chip" data-area="C" onclick="setMapArea('C')">C</button>
+                <button class="chip" data-area="D" onclick="setMapArea('D')">D</button>
+                <button class="chip" data-area="E" onclick="setMapArea('E')">E</button>
+                <button class="chip" data-area="F" onclick="setMapArea('F')">F</button>
+                <button class="chip" data-area="G" onclick="setMapArea('G')">G</button>
+            </div>
+            <div class="map-toggles"
+                style="margin-top: 0.5rem; text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                <button class="btn-sm btn-secondary" onclick="toggleShelfStatus(true)">選択不可(グレー)にする</button>
+                <button class="btn-sm btn-secondary" onclick="toggleShelfStatus(false)">使用可能にする(グレー解除)</button>
+            </div>
+        </header>
+        <div class="map-container">
+            <div id="shelfGrid" class="shelf-grid" data-active-area="A">
+                <!-- Javascript populates -->
+            </div>
+        </div>
+    </section>
+
+    <!-- VIEW: LOGS -->
+    <section id="view-logs" class="view">
+        <header class="top-bar">
+            <h1>操作ログ</h1>
+            <button class="btn-secondary" onclick="renderLogs()"><ion-icon name="refresh"></ion-icon></button>
+        </header>
+        <div class="table-container">
+            <table id="logsTable">
+                <thead>
+                    <tr>
+                        <th>日時</th>
+                        <th>操作</th>
+                        <th>対象</th>
+                        <th>内容/数量</th>
+                        <th>担当</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Javascript populates -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+    </main>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="router('dashboard')">
+            <ion-icon name="list"></ion-icon>
+            <span>一覧</span>
+        </button>
+        <button class="nav-item" onclick="router('register')">
+            <ion-icon name="add-circle"></ion-icon>
+            <span>登録</span>
+        </button>
+        <button class="nav-item" onclick="router('map')">
+            <ion-icon name="grid"></ion-icon>
+            <span>マップ</span>
+        </button>
+        <button class="nav-item" onclick="router('logs')">
+            <ion-icon name="time"></ion-icon>
+            <span>履歴</span>
+        </button>
+    </nav>
     </div>
 
     <!-- Modals -->
@@ -2669,70 +2720,121 @@ function openMapModal() {
     <div id="mapViewModal" class="modal image-modal" onclick="closeModal('mapViewModal')">
         <div class="modal-content-image" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeModal('mapViewModal')"><ion-icon name="close"></ion-icon></button>
-            
-<svg viewBox="0 0 375 500" width="100%" height="auto" style="display:block; margin: 0 auto; max-width: 100%; border-radius: 16px; background: #f8fafc;">
-    <defs>
-        <filter id="mapShadow" x="-10%" y="-10%" width="120%" height="120%">
-            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.1"/>
-        </filter>
-        <style>
-            .map-shelf { stroke-width: 2; transition: all 0.2s ease; cursor: pointer; filter: url(#mapShadow); rx: 12px; ry: 12px; }
-            .map-shelf:hover { stroke-width: 4; opacity: 0.9; }
-            .shelf-a { fill: var(--area-a, #3B82F6); stroke: #1D4ED8; }
-            .shelf-b { fill: var(--area-b, #10B981); stroke: #047857; }
-            .shelf-c { fill: var(--area-c, #EAB308); stroke: #B45309; }
-            .shelf-d { fill: var(--area-d, #F97316); stroke: #C2410C; }
-            .shelf-e { fill: var(--area-e, #C084FC); stroke: #7E22CE; }
-            .shelf-f { fill: var(--area-f, #06B6D4); stroke: #0E7490; }
-            .shelf-g { fill: var(--area-g, #EC4899); stroke: #BE185D; }
-            .shelf-text { font-family: sans-serif; font-weight: bold; font-size: 26px; fill: #ffffff; pointer-events: none; }
-            /* a tag handles clicks directly in SVG safely */
-            a.shelf-link { outline: none; -webkit-tap-highlight-color: transparent; }
-        </style>
-    </defs>
-    
-    <!-- Shelf A -->
-    <a href="javascript:void(0)" onclick="jumpToArea('A')" class="shelf-link">
-        <rect class="map-shelf shelf-a" x="20" y="30" width="100" height="140" />
-        <text class="shelf-text" x="70" y="110" text-anchor="middle">A</text>
-    </a>
 
-    <!-- Shelf B -->
-    <a href="javascript:void(0)" onclick="jumpToArea('B')" class="shelf-link">
-        <rect class="map-shelf shelf-b" x="140" y="30" width="215" height="60" />
-        <text class="shelf-text" x="247.5" y="68" text-anchor="middle">B</text>
-    </a>
+            <svg viewBox="0 0 375 500" width="100%" height="auto"
+                style="display:block; margin: 0 auto; max-width: 100%; border-radius: 16px; background: #f8fafc;">
+                <defs>
+                    <filter id="mapShadow" x="-10%" y="-10%" width="120%" height="120%">
+                        <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.1" />
+                    </filter>
+                    <style>
+                        .map-shelf {
+                            stroke-width: 2;
+                            transition: all 0.2s ease;
+                            cursor: pointer;
+                            filter: url(#mapShadow);
+                            rx: 12px;
+                            ry: 12px;
+                        }
 
-    <!-- Shelf C -->
-    <a href="javascript:void(0)" onclick="jumpToArea('C')" class="shelf-link">
-        <rect class="map-shelf shelf-c" x="140" y="110" width="215" height="60" />
-        <text class="shelf-text" x="247.5" y="148" text-anchor="middle">C</text>
-    </a>
+                        .map-shelf:hover {
+                            stroke-width: 4;
+                            opacity: 0.9;
+                        }
 
-    <!-- Shelf D -->
-    <a href="javascript:void(0)" onclick="jumpToArea('D')" class="shelf-link">
-        <rect class="map-shelf shelf-d" x="20" y="190" width="165" height="60" />
-        <text class="shelf-text" x="102.5" y="228" text-anchor="middle">D</text>
-    </a>
+                        .shelf-a {
+                            fill: var(--area-a, #3B82F6);
+                            stroke: #1D4ED8;
+                        }
 
-    <!-- Shelf E -->
-    <a href="javascript:void(0)" onclick="jumpToArea('E')" class="shelf-link">
-        <rect class="map-shelf shelf-e" x="205" y="190" width="150" height="60" />
-        <text class="shelf-text" x="280" y="228" text-anchor="middle">E</text>
-    </a>
+                        .shelf-b {
+                            fill: var(--area-b, #10B981);
+                            stroke: #047857;
+                        }
 
-    <!-- Shelf F -->
-    <a href="javascript:void(0)" onclick="jumpToArea('F')" class="shelf-link">
-        <rect class="map-shelf shelf-f" x="20" y="270" width="230" height="60" />
-        <text class="shelf-text" x="135" y="308" text-anchor="middle">F</text>
-    </a>
+                        .shelf-c {
+                            fill: var(--area-c, #EAB308);
+                            stroke: #B45309;
+                        }
 
-    <!-- Shelf G -->
-    <a href="javascript:void(0)" onclick="jumpToArea('G')" class="shelf-link">
-        <rect class="map-shelf shelf-g" x="270" y="270" width="85" height="200" />
-        <text class="shelf-text" x="312.5" y="378" text-anchor="middle">G</text>
-    </a>
-</svg>
+                        .shelf-d {
+                            fill: var(--area-d, #F97316);
+                            stroke: #C2410C;
+                        }
+
+                        .shelf-e {
+                            fill: var(--area-e, #C084FC);
+                            stroke: #7E22CE;
+                        }
+
+                        .shelf-f {
+                            fill: var(--area-f, #06B6D4);
+                            stroke: #0E7490;
+                        }
+
+                        .shelf-g {
+                            fill: var(--area-g, #EC4899);
+                            stroke: #BE185D;
+                        }
+
+                        .shelf-text {
+                            font-family: sans-serif;
+                            font-weight: bold;
+                            font-size: 26px;
+                            fill: #ffffff;
+                            pointer-events: none;
+                        }
+
+                        /* a tag handles clicks directly in SVG safely */
+                        a.shelf-link {
+                            outline: none;
+                            -webkit-tap-highlight-color: transparent;
+                        }
+                    </style>
+                </defs>
+
+                <!-- Shelf A -->
+                <a href="javascript:void(0)" onclick="jumpToArea('A')" class="shelf-link">
+                    <rect class="map-shelf shelf-a" x="20" y="30" width="100" height="140" />
+                    <text class="shelf-text" x="70" y="110" text-anchor="middle">A</text>
+                </a>
+
+                <!-- Shelf B -->
+                <a href="javascript:void(0)" onclick="jumpToArea('B')" class="shelf-link">
+                    <rect class="map-shelf shelf-b" x="140" y="30" width="215" height="60" />
+                    <text class="shelf-text" x="247.5" y="68" text-anchor="middle">B</text>
+                </a>
+
+                <!-- Shelf C -->
+                <a href="javascript:void(0)" onclick="jumpToArea('C')" class="shelf-link">
+                    <rect class="map-shelf shelf-c" x="140" y="110" width="215" height="60" />
+                    <text class="shelf-text" x="247.5" y="148" text-anchor="middle">C</text>
+                </a>
+
+                <!-- Shelf D -->
+                <a href="javascript:void(0)" onclick="jumpToArea('D')" class="shelf-link">
+                    <rect class="map-shelf shelf-d" x="20" y="190" width="165" height="60" />
+                    <text class="shelf-text" x="102.5" y="228" text-anchor="middle">D</text>
+                </a>
+
+                <!-- Shelf E -->
+                <a href="javascript:void(0)" onclick="jumpToArea('E')" class="shelf-link">
+                    <rect class="map-shelf shelf-e" x="205" y="190" width="150" height="60" />
+                    <text class="shelf-text" x="280" y="228" text-anchor="middle">E</text>
+                </a>
+
+                <!-- Shelf F -->
+                <a href="javascript:void(0)" onclick="jumpToArea('F')" class="shelf-link">
+                    <rect class="map-shelf shelf-f" x="20" y="270" width="230" height="60" />
+                    <text class="shelf-text" x="135" y="308" text-anchor="middle">F</text>
+                </a>
+
+                <!-- Shelf G -->
+                <a href="javascript:void(0)" onclick="jumpToArea('G')" class="shelf-link">
+                    <rect class="map-shelf shelf-g" x="270" y="270" width="85" height="200" />
+                    <text class="shelf-text" x="312.5" y="378" text-anchor="middle">G</text>
+                </a>
+            </svg>
 
         </div>
     </div>
@@ -2749,8 +2851,8 @@ function openMapModal() {
     </div>
 
     <script src="/Book_DB/assets/xxxx.js"></script>
-   <link rel="icon" href="/Book_DB/assets/favicon.ico">
-   <img src="/Book_DB/assets/yyy.png">
+    <link rel="icon" href="/Book_DB/assets/favicon.ico">
+    <img src="/Book_DB/assets/yyy.png">
 </body>
 
-</html>
+</html>　　
