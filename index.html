@@ -13,86 +13,7 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
-    <link rel="stylesheet" href="/Book_DB/style.css">
-    <script src="/Book_DB/script.js"></script>
-</head>
-
-<body>
-
-    <!-- App Container -->
-    <div id="app">
-        <!-- Sidebar / Navigation (Desktop) -->
-        <aside class="sidebar">
-            <div class="brand">
-                <ion-icon name="cube"></ion-icon>
-                <span>Stocker</span>
-            </div>
-            <nav>
-                <button class="nav-item active" onclick="router('dashboard')">
-                    <ion-icon name="list"></ion-icon> 在庫一覧
-                </button>
-                <button class="nav-item" onclick="router('register')">
-                    <ion-icon name="add-circle"></ion-icon> 入庫・登録
-                </button>
-                <button class="nav-item" onclick="router('map')">
-                    <ion-icon name="grid"></ion-icon> 棚MAP
-                </button>
-                <button class="nav-item" onclick="router('logs')">
-                    <ion-icon name="time"></ion-icon> 操作ログ
-                </button>
-            </nav>
-            <div class="user-profile">
-                <div class="avatar">U</div>
-                <div class="info">
-                    <span class="name">ユーザー</span>
-                    <span class="role">Editor</span>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-
-            <!-- VIEW: DASHBOARD (Search & List) -->
-            <section id="view-dashboard" class="view active">
-                <header class="top-bar">
-                    <h1>在庫検索</h1>
-                    <div class="actions" style="display: flex; gap: 0.5rem;">
-                        <button class="btn-secondary btn-sm" onclick="exportCSV()" title="CSV書き出し">
-                            <ion-icon name="download-outline"></ion-icon> CSV出力
-                        </button>
-                        <button class="btn-secondary btn-sm" onclick="document.getElementById('csvFileInput').click()"
-                            title="CSV読み込み">
-                            <ion-icon name="cloud-upload-outline"></ion-icon> CSV読込
-                        </button>
-                        <button class="btn-secondary btn-sm" onclick="document.getElementById('bulkImageInput').click()"
-                            title="画像一括マッチング">
-                            <ion-icon name="images-outline"></ion-icon> 画像一括
-                        </button>
-                        <button class="btn-secondary" onclick="refreshData()"><ion-icon
-                                name="refresh"></ion-icon></button>
-
-                        <!-- Hidden Inputs -->
-                        <input type="file" id="csvFileInput" accept=".csv" style="display:none"
-                            onchange="importCSV(event)">
-                        <input type="file" id="bulkImageInput" accept="image/*" multiple style="display:none"
-                            onchange="bulkImportImages(event)">
-                    </div>
-                </header>
-
-                <div class="map-overview-section">
-                    <div class="section-header">
-                        <h2>全体棚MAP</h2>
-                        <span class="text-sm text-muted">クリックで拡大 / エリア選択で移動</span>
-                    </div>
-                    <div class="map-image-container" style="padding: 1rem 0;">
-
-<svg viewBox="0 0 375 500" width="100%" height="auto" style="display:block; margin: 0 auto; max-width: 100%; border-radius: 16px; background: #f8fafc;">
-    <defs>
-        <filter id="mapShadow" x="-10%" y="-10%" width="120%" height="120%">
-            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.1"/>
-        </filter>
-        <style>
+    <style>
 :root {
     --primary: #4F46E5;
     --primary-hover: #4338ca;
@@ -966,1326 +887,7 @@ td {
     background: #FEE2E2;
 }
 </style>
-    </defs>
-    
-    <!-- Shelf A -->
-    <a href="javascript:void(0)" onclick="jumpToArea('A')" class="shelf-link">
-        <rect class="map-shelf" x="20" y="30" width="100" height="140" />
-        <text class="shelf-text" x="70" y="110" text-anchor="middle">A</text>
-    </a>
-
-    <!-- Shelf B -->
-    <a href="javascript:void(0)" onclick="jumpToArea('B')" class="shelf-link">
-        <rect class="map-shelf" x="140" y="30" width="215" height="60" />
-        <text class="shelf-text" x="247.5" y="68" text-anchor="middle">B</text>
-    </a>
-
-    <!-- Shelf C -->
-    <a href="javascript:void(0)" onclick="jumpToArea('C')" class="shelf-link">
-        <rect class="map-shelf" x="140" y="110" width="215" height="60" />
-        <text class="shelf-text" x="247.5" y="148" text-anchor="middle">C</text>
-    </a>
-
-    <!-- Shelf D -->
-    <a href="javascript:void(0)" onclick="jumpToArea('D')" class="shelf-link">
-        <rect class="map-shelf" x="20" y="190" width="165" height="60" />
-        <text class="shelf-text" x="102.5" y="228" text-anchor="middle">D</text>
-    </a>
-
-    <!-- Shelf E -->
-    <a href="javascript:void(0)" onclick="jumpToArea('E')" class="shelf-link">
-        <rect class="map-shelf" x="205" y="190" width="150" height="60" />
-        <text class="shelf-text" x="280" y="228" text-anchor="middle">E</text>
-    </a>
-
-    <!-- Shelf F -->
-    <a href="javascript:void(0)" onclick="jumpToArea('F')" class="shelf-link">
-        <rect class="map-shelf" x="20" y="270" width="230" height="60" />
-        <text class="shelf-text" x="135" y="308" text-anchor="middle">F</text>
-    </a>
-
-    <!-- Shelf G -->
-    <a href="javascript:void(0)" onclick="jumpToArea('G')" class="shelf-link">
-        <rect class="map-shelf" x="270" y="270" width="85" height="200" />
-        <text class="shelf-text" x="312.5" y="378" text-anchor="middle">G</text>
-    </a>
-</svg>
-
-</div>
-                    </div>
-                </div>
-
-                <div class="search-panel">
-                    <div class="input-group search-box">
-                        <ion-icon name="search"></ion-icon>
-                        <input type="text" id="searchInput" placeholder="名称、伝票No、ID、ISBNで検索..." onkeyup="filterItems()">
-                        <ion-icon name="camera-outline" class="camera-icon" onclick="startScanner()"
-                            title="バーコードスキャン"></ion-icon>
-                    </div>
-                    <div class="filters">
-                        <div class="legend-text"
-                            style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; margin-right: auto; padding-left: 1rem;">
-                            <span class="age-dot age-new"></span>入荷～半年
-                            <span class="age-dot age-mid"></span>半年～2年
-                            <span class="age-dot age-old"></span>2年以上
-                        </div>
-                        <select id="filterArea" onchange="filterItems()">
-                            <option value="">全エリア</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                            <option value="E">E</option>
-                            <option value="F">F</option>
-                            <option value="G">G</option>
-                        </select>
-                        <select id="filterStatus" onchange="filterItems()">
-                            <option value="有効">在庫あり</option>
-                            <option value="空き">空き</option>
-                            <option value="all">全て</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="table-container">
-                    <table id="inventoryTable">
-                        <thead>
-                            <tr>
-                                <th>ステータス</th>
-                                <th>場所</th>
-                                <th>名称 / 用紙名</th>
-                                <th>数量</th>
-                                <th>入荷日 (経過)</th>
-                                <th>種別</th>
-                                <th>入出庫 / 編集</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Javascript populates this -->
-                        </tbody>
-                    </table>
-                    <div id="loading" class="loading-spinner">
-                        <div class="spinner"></div> Loading data...
-                    </div>
-                    <div id="emptyState" class="empty-state" style="display:none">
-                        <ion-icon name="file-tray-outline"></ion-icon>
-                        <p>データが見つかりません</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- VIEW: REGISTER (Add New) -->
-            <section id="view-register" class="view">
-                <header class="top-bar">
-                    <h1>新規登録 <span id="loc-display-header" class="badge-loc"></span></h1>
-                </header>
-
-                <div class="form-card">
-                    <form id="registerForm" onsubmit="handleRegister(event)">
-                        <div class="form-grid">
-                            <!-- Location Section -->
-                            <div class="form-group full-width">
-                                <label>置き場 (自動入力)</label>
-                                <div class="loc-inputs">
-                                    <select id="regArea" required onchange="updateLocOptions()">
-                                        <option value="" disabled selected>エリア</option>
-                                        <option value="A">A</option>
-                                        <option value="B">B</option>
-                                        <option value="C">C</option>
-                                        <option value="D">D</option>
-                                        <option value="E">E</option>
-                                        <option value="F">F</option>
-                                        <option value="G">G</option>
-                                    </select>
-                                    <select id="regShelf" required>
-                                        <option value="" disabled selected>段</option>
-                                        <option value="天">天</option>
-                                        <option value="上">上</option>
-                                        <option value="中">中</option>
-                                        <option value="下">下</option>
-                                        <option value="底">底</option>
-                                    </select>
-                                    <select id="regCol" required>
-                                        <option value="" disabled selected>列</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Paper Selection (Hidden by default) -->
-                            <div id="paperSelectContainer" class="full-width paper-selector" style="display:none">
-                                <h4>用紙マスター選択</h4>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label>品名</label>
-                                        <div style="display: flex; gap: 0.5rem;">
-                                            <select id="paperNameSelect" onchange="updatePaperSpecs()" style="flex:1">
-                                                <option value="">選択してください</option>
-                                            </select>
-                                            <button type="button" class="btn-sm btn-secondary"
-                                                onclick="addNewPaperMaster()">+</button>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>規格 (サイズ/連量)</label>
-                                        <select id="paperSpecSelect" onchange="fillPaperData()">
-                                            <option value="">-</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Basic Info -->
-                            <div class="form-group">
-                                <label>名称 (用紙/書籍名) <span class="required">*</span></label>
-                                <input type="text" id="regName" required placeholder="例: 上質紙 90kg">
-                            </div>
-                            <div class="form-group">
-                                <label>種別</label>
-                                <select id="regType" onchange="handleTypeChange()">
-                                    <option value="用紙">用紙</option>
-                                    <option value="書籍">書籍</option>
-                                    <option value="受託">受託</option>
-                                    <option value="その他">その他</option>
-                                </select>
-                            </div>
-                            <!-- ISBN Input (Books) -->
-                            <div class="form-group" id="isbnInputContainer" style="display:none;">
-                                <label>ISBN</label>
-                                <input type="text" id="regISBN" placeholder="978-...">
-                            </div>
-                            <div class="form-group">
-                                <label>数量 <span class="required">*</span></label>
-                                <input type="number" id="regQty" required min="1" placeholder="0">
-                            </div>
-                            <div class="form-group">
-                                <label>サイズ</label>
-                                <input type="text" id="regSize" placeholder="例: k判">
-                            </div>
-
-                            <!-- Additional Info -->
-                            <div class="form-group">
-                                <label>入荷日</label>
-                                <input type="date" id="regDate" required>
-                            </div>
-                            <div class="form-group">
-                                <label>伝票No</label>
-                                <input type="text" id="regSlip">
-                            </div>
-                            <div class="form-group">
-                                <label>クライアント</label>
-                                <input type="text" id="regClient">
-                            </div>
-                            <div class="form-group full-width">
-                                <label>備考</label>
-                                <textarea id="regMemo" rows="2"></textarea>
-                            </div>
-
-                            <!-- Image Upload (Visible for Books) -->
-                            <div id="imageUploadContainer" class="form-group full-width" style="display:none">
-                                <label>表紙画像 (書籍のみ)</label>
-                                <div class="image-upload-area" onclick="document.getElementById('regShowFile').click()">
-                                    <div class="image-preview" id="imagePreview">
-                                        <span><ion-icon name="image-outline"></ion-icon> クリックして画像を選択</span>
-                                    </div>
-                                    <input type="file" id="regShowFile" class="hidden-file-input"
-                                        accept="image/jpeg,image/png" capture="camera" onchange="handleImageSelect(event)">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn-text" onclick="router('dashboard')">キャンセル</button>
-                            <button type="submit" class="btn-primary">登録する</button>
-                        </div>
-                    </form>
-                </div>
-            </section>
-
-            <!-- VIEW: MAP -->
-            <section id="view-map" class="view">
-                <header class="top-bar">
-                    <h1>棚マップ <span id="mapAreaTitle"></span></h1>
-                    <div class="map-controls">
-                        <button class="chip active" data-area="A" onclick="setMapArea('A')">A</button>
-                        <button class="chip" data-area="B" onclick="setMapArea('B')">B</button>
-                        <button class="chip" data-area="C" onclick="setMapArea('C')">C</button>
-                        <button class="chip" data-area="D" onclick="setMapArea('D')">D</button>
-                        <button class="chip" data-area="E" onclick="setMapArea('E')">E</button>
-                        <button class="chip" data-area="F" onclick="setMapArea('F')">F</button>
-                        <button class="chip" data-area="G" onclick="setMapArea('G')">G</button>
-                    </div>
-                    <div class="map-toggles"
-                        style="margin-top: 0.5rem; text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
-                        <button class="btn-sm btn-secondary" onclick="toggleShelfStatus(true)">選択不可(グレー)にする</button>
-                        <button class="btn-sm btn-secondary" onclick="toggleShelfStatus(false)">使用可能にする(グレー解除)</button>
-                    </div>
-                </header>
-                <div class="map-container">
-                    <div id="shelfGrid" class="shelf-grid" data-active-area="A">
-                        <!-- Javascript populates -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- VIEW: LOGS -->
-            <section id="view-logs" class="view">
-                <header class="top-bar">
-                    <h1>操作ログ</h1>
-                    <button class="btn-secondary" onclick="renderLogs()"><ion-icon name="refresh"></ion-icon></button>
-                </header>
-                <div class="table-container">
-                    <table id="logsTable">
-                        <thead>
-                            <tr>
-                                <th>日時</th>
-                                <th>操作</th>
-                                <th>対象</th>
-                                <th>内容/数量</th>
-                                <th>担当</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Javascript populates -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </main>
-
-        <!-- Mobile Bottom Nav -->
-        <nav class="bottom-nav">
-            <button class="nav-item active" onclick="router('dashboard')">
-                <ion-icon name="list"></ion-icon>
-                <span>一覧</span>
-            </button>
-            <button class="nav-item" onclick="router('register')">
-                <ion-icon name="add-circle"></ion-icon>
-                <span>登録</span>
-            </button>
-            <button class="nav-item" onclick="router('map')">
-                <ion-icon name="grid"></ion-icon>
-                <span>マップ</span>
-            </button>
-            <button class="nav-item" onclick="router('logs')">
-                <ion-icon name="time"></ion-icon>
-                <span>履歴</span>
-            </button>
-        </nav>
-    </div>
-
-    <!-- Modals -->
-    <div id="shipModal" class="modal">
-        <div class="modal-content">
-            <h2>出庫処理</h2>
-            <p id="shipTargetName">商品名</p>
-            <input type="number" id="shipQty" placeholder="出庫数" min="1">
-            <textarea id="shipMemo" placeholder="メモ"></textarea>
-            <div class="modal-actions">
-                <button onclick="closeModal('shipModal')">キャンセル</button>
-                <button class="btn-primary" onclick="submitShip()">確定</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <h2>在庫編集</h2>
-            <input type="hidden" id="editId">
-            <div class="form-group">
-                <label>ステータス</label>
-                <select id="editStatus">
-                    <option value="有効">有効</option>
-                    <option value="空き">空き (削除扱い)</option>
-                    <option value="保留">保留</option>
-                </select>
-            </div>
-
-            <!-- Location Edit -->
-            <div class="form-group">
-                <label>保管場所変更</label>
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.5rem;">
-                    <select id="editArea" onchange="updateEditLocOptions(this.value)">
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                        <option value="E">E</option>
-                        <option value="F">F</option>
-                        <option value="G">G</option>
-                    </select>
-                    <select id="editShelf"></select>
-                    <select id="editCol"></select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>名称</label>
-                <input type="text" id="editName">
-            </div>
-            <div class="form-group">
-                <label>数量</label>
-                <input type="number" id="editQty">
-            </div>
-            <div class="modal-actions" style="justify-content: space-between;">
-                <button class="btn-danger" onclick="deleteItem()" style="color: red; border-color: red;">削除</button>
-                <div>
-                    <button onclick="closeModal('editModal')">キャンセル</button>
-                    <button class="btn-primary" onclick="submitEdit()">保存</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Map View Modal -->
-    <div id="mapViewModal" class="modal image-modal" onclick="closeModal('mapViewModal')">
-        <div class="modal-content-image" onclick="event.stopPropagation()">
-            <button class="close-btn" onclick="closeModal('mapViewModal')"><ion-icon name="close"></ion-icon></button>
-            
-<svg viewBox="0 0 375 500" width="100%" height="auto" style="display:block; margin: 0 auto; max-width: 100%; border-radius: 16px; background: #f8fafc;">
-    <defs>
-        <filter id="mapShadow" x="-10%" y="-10%" width="120%" height="120%">
-            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.1"/>
-        </filter>
-        <style>
-:root {
-    --primary: #4F46E5;
-    --primary-hover: #4338ca;
-    --bg-body: #F3F4F6;
-    --bg-surface: #FFFFFF;
-    --text-main: #1F2937;
-    --text-muted: #6B7280;
-    --border: #E5E7EB;
-
-    --status-ok: #10B981;
-    --status-warn: #F59E0B;
-    --status-crit: #EF4444;
-
-    /* Area Colors */
-    --area-a: #3B82F6;
-    /* Blue */
-    --area-b: #10B981;
-    /* Green */
-    --area-c: #EAB308;
-    /* Yellow */
-    --area-d: #F97316;
-    /* Vermilion/Orange */
-    --area-e: #C084FC;
-    /* Light Purple */
-    --area-f: #06B6D4;
-    /* Cyan */
-    --area-g: #EC4899;
-    /* Pink */
-
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    --radius: 12px;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Inter', 'Noto Sans JP', sans-serif;
-    margin: 0;
-    background-color: var(--bg-body);
-    color: var(--text-main);
-    height: 100vh;
-    overflow: hidden;
-}
-
-#app {
-    display: flex;
-    height: 100%;
-}
-
-/* Sidebar (Desktop) */
-.sidebar {
-    width: 260px;
-    background: var(--bg-surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem;
-    display: none;
-    /* Mobile first hidden */
-}
-
-@media(min-width: 768px) {
-    .sidebar {
-        display: flex;
-    }
-
-    .bottom-nav {
-        display: none !important;
-    }
-}
-
-.brand {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-}
-
-.sidebar nav {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-radius: var(--radius);
-    border: none;
-    background: transparent;
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: left;
-}
-
-.nav-item:hover {
-    background: #F9FAFB;
-    color: var(--primary);
-}
-
-.nav-item.active {
-    background: #EEF2FF;
-    color: var(--primary);
-}
-
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-}
-
-.avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-}
-
-.info {
-    display: flex;
-    flex-direction: column;
-}
-
-.info .name {
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.info .role {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-}
-
-/* Main Content */
-.main-content {
-    flex: 1;
-    overflow-y: auto;
-    position: relative;
-    padding-bottom: 80px;
-    /* Space for bottom nav */
-}
-
-.view {
-    display: none;
-    padding: 1.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    animation: fadeIn 0.3s ease;
-}
-
-.view.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-h1 {
-    margin: 0;
-    font-size: 1.5rem;
-}
-
-/* Dashboard */
-.search-panel {
-    background: var(--bg-surface);
-    padding: 1rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 1.5rem;
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.search-box {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    background: #F9FAFB;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-}
-
-.search-box input {
-    border: none;
-    background: transparent;
-    outline: none;
-    margin-left: 0.5rem;
-    width: 100%;
-    font-size: 1rem;
-}
-
-.filters select {
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    outline: none;
-    background: white;
-}
-
-.table-container {
-    background: var(--bg-surface);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    white-space: nowrap;
-}
-
-th {
-    text-align: left;
-    padding: 1rem;
-    color: var(--text-muted);
-    font-weight: 500;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.85rem;
-}
-
-td {
-    padding: 1rem;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.95rem;
-}
-
-.status-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 99px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.status-ok {
-    background: #DCFCE7;
-    color: #166534;
-}
-
-.status-empty {
-    background: #F3F4F6;
-    color: #374151;
-}
-
-.age-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 6px;
-}
-
-.age-new {
-    background: var(--status-ok);
-}
-
-.age-mid {
-    background: var(--status-warn);
-}
-
-.age-old {
-    background: var(--status-crit);
-}
-
-/* Forms */
-.form-card {
-    background: var(--bg-surface);
-    padding: 2rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-}
-
-.full-width {
-    grid-column: span 2;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 1rem;
-    font-family: inherit;
-    transition: border-color 0.2s;
-}
-
-.form-group input:focus {
-    border-color: var(--primary);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-.loc-inputs {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.form-actions {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn-primary:hover {
-    background: var(--primary-hover);
-}
-
-.btn-text {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.btn-sm {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.85rem;
-}
-
-/* Map */
-.map-controls {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    /* Allow wrapping on small screens */
-}
-
-.chip {
-    background: white;
-    border: 1px solid var(--border);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
-}
-
-/* Dynamic Area Coloring */
-.chip[data-area="A"].active {
-    background: var(--area-a);
-    border-color: var(--area-a);
-    color: white;
-}
-
-.chip[data-area="B"].active {
-    background: var(--area-b);
-    border-color: var(--area-b);
-    color: white;
-}
-
-.chip[data-area="C"].active {
-    background: var(--area-c);
-    border-color: var(--area-c);
-    color: black;
-}
-
-/* Yellow specific */
-.chip[data-area="D"].active {
-    background: var(--area-d);
-    border-color: var(--area-d);
-    color: white;
-}
-
-.chip[data-area="E"].active {
-    background: var(--area-e);
-    border-color: var(--area-e);
-    color: white;
-}
-
-.chip[data-area="F"].active {
-    background: var(--area-f);
-    border-color: var(--area-f);
-    color: white;
-}
-
-.chip[data-area="G"].active {
-    background: var(--area-g);
-    border-color: var(--area-g);
-    color: white;
-}
-
-.shelf-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    justify-content: center;
-    gap: 1rem;
-    padding: 1rem 0;
-}
-
-.required {
-    color: red;
-    font-weight: bold;
-}
-
-.shelf-cell {
-    background: white;
-    border-radius: 8px;
-    padding: 1rem;
-    text-align: center;
-    border: 2px solid transparent;
-    /* Default border */
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: var(--shadow-sm);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Grid borders based on area */
-.shelf-grid[data-active-area="A"] .shelf-cell {
-    border-color: var(--area-a);
-}
-
-.shelf-grid[data-active-area="B"] .shelf-cell {
-    border-color: var(--area-b);
-}
-
-.shelf-grid[data-active-area="C"] .shelf-cell {
-    border-color: var(--area-c);
-}
-
-.shelf-grid[data-active-area="D"] .shelf-cell {
-    border-color: var(--area-d);
-}
-
-.shelf-grid[data-active-area="E"] .shelf-cell {
-    border-color: var(--area-e);
-}
-
-.shelf-grid[data-active-area="F"] .shelf-cell {
-    border-color: var(--area-f);
-}
-
-.shelf-grid[data-active-area="G"] .shelf-cell {
-    border-color: var(--area-g);
-}
-
-.shelf-cell:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-.shelf-cell.occupied {
-    /* Occupied style overrides border specific? Or just background. 
-       Let's keep the area border color but fill background lightly */
-    background: #F3F4F6;
-}
-
-.shelf-grid[data-active-area="A"] .shelf-cell.occupied {
-    background: #EFF6FF;
-}
-
-.shelf-grid[data-active-area="B"] .shelf-cell.occupied {
-    background: #ECFDF5;
-}
-
-.shelf-grid[data-active-area="C"] .shelf-cell.occupied {
-    background: #FFFBEB;
-}
-
-.shelf-grid[data-active-area="D"] .shelf-cell.occupied {
-    background: #FFF7ED;
-}
-
-.shelf-grid[data-active-area="E"] .shelf-cell.occupied {
-    background: #FAF5FF;
-}
-
-.shelf-grid[data-active-area="F"] .shelf-cell.occupied {
-    background: #ECFEFF;
-}
-
-.shelf-grid[data-active-area="G"] .shelf-cell.occupied {
-    background: #FDF2F8;
-}
-
-.shelf-cell.grayed-out {
-    background-color: #E5E7EB;
-    border-color: #D1D5DB !important;
-    color: #9CA3AF;
-    /* pointer-events: none; removed to allow selection for enabling */
-    opacity: 0.6;
-}
-
-.shelf-cell.full {
-    border-color: var(--status-warn);
-}
-
-.shelf-cell .code {
-    font-weight: 700;
-    display: block;
-    margin-bottom: 0.5rem;
-}
-
-.shelf-cell .count {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-/* Mobile Bottom Nav */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-around;
-    padding: 0.75rem;
-    z-index: 100;
-}
-
-.bottom-nav .nav-item {
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: 0.7rem;
-    padding: 0;
-}
-
-.bottom-nav ion-icon {
-    font-size: 1.5rem;
-}
-
-/* Modal */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 200;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal.open {
-    display: flex;
-}
-
-.modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: var(--radius);
-    width: 90%;
-    max-width: 400px;
-}
-
-.modal-content input,
-.modal-content textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin: 1rem 0;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
-
-.loading-spinner {
-    padding: 2rem;
-    text-align: center;
-    color: var(--text-muted);
-    display: none;
-}
-
-.loading-spinner.active {
-    display: block;
-}
-
-/* Image Preview & Upload */
-.image-upload-area {
-    margin-bottom: 1rem;
-}
-
-.image-preview {
-    width: 100%;
-    height: 150px;
-    background: #f9fafb;
-    border: 2px dashed var(--border);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
-}
-
-.image-preview img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-
-.image-preview span {
-    color: var(--text-muted);
-    font-size: 0.85rem;
-}
-
-.hidden-file-input {
-    display: none;
-}
-
-/* Paper Selection */
-.paper-selector {
-    background: #F3F4F6;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    border: 1px solid var(--border);
-}
-
-.paper-selector h4 {
-    margin: 0 0 0.5rem 0;
-    font-size: 0.9rem;
-    color: var(--text-main);
-}
-
-/* Map Overview Section */
-.map-overview-section {
-    background: var(--bg-surface);
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 1.5rem;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.section-header h2 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: var(--text-main);
-}
-
-.text-muted {
-    color: var(--text-muted);
-}
-
-.text-sm {
-    font-size: 0.85rem;
-}
-
-.map-image-container {
-    width: 100%;
-    cursor: zoom-in;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    transition: all 0.2s;
-    background: white;
-    display: flex;
-    justify-content: center;
-}
-
-.map-image-container:hover {
-    border-color: var(--primary);
-    box-shadow: var(--shadow-md);
-}
-
-.shelf-map-img {
-    width: 100%;
-    height: auto;
-    display: block;
-    max-height: 400px;
-    object-fit: contain;
-}
-
-/* Image Modal */
-.image-modal {
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(4px);
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-.image-modal.open {
-    display: flex;
-}
-
-.modal-content-image {
-    position: relative;
-    max-width: 95vw;
-    max-height: 95vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-map-img {
-    max-width: 100%;
-    max-height: 90vh;
-    border-radius: 8px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-.close-btn {
-    position: absolute;
-    top: -40px;
-    right: 0;
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 2rem;
-    cursor: pointer;
-    z-index: 1010;
-}
-
-.shelf-cell.selected {
-    border-color: var(--primary) !important;
-    background-color: #E0E7FF !important;
-    box-shadow: 0 0 0 4px var(--primary-hover);
-    z-index: 10;
-}
-
-.camera-icon {
-    font-size: 1.5rem;
-    color: var(--text-muted);
-    cursor: pointer;
-    margin-left: 0.5rem;
-    padding: 0.25rem;
-    border-radius: 50%;
-    transition: background 0.2s;
-}
-
-.camera-icon:hover {
-    background: #E5E7EB;
-    color: var(--text-main);
-}
-
-.map-overlays {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-}
-
-.map-hitbox {
-    position: absolute;
-    cursor: pointer;
-    pointer-events: auto;
-    background: rgba(255, 255, 255, 0.0);
-    border: 2px solid transparent;
-    transition: all 0.2s;
-}
-
-.map-hitbox:hover {
-    background: rgba(79, 70, 229, 0.1);
-    border-color: var(--primary);
-}
-
-.toggle-switch {
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-}
-
-.toggle-switch input {
-    margin-right: 0.5rem;
-    cursor: pointer;
-}
-
-.toggle-label {
-    font-size: 0.85rem;
-    color: var(--text-main);
-}
-
-.btn-danger {
-    background: white;
-    border: 1px solid #EF4444;
-    color: #EF4444;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-danger:hover {
-    background: #FEE2E2;
-}
-</style>
-    </defs>
-    
-    <!-- Shelf A -->
-    <a href="javascript:void(0)" onclick="jumpToArea('A')" class="shelf-link">
-        <rect class="map-shelf" x="20" y="30" width="100" height="140" />
-        <text class="shelf-text" x="70" y="110" text-anchor="middle">A</text>
-    </a>
-
-    <!-- Shelf B -->
-    <a href="javascript:void(0)" onclick="jumpToArea('B')" class="shelf-link">
-        <rect class="map-shelf" x="140" y="30" width="215" height="60" />
-        <text class="shelf-text" x="247.5" y="68" text-anchor="middle">B</text>
-    </a>
-
-    <!-- Shelf C -->
-    <a href="javascript:void(0)" onclick="jumpToArea('C')" class="shelf-link">
-        <rect class="map-shelf" x="140" y="110" width="215" height="60" />
-        <text class="shelf-text" x="247.5" y="148" text-anchor="middle">C</text>
-    </a>
-
-    <!-- Shelf D -->
-    <a href="javascript:void(0)" onclick="jumpToArea('D')" class="shelf-link">
-        <rect class="map-shelf" x="20" y="190" width="165" height="60" />
-        <text class="shelf-text" x="102.5" y="228" text-anchor="middle">D</text>
-    </a>
-
-    <!-- Shelf E -->
-    <a href="javascript:void(0)" onclick="jumpToArea('E')" class="shelf-link">
-        <rect class="map-shelf" x="205" y="190" width="150" height="60" />
-        <text class="shelf-text" x="280" y="228" text-anchor="middle">E</text>
-    </a>
-
-    <!-- Shelf F -->
-    <a href="javascript:void(0)" onclick="jumpToArea('F')" class="shelf-link">
-        <rect class="map-shelf" x="20" y="270" width="230" height="60" />
-        <text class="shelf-text" x="135" y="308" text-anchor="middle">F</text>
-    </a>
-
-    <!-- Shelf G -->
-    <a href="javascript:void(0)" onclick="jumpToArea('G')" class="shelf-link">
-        <rect class="map-shelf" x="270" y="270" width="85" height="200" />
-        <text class="shelf-text" x="312.5" y="378" text-anchor="middle">G</text>
-    </a>
-</svg>
-
-        </div>
-    </div>
-
-    <!-- Scanner Modal -->
-    <div id="scannerModal" class="modal" onclick="stopScanner()">
-        <div class="modal-content" onclick="event.stopPropagation()" style="max-width:500px; width:100%;">
-            <h2>バーコードスキャン</h2>
-            <div id="reader" style="width: 100%; min-height: 250px; background: #000;"></div>
-            <div class="modal-actions" style="margin-top:1rem;">
-                <button onclick="stopScanner()">閉じる</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="/Book_DB/assets/xxxx.js"></script>
-   <link rel="icon" href="/Book_DB/assets/favicon.ico">
-   <img src="/Book_DB/assets/yyy.png">
-<script>
+    <script>
 /**
  * Configuration & State
  */
@@ -2622,7 +1224,8 @@ async function toggleShelfStatus(disable) {
             appState.inventory.some(i => i.loc_code === loc && i.status === "有効")
         );
         if (errorLocs.length > 0) {
-            alert(`以下の棚には在庫があるため、使用不可(グレーアウト)にできません:\n${errorLocs.join(", ")}`);
+            alert(`以下の棚には在庫があるため、使用不可(グレーアウト)にできません:
+${errorLocs.join(", ")}`);
             return;
         }
     }
@@ -3084,7 +1687,8 @@ function importCSV(event) {
             const rows = results.data;
             let successCount = 0;
 
-            if (confirm(`${rows.length}件のデータを読み込みますか？\n既存のIDがある場合は上書き、なければ新規登録されます。`)) {
+            if (confirm(`${rows.length}件のデータを読み込みますか？
+既存のIDがある場合は上書き、なければ新規登録されます。`)) {
                 toggleLoading(true);
                 // Batch process could be better, but loop is simple for now
                 const upsertList = rows.map(row => {
@@ -3343,7 +1947,8 @@ function fillPaperData() {
     if (pack && pack !== '-') {
         const currentMemo = document.getElementById('regMemo').value;
         if (!currentMemo.includes(pack)) {
-            document.getElementById('regMemo').value = (currentMemo ? currentMemo + '\n' : '') + `梱包: ${pack}`;
+            document.getElementById('regMemo').value = (currentMemo ? currentMemo + '
+' : '') + `梱包: ${pack}`;
         }
     }
 }
@@ -3596,6 +2201,556 @@ function openMapModal() {
 }
 
 </script>
+</head>
+
+<body>
+
+    <!-- App Container -->
+    <div id="app">
+        <!-- Sidebar / Navigation (Desktop) -->
+        <aside class="sidebar">
+            <div class="brand">
+                <ion-icon name="cube"></ion-icon>
+                <span>Stocker</span>
+            </div>
+            <nav>
+                <button class="nav-item active" onclick="router('dashboard')">
+                    <ion-icon name="list"></ion-icon> 在庫一覧
+                </button>
+                <button class="nav-item" onclick="router('register')">
+                    <ion-icon name="add-circle"></ion-icon> 入庫・登録
+                </button>
+                <button class="nav-item" onclick="router('map')">
+                    <ion-icon name="grid"></ion-icon> 棚MAP
+                </button>
+                <button class="nav-item" onclick="router('logs')">
+                    <ion-icon name="time"></ion-icon> 操作ログ
+                </button>
+            </nav>
+            <div class="user-profile">
+                <div class="avatar">U</div>
+                <div class="info">
+                    <span class="name">ユーザー</span>
+                    <span class="role">Editor</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- VIEW: DASHBOARD (Search & List) -->
+            <section id="view-dashboard" class="view active">
+                <header class="top-bar">
+                    <h1>在庫検索</h1>
+                    <div class="actions" style="display: flex; gap: 0.5rem;">
+                        <button class="btn-secondary btn-sm" onclick="exportCSV()" title="CSV書き出し">
+                            <ion-icon name="download-outline"></ion-icon> CSV出力
+                        </button>
+                        <button class="btn-secondary btn-sm" onclick="document.getElementById('csvFileInput').click()"
+                            title="CSV読み込み">
+                            <ion-icon name="cloud-upload-outline"></ion-icon> CSV読込
+                        </button>
+                        <button class="btn-secondary btn-sm" onclick="document.getElementById('bulkImageInput').click()"
+                            title="画像一括マッチング">
+                            <ion-icon name="images-outline"></ion-icon> 画像一括
+                        </button>
+                        <button class="btn-secondary" onclick="refreshData()"><ion-icon
+                                name="refresh"></ion-icon></button>
+
+                        <!-- Hidden Inputs -->
+                        <input type="file" id="csvFileInput" accept=".csv" style="display:none"
+                            onchange="importCSV(event)">
+                        <input type="file" id="bulkImageInput" accept="image/*" multiple style="display:none"
+                            onchange="bulkImportImages(event)">
+                    </div>
+                </header>
+
+                <div class="map-overview-section">
+                    <div class="section-header">
+                        <h2>全体棚MAP</h2>
+                        <span class="text-sm text-muted">クリックで拡大 / エリア選択で移動</span>
+                    </div>
+                    <div class="map-image-container" style="padding: 1rem 0;">
+
+<svg viewBox="0 0 375 500" width="100%" height="auto" style="display:block; margin: 0 auto; max-width: 100%; border-radius: 16px; background: #f8fafc;">
+    <defs>
+        <filter id="mapShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.1"/>
+        </filter>
+        <style>
+            .map-shelf { stroke-width: 2; transition: all 0.2s ease; cursor: pointer; filter: url(#mapShadow); rx: 12px; ry: 12px; }
+            .map-shelf:hover { stroke-width: 4; opacity: 0.9; }
+            .shelf-a { fill: var(--area-a, #3B82F6); stroke: #1D4ED8; }
+            .shelf-b { fill: var(--area-b, #10B981); stroke: #047857; }
+            .shelf-c { fill: var(--area-c, #EAB308); stroke: #B45309; }
+            .shelf-d { fill: var(--area-d, #F97316); stroke: #C2410C; }
+            .shelf-e { fill: var(--area-e, #C084FC); stroke: #7E22CE; }
+            .shelf-f { fill: var(--area-f, #06B6D4); stroke: #0E7490; }
+            .shelf-g { fill: var(--area-g, #EC4899); stroke: #BE185D; }
+            .shelf-text { font-family: sans-serif; font-weight: bold; font-size: 26px; fill: #ffffff; pointer-events: none; }
+            /* a tag handles clicks directly in SVG safely */
+            a.shelf-link { outline: none; -webkit-tap-highlight-color: transparent; }
+        </style>
+    </defs>
+    
+    <!-- Shelf A -->
+    <a href="javascript:void(0)" onclick="jumpToArea('A')" class="shelf-link">
+        <rect class="map-shelf shelf-a" x="20" y="30" width="100" height="140" />
+        <text class="shelf-text" x="70" y="110" text-anchor="middle">A</text>
+    </a>
+
+    <!-- Shelf B -->
+    <a href="javascript:void(0)" onclick="jumpToArea('B')" class="shelf-link">
+        <rect class="map-shelf shelf-b" x="140" y="30" width="215" height="60" />
+        <text class="shelf-text" x="247.5" y="68" text-anchor="middle">B</text>
+    </a>
+
+    <!-- Shelf C -->
+    <a href="javascript:void(0)" onclick="jumpToArea('C')" class="shelf-link">
+        <rect class="map-shelf shelf-c" x="140" y="110" width="215" height="60" />
+        <text class="shelf-text" x="247.5" y="148" text-anchor="middle">C</text>
+    </a>
+
+    <!-- Shelf D -->
+    <a href="javascript:void(0)" onclick="jumpToArea('D')" class="shelf-link">
+        <rect class="map-shelf shelf-d" x="20" y="190" width="165" height="60" />
+        <text class="shelf-text" x="102.5" y="228" text-anchor="middle">D</text>
+    </a>
+
+    <!-- Shelf E -->
+    <a href="javascript:void(0)" onclick="jumpToArea('E')" class="shelf-link">
+        <rect class="map-shelf shelf-e" x="205" y="190" width="150" height="60" />
+        <text class="shelf-text" x="280" y="228" text-anchor="middle">E</text>
+    </a>
+
+    <!-- Shelf F -->
+    <a href="javascript:void(0)" onclick="jumpToArea('F')" class="shelf-link">
+        <rect class="map-shelf shelf-f" x="20" y="270" width="230" height="60" />
+        <text class="shelf-text" x="135" y="308" text-anchor="middle">F</text>
+    </a>
+
+    <!-- Shelf G -->
+    <a href="javascript:void(0)" onclick="jumpToArea('G')" class="shelf-link">
+        <rect class="map-shelf shelf-g" x="270" y="270" width="85" height="200" />
+        <text class="shelf-text" x="312.5" y="378" text-anchor="middle">G</text>
+    </a>
+</svg>
+
+</div>
+                    </div>
+                </div>
+
+                <div class="search-panel">
+                    <div class="input-group search-box">
+                        <ion-icon name="search"></ion-icon>
+                        <input type="text" id="searchInput" placeholder="名称、伝票No、ID、ISBNで検索..." onkeyup="filterItems()">
+                        <ion-icon name="camera-outline" class="camera-icon" onclick="startScanner()"
+                            title="バーコードスキャン"></ion-icon>
+                    </div>
+                    <div class="filters">
+                        <div class="legend-text"
+                            style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; margin-right: auto; padding-left: 1rem;">
+                            <span class="age-dot age-new"></span>入荷～半年
+                            <span class="age-dot age-mid"></span>半年～2年
+                            <span class="age-dot age-old"></span>2年以上
+                        </div>
+                        <select id="filterArea" onchange="filterItems()">
+                            <option value="">全エリア</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                        </select>
+                        <select id="filterStatus" onchange="filterItems()">
+                            <option value="有効">在庫あり</option>
+                            <option value="空き">空き</option>
+                            <option value="all">全て</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table id="inventoryTable">
+                        <thead>
+                            <tr>
+                                <th>ステータス</th>
+                                <th>場所</th>
+                                <th>名称 / 用紙名</th>
+                                <th>数量</th>
+                                <th>入荷日 (経過)</th>
+                                <th>種別</th>
+                                <th>入出庫 / 編集</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Javascript populates this -->
+                        </tbody>
+                    </table>
+                    <div id="loading" class="loading-spinner">
+                        <div class="spinner"></div> Loading data...
+                    </div>
+                    <div id="emptyState" class="empty-state" style="display:none">
+                        <ion-icon name="file-tray-outline"></ion-icon>
+                        <p>データが見つかりません</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: REGISTER (Add New) -->
+            <section id="view-register" class="view">
+                <header class="top-bar">
+                    <h1>新規登録 <span id="loc-display-header" class="badge-loc"></span></h1>
+                </header>
+
+                <div class="form-card">
+                    <form id="registerForm" onsubmit="handleRegister(event)">
+                        <div class="form-grid">
+                            <!-- Location Section -->
+                            <div class="form-group full-width">
+                                <label>置き場 (自動入力)</label>
+                                <div class="loc-inputs">
+                                    <select id="regArea" required onchange="updateLocOptions()">
+                                        <option value="" disabled selected>エリア</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                        <option value="D">D</option>
+                                        <option value="E">E</option>
+                                        <option value="F">F</option>
+                                        <option value="G">G</option>
+                                    </select>
+                                    <select id="regShelf" required>
+                                        <option value="" disabled selected>段</option>
+                                        <option value="天">天</option>
+                                        <option value="上">上</option>
+                                        <option value="中">中</option>
+                                        <option value="下">下</option>
+                                        <option value="底">底</option>
+                                    </select>
+                                    <select id="regCol" required>
+                                        <option value="" disabled selected>列</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Paper Selection (Hidden by default) -->
+                            <div id="paperSelectContainer" class="full-width paper-selector" style="display:none">
+                                <h4>用紙マスター選択</h4>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>品名</label>
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <select id="paperNameSelect" onchange="updatePaperSpecs()" style="flex:1">
+                                                <option value="">選択してください</option>
+                                            </select>
+                                            <button type="button" class="btn-sm btn-secondary"
+                                                onclick="addNewPaperMaster()">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>規格 (サイズ/連量)</label>
+                                        <select id="paperSpecSelect" onchange="fillPaperData()">
+                                            <option value="">-</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Basic Info -->
+                            <div class="form-group">
+                                <label>名称 (用紙/書籍名) <span class="required">*</span></label>
+                                <input type="text" id="regName" required placeholder="例: 上質紙 90kg">
+                            </div>
+                            <div class="form-group">
+                                <label>種別</label>
+                                <select id="regType" onchange="handleTypeChange()">
+                                    <option value="用紙">用紙</option>
+                                    <option value="書籍">書籍</option>
+                                    <option value="受託">受託</option>
+                                    <option value="その他">その他</option>
+                                </select>
+                            </div>
+                            <!-- ISBN Input (Books) -->
+                            <div class="form-group" id="isbnInputContainer" style="display:none;">
+                                <label>ISBN</label>
+                                <input type="text" id="regISBN" placeholder="978-...">
+                            </div>
+                            <div class="form-group">
+                                <label>数量 <span class="required">*</span></label>
+                                <input type="number" id="regQty" required min="1" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>サイズ</label>
+                                <input type="text" id="regSize" placeholder="例: k判">
+                            </div>
+
+                            <!-- Additional Info -->
+                            <div class="form-group">
+                                <label>入荷日</label>
+                                <input type="date" id="regDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>伝票No</label>
+                                <input type="text" id="regSlip">
+                            </div>
+                            <div class="form-group">
+                                <label>クライアント</label>
+                                <input type="text" id="regClient">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>備考</label>
+                                <textarea id="regMemo" rows="2"></textarea>
+                            </div>
+
+                            <!-- Image Upload (Visible for Books) -->
+                            <div id="imageUploadContainer" class="form-group full-width" style="display:none">
+                                <label>表紙画像 (書籍のみ)</label>
+                                <div class="image-upload-area" onclick="document.getElementById('regShowFile').click()">
+                                    <div class="image-preview" id="imagePreview">
+                                        <span><ion-icon name="image-outline"></ion-icon> クリックして画像を選択</span>
+                                    </div>
+                                    <input type="file" id="regShowFile" class="hidden-file-input"
+                                        accept="image/jpeg,image/png" capture="camera" onchange="handleImageSelect(event)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-text" onclick="router('dashboard')">キャンセル</button>
+                            <button type="submit" class="btn-primary">登録する</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- VIEW: MAP -->
+            <section id="view-map" class="view">
+                <header class="top-bar">
+                    <h1>棚マップ <span id="mapAreaTitle"></span></h1>
+                    <div class="map-controls">
+                        <button class="chip active" data-area="A" onclick="setMapArea('A')">A</button>
+                        <button class="chip" data-area="B" onclick="setMapArea('B')">B</button>
+                        <button class="chip" data-area="C" onclick="setMapArea('C')">C</button>
+                        <button class="chip" data-area="D" onclick="setMapArea('D')">D</button>
+                        <button class="chip" data-area="E" onclick="setMapArea('E')">E</button>
+                        <button class="chip" data-area="F" onclick="setMapArea('F')">F</button>
+                        <button class="chip" data-area="G" onclick="setMapArea('G')">G</button>
+                    </div>
+                    <div class="map-toggles"
+                        style="margin-top: 0.5rem; text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                        <button class="btn-sm btn-secondary" onclick="toggleShelfStatus(true)">選択不可(グレー)にする</button>
+                        <button class="btn-sm btn-secondary" onclick="toggleShelfStatus(false)">使用可能にする(グレー解除)</button>
+                    </div>
+                </header>
+                <div class="map-container">
+                    <div id="shelfGrid" class="shelf-grid" data-active-area="A">
+                        <!-- Javascript populates -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: LOGS -->
+            <section id="view-logs" class="view">
+                <header class="top-bar">
+                    <h1>操作ログ</h1>
+                    <button class="btn-secondary" onclick="renderLogs()"><ion-icon name="refresh"></ion-icon></button>
+                </header>
+                <div class="table-container">
+                    <table id="logsTable">
+                        <thead>
+                            <tr>
+                                <th>日時</th>
+                                <th>操作</th>
+                                <th>対象</th>
+                                <th>内容/数量</th>
+                                <th>担当</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Javascript populates -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <!-- Mobile Bottom Nav -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="router('dashboard')">
+                <ion-icon name="list"></ion-icon>
+                <span>一覧</span>
+            </button>
+            <button class="nav-item" onclick="router('register')">
+                <ion-icon name="add-circle"></ion-icon>
+                <span>登録</span>
+            </button>
+            <button class="nav-item" onclick="router('map')">
+                <ion-icon name="grid"></ion-icon>
+                <span>マップ</span>
+            </button>
+            <button class="nav-item" onclick="router('logs')">
+                <ion-icon name="time"></ion-icon>
+                <span>履歴</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modals -->
+    <div id="shipModal" class="modal">
+        <div class="modal-content">
+            <h2>出庫処理</h2>
+            <p id="shipTargetName">商品名</p>
+            <input type="number" id="shipQty" placeholder="出庫数" min="1">
+            <textarea id="shipMemo" placeholder="メモ"></textarea>
+            <div class="modal-actions">
+                <button onclick="closeModal('shipModal')">キャンセル</button>
+                <button class="btn-primary" onclick="submitShip()">確定</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2>在庫編集</h2>
+            <input type="hidden" id="editId">
+            <div class="form-group">
+                <label>ステータス</label>
+                <select id="editStatus">
+                    <option value="有効">有効</option>
+                    <option value="空き">空き (削除扱い)</option>
+                    <option value="保留">保留</option>
+                </select>
+            </div>
+
+            <!-- Location Edit -->
+            <div class="form-group">
+                <label>保管場所変更</label>
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.5rem;">
+                    <select id="editArea" onchange="updateEditLocOptions(this.value)">
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                    <select id="editShelf"></select>
+                    <select id="editCol"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>名称</label>
+                <input type="text" id="editName">
+            </div>
+            <div class="form-group">
+                <label>数量</label>
+                <input type="number" id="editQty">
+            </div>
+            <div class="modal-actions" style="justify-content: space-between;">
+                <button class="btn-danger" onclick="deleteItem()" style="color: red; border-color: red;">削除</button>
+                <div>
+                    <button onclick="closeModal('editModal')">キャンセル</button>
+                    <button class="btn-primary" onclick="submitEdit()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map View Modal -->
+    <div id="mapViewModal" class="modal image-modal" onclick="closeModal('mapViewModal')">
+        <div class="modal-content-image" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal('mapViewModal')"><ion-icon name="close"></ion-icon></button>
+            
+<svg viewBox="0 0 375 500" width="100%" height="auto" style="display:block; margin: 0 auto; max-width: 100%; border-radius: 16px; background: #f8fafc;">
+    <defs>
+        <filter id="mapShadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.1"/>
+        </filter>
+        <style>
+            .map-shelf { stroke-width: 2; transition: all 0.2s ease; cursor: pointer; filter: url(#mapShadow); rx: 12px; ry: 12px; }
+            .map-shelf:hover { stroke-width: 4; opacity: 0.9; }
+            .shelf-a { fill: var(--area-a, #3B82F6); stroke: #1D4ED8; }
+            .shelf-b { fill: var(--area-b, #10B981); stroke: #047857; }
+            .shelf-c { fill: var(--area-c, #EAB308); stroke: #B45309; }
+            .shelf-d { fill: var(--area-d, #F97316); stroke: #C2410C; }
+            .shelf-e { fill: var(--area-e, #C084FC); stroke: #7E22CE; }
+            .shelf-f { fill: var(--area-f, #06B6D4); stroke: #0E7490; }
+            .shelf-g { fill: var(--area-g, #EC4899); stroke: #BE185D; }
+            .shelf-text { font-family: sans-serif; font-weight: bold; font-size: 26px; fill: #ffffff; pointer-events: none; }
+            /* a tag handles clicks directly in SVG safely */
+            a.shelf-link { outline: none; -webkit-tap-highlight-color: transparent; }
+        </style>
+    </defs>
+    
+    <!-- Shelf A -->
+    <a href="javascript:void(0)" onclick="jumpToArea('A')" class="shelf-link">
+        <rect class="map-shelf shelf-a" x="20" y="30" width="100" height="140" />
+        <text class="shelf-text" x="70" y="110" text-anchor="middle">A</text>
+    </a>
+
+    <!-- Shelf B -->
+    <a href="javascript:void(0)" onclick="jumpToArea('B')" class="shelf-link">
+        <rect class="map-shelf shelf-b" x="140" y="30" width="215" height="60" />
+        <text class="shelf-text" x="247.5" y="68" text-anchor="middle">B</text>
+    </a>
+
+    <!-- Shelf C -->
+    <a href="javascript:void(0)" onclick="jumpToArea('C')" class="shelf-link">
+        <rect class="map-shelf shelf-c" x="140" y="110" width="215" height="60" />
+        <text class="shelf-text" x="247.5" y="148" text-anchor="middle">C</text>
+    </a>
+
+    <!-- Shelf D -->
+    <a href="javascript:void(0)" onclick="jumpToArea('D')" class="shelf-link">
+        <rect class="map-shelf shelf-d" x="20" y="190" width="165" height="60" />
+        <text class="shelf-text" x="102.5" y="228" text-anchor="middle">D</text>
+    </a>
+
+    <!-- Shelf E -->
+    <a href="javascript:void(0)" onclick="jumpToArea('E')" class="shelf-link">
+        <rect class="map-shelf shelf-e" x="205" y="190" width="150" height="60" />
+        <text class="shelf-text" x="280" y="228" text-anchor="middle">E</text>
+    </a>
+
+    <!-- Shelf F -->
+    <a href="javascript:void(0)" onclick="jumpToArea('F')" class="shelf-link">
+        <rect class="map-shelf shelf-f" x="20" y="270" width="230" height="60" />
+        <text class="shelf-text" x="135" y="308" text-anchor="middle">F</text>
+    </a>
+
+    <!-- Shelf G -->
+    <a href="javascript:void(0)" onclick="jumpToArea('G')" class="shelf-link">
+        <rect class="map-shelf shelf-g" x="270" y="270" width="85" height="200" />
+        <text class="shelf-text" x="312.5" y="378" text-anchor="middle">G</text>
+    </a>
+</svg>
+
+        </div>
+    </div>
+
+    <!-- Scanner Modal -->
+    <div id="scannerModal" class="modal" onclick="stopScanner()">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width:500px; width:100%;">
+            <h2>バーコードスキャン</h2>
+            <div id="reader" style="width: 100%; min-height: 250px; background: #000;"></div>
+            <div class="modal-actions" style="margin-top:1rem;">
+                <button onclick="stopScanner()">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/Book_DB/assets/xxxx.js"></script>
+   <link rel="icon" href="/Book_DB/assets/favicon.ico">
+   <img src="/Book_DB/assets/yyy.png">
 </body>
 
 </html>
