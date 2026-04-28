@@ -4017,8 +4017,8 @@
         const CONFIG = {
             USE_REAL_API: true, // trueにするとGASと直接通信します
             // ↓ ここにご自身の GAS デプロイURL を貼り付けてください
-            GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbzP_JgC_hjoGlP3012u6x0gOGXKJ16pCjFDdpxq94biepMeA-gKEk_b9EIFlCrjX9gf/exec",
-            GAS_API_URL: "https://script.google.com/macros/s/AKfycbzP_JgC_hjoGlP3012u6x0gOGXKJ16pCjFDdpxq94biepMeA-gKEk_b9EIFlCrjX9gf/exec"
+            GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbzymB9lco_JkhGR3DyF9qsKks_suS6Px2zK_pxeZ0-0pJMRvM0c-FEhOJ0ipBAPKO6z/exec",
+            GAS_API_URL: "https://script.google.com/macros/s/AKfycbzymB9lco_JkhGR3DyF9qsKks_suS6Px2zK_pxeZ0-0pJMRvM0c-FEhOJ0ipBAPKO6z/exec"
         };
 
         let appState = {
@@ -5113,7 +5113,7 @@ if (imgPath && String(imgPath).includes('http')) {
              */
             class API {
                 static getUrl() {
-                    return "https://script.google.com/macros/s/AKfycbyeg2NPKIVMwBiawxgvt5nyr_7NOtsuZ7hLQXfcmQ3hj_Tw4vNTiHEpOYlUvxiqhSXx/exec";
+                    return "https://script.google.com/macros/s/AKfycbzymB9lco_JkhGR3DyF9qsKks_suS6Px2zK_pxeZ0-0pJMRvM0c-FEhOJ0ipBAPKO6z/exec";
                 }
 
                 static async getData() {
