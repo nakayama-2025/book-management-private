@@ -4184,9 +4184,11 @@
 
                     // Image Indicator (if exists)
                     let imgIcon = '';
-                    if (item.image) {
-                        imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${item.image}')"></ion-icon> `;
-                    }
+                    // image も Image も両方チェックするようにします
+const imgPath = item.image || item.Image;
+if (imgPath) {
+    imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${imgPath}')"></ion-icon> `;
+}
 
                     tr.innerHTML = `
             <td><span class="status-badge ${item.status === '有効' ? 'status-ok' : 'status-empty'}">${item.status}</span></td>
