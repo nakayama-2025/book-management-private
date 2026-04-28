@@ -5167,11 +5167,11 @@ if (imgPath && String(imgPath).includes('http')) {
             /**
              * Map Modal
              */
-            function openMapModal() {
-                document.getElementById('mapViewModal').classList.add('open');
-            }
+function openMapModal() {
+    document.getElementById('mapViewModal').classList.add('open');
+  }
 
-    </script>
-</body>
-
-</html>
+  // ここにあった「}」を削除し、このままスクリプトを閉じます
+  </script>
+  </body>
+  </html>
