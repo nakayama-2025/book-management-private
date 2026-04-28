@@ -4185,8 +4185,9 @@
                     // Image Indicator (if exists)
                     let imgIcon = '';
                     // image も Image も両方チェックするようにします
+// URLの中に "http" という文字が含まれているかチェックするようにします
 const imgPath = item.image || item.Image;
-if (imgPath) {
+if (imgPath && String(imgPath).includes('http')) {
     imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${imgPath}')"></ion-icon> `;
 }
 
