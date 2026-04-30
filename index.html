@@ -3895,60 +3895,60 @@ tr.innerHTML = `
         </div>
     </div>
 
-<!-- Edit Modal (編集画面) -->
-<div id="editModal" class="modal">
-    <div class="modal-content" onclick="event.stopPropagation()" style="max-width:500px;">
-        <h3>在庫情報の編集</h3>
-        <form id="editForm" onsubmit="event.preventDefault(); submitEdit();">
-            <input type="hidden" id="editId">
-            <div class="form-group">
-                <label>商品名 / 銘柄</label>
-                <input type="text" id="editName" required>
+<!-- Edit Modal (在庫情報の編集画面) -->
+        <div id="editModal" class="modal">
+            <div class="modal-content" onclick="event.stopPropagation()" style="max-width:500px;">
+                <h3>在庫情報の編集</h3>
+                <form id="editForm" onsubmit="event.preventDefault(); submitEdit();">
+                    <input type="hidden" id="editId">
+                    
+                    <div class="form-group">
+                        <label>商品名 / 銘柄</label>
+                        <input type="text" id="editName" required>
+                    </div>
+
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label>数量</label>
+                            <input type="number" id="editQty" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ステータス</label>
+                            <select id="editStatus">
+                                <option value="有効">有効</option>
+                                <option value="空き">空き（削除扱い）</option>
+                                <option value="保留">保留</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>保管場所変更</label>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.5rem;">
+                            <select id="editArea" onchange="updateEditLocOptions(this.value)">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                                <option value="F">F</option>
+                                <option value="G">G</option>
+                            </select>
+                            <select id="editShelf"></select>
+                            <select id="editCol"></select>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions" style="display: flex; justify-content: space-between; margin-top: 20px;">
+                        <button type="button" class="btn-danger" onclick="deleteItem()" style="color: red; border: 1px solid red; background: none; padding: 5px 10px; border-radius: 4px;">削除</button>
+                        <div>
+                            <button type="button" class="btn-secondary" onclick="closeModal('editModal')" style="margin-right: 10px;">キャンセル</button>
+                            <button type="submit" class="btn-primary">保存する</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>数量</label>
-                    <input type="number" id="editQty" required>
-                </div>
-                <div class="form-group">
-                    <label>ステータス</label>
-                    <select id="editStatus">
-                        <option value="有効">有効</option>
-                        <option value="欠品">欠品</option>
-                        <option value="削除">削除</option>
-                    </select>
-                </div>
-            </div>
-            <!-- 保管場所の編集 -->
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>エリア</label>
-                    <select id="editArea" onchange="updateEditLocOptions(this.value)">
-                        <option value="A">A区画</option>
-                        <option value="B">B区画</option>
-                        <option value="C">C区画</option>
-                        <option value="D">D区画</option>
-                        <option value="E">E区画</option>
-                        <option value="F">F区画</option>
-                        <option value="G">G区画</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>棚</label>
-                    <select id="editShelf"></select>
-                </div>
-                <div class="form-group">
-                    <label>列</label>
-                    <select id="editCol"></select>
-                </div>
-            </div>
-            <div class="modal-actions" style="margin-top:20px;">
-                <button type="button" class="btn-secondary" onclick="closeModal('editModal')">キャンセル</button>
-                <button type="submit" class="btn-primary">保存する</button>
-            </div>
-        </form>
-    </div>
-</div>
+        </div>
 
     <!-- Map View Modal -->
 <div id="mapViewModal" class="modal image-modal" onclick="closeModal('mapViewModal')">
