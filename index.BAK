@@ -2696,10 +2696,6 @@ function openEditModal(id) {
                 }
             }
 
-            /**
-             * Map Modal
-             */
-
 function showImage(url) {
             const modal = document.getElementById('imageDisplayModal');
             const content = document.getElementById('imagePopupContent');

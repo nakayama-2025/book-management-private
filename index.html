@@ -2691,12 +2691,12 @@ function openEditModal(id) {
                         return await res.json();
                     } catch (err) {
                         console.error("GAS Post Error:", err);
-                        return { status: 'error' };
-                    }
+return { status: 'error' };
                 }
             }
+        } // ← APIクラスを閉じるカッコ
 
-function showImage(url) {
+        function showImage(url) {
             const modal = document.getElementById('imageDisplayModal');
             const content = document.getElementById('imagePopupContent');
             content.innerHTML = `<img src="${url}" style="max-width:100%; max-height:80vh; border-radius:8px;">`;
