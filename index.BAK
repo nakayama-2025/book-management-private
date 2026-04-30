@@ -1695,12 +1695,23 @@
                 const tbody = document.querySelector('#inventoryTable tbody');
                 tbody.innerHTML = '';
 
-                const filtered = appState.inventory.filter(item => {
-                    const matchText = (item.name + item.slip_no + item.id + (item.isbn || '')).toLowerCase().includes(appState.filter.text);
-                    const matchArea = appState.filter.area ? item.area === appState.filter.area : true;
-                    const matchStatus = appState.filter.status === 'all' ? true : item.status === appState.filter.status;
-                    return matchText && matchArea && matchStatus;
-                });
+const filtered = appState.inventory.filter(item => {
+                const matchText = (String(item.name || '') + String(item.id || '') + String(item.isbn || '')).toLowerCase().includes(appState.filter.text);
+                const matchArea = appState.filter.area ? item.area === appState.filter.area : true;
+                
+                // ステータスの判定をより確実にする修正
+                let matchStatus = true;
+                if (appState.filter.status === '有効') {
+                    // 「有効」以外（欠品や削除など）を除外する
+                    matchStatus = (item.status === '有効' || item.status === ''); 
+                } else if (appState.filter.status === '空き') {
+                    matchStatus = (item.status === '空き');
+                } else if (appState.filter.status === 'all') {
+                    matchStatus = true;
+                }
+                
+                return matchText && matchArea && matchStatus;
+            });
 
                 if (filtered.length === 0) {
                     document.getElementById('emptyState').style.display = 'block';
