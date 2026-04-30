@@ -27,6 +27,26 @@
             --status-warn: #F59E0B;
             --status-crit: #EF4444;
 
+/* --- 在庫一覧の表をスクロール可能にする設定 --- */
+.table-container {
+    max-height: 65vh; /* 画面の高さの約65%に制限 */
+    overflow-y: auto; /* 縦スクロールを有効にする */
+    overflow-x: auto; /* 横スクロールを有効にする */
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-surface);
+    position: relative;
+}
+
+#inventoryTable thead th {
+    position: sticky; /* スクロールしても見出しを固定 */
+    top: 0;
+    background: #f8f9fa; /* 見出しの背景色 */
+    z-index: 2;
+    box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1); /* 境目をわかりやすく */
+}
+/* ------------------------------------------- */
+
             /* Area Colors */
             --area-a: #3B82F6; /* Blue */
             --area-b: #10B981; /* Green */
@@ -1625,26 +1645,25 @@
       imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${item.image}')"></ion-icon> `;
   }
 
-                tr.innerHTML = `
-                    <td><span class="status-badge ${item.status === '有効' ? 'status-ok' : 'status-empty'}">${item.status}</span></td>
-                    <td><strong>${item.loc_code}</strong></td>
-                    <td>
-                        <div>${imgIcon}${item.name}</div>
-                        <div style="font-size:0.8rem;color:#666">${item.type} / ${item.size || '-'}</div>
-                    </td>
-                    <td>${item.qty}</td>
-                    <td>
-                        <span class="age-dot ${ageColor}"></span>
-                        ${item.date_in}
-                    </td>
-                    <td>${item.type}</td>
-                    <td style="display:flex; gap:0.5rem; align-items:center;">
-                        <input type="number" id="qty-diff-${item.id}" class="qty-input-mini" placeholder="0" min="1" style="width:60px; padding:4px;">
-                        <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', -1)" title="出庫">出</button>
-                        <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', 1)" title="入庫">入</button>
-                        <button class="btn-sm btn-text" onclick="openEditModal('${item.id}')"><ion-icon name="create-outline"></ion-icon></button>
-                    </td>
-                `;
+tr.innerHTML = `
+    <td><span class="status-badge ${item.status === '有効' ? 'status-ok' : 'status-empty'}">${item.status}</span></td>
+    <td><strong>${item.loc_code}</strong></td>
+    <td>
+        <div>${imgIcon}${item.name}</div>
+        <div style="font-size:0.8rem;color:#666">${item.type} / ${item.size || '-'}</div>
+    </td>
+    <td>${item.qty}</td>
+    <td>
+        <span class="age-dot ${ageColor}"></span>
+        ${item.date_in}
+    </td>
+    <td>${item.type}</td>
+    <td>
+        <button class="btn-sm btn-text" onclick="openEditModal('${item.id}')" title="編集" style="background: none; border: none; cursor: pointer; color: #3498db; font-size: 1.2rem;">
+            <ion-icon name="create-outline"></ion-icon>
+        </button>
+    </td>
+`;
                 tbody.appendChild(tr);
             });
         }
