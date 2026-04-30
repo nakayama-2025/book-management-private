@@ -3895,53 +3895,60 @@ tr.innerHTML = `
         </div>
     </div>
 
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <h2>在庫編集</h2>
+<!-- Edit Modal (編集画面) -->
+<div id="editModal" class="modal">
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-width:500px;">
+        <h3>在庫情報の編集</h3>
+        <form id="editForm" onsubmit="event.preventDefault(); submitEdit();">
             <input type="hidden" id="editId">
             <div class="form-group">
-                <label>ステータス</label>
-                <select id="editStatus">
-                    <option value="有効">有効</option>
-                    <option value="空き">空き (削除扱い)</option>
-                    <option value="保留">保留</option>
-                </select>
+                <label>商品名 / 銘柄</label>
+                <input type="text" id="editName" required>
             </div>
-
-            <!-- Location Edit -->
-            <div class="form-group">
-                <label>保管場所変更</label>
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.5rem;">
-                    <select id="editArea" onchange="updateEditLocOptions(this.value)">
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                        <option value="E">E</option>
-                        <option value="F">F</option>
-                        <option value="G">G</option>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>数量</label>
+                    <input type="number" id="editQty" required>
+                </div>
+                <div class="form-group">
+                    <label>ステータス</label>
+                    <select id="editStatus">
+                        <option value="有効">有効</option>
+                        <option value="欠品">欠品</option>
+                        <option value="削除">削除</option>
                     </select>
+                </div>
+            </div>
+            <!-- 保管場所の編集 -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>エリア</label>
+                    <select id="editArea" onchange="updateEditLocOptions(this.value)">
+                        <option value="A">A区画</option>
+                        <option value="B">B区画</option>
+                        <option value="C">C区画</option>
+                        <option value="D">D区画</option>
+                        <option value="E">E区画</option>
+                        <option value="F">F区画</option>
+                        <option value="G">G区画</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>棚</label>
                     <select id="editShelf"></select>
+                </div>
+                <div class="form-group">
+                    <label>列</label>
                     <select id="editCol"></select>
                 </div>
             </div>
-            <div class="form-group">
-                <label>名称</label>
-                <input type="text" id="editName">
+            <div class="modal-actions" style="margin-top:20px;">
+                <button type="button" class="btn-secondary" onclick="closeModal('editModal')">キャンセル</button>
+                <button type="submit" class="btn-primary">保存する</button>
             </div>
-            <div class="form-group">
-                <label>数量</label>
-                <input type="number" id="editQty">
-            </div>
-            <div class="modal-actions" style="justify-content: space-between;">
-                <button class="btn-danger" onclick="deleteItem()" style="color: red; border-color: red;">削除</button>
-                <div>
-                    <button onclick="closeModal('editModal')">キャンセル</button>
-                    <button class="btn-primary" onclick="submitEdit()">保存</button>
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
+</div>
 
     <!-- Map View Modal -->
 <div id="mapViewModal" class="modal image-modal" onclick="closeModal('mapViewModal')">
@@ -4606,34 +4613,25 @@ if (imgPath && String(imgPath).includes('http')) {
             }
 
 
-            function openEditModal(id) {
-                const item = appState.inventory.find(i => i.id === id);
-                if (!item) return;
-                document.getElementById('editId').value = item.id;
-                document.getElementById('editStatus').value = item.status;
-                document.getElementById('editName').value = item.name;
-                document.getElementById('editQty').value = item.qty;
+function openEditModal(id) {
+    const item = appState.inventory.find(i => i.id == id);
+    if (!item) return;
 
-                // Location Fields
-                const areaSel = document.getElementById('editArea');
-                const shelfSel = document.getElementById('editShelf');
-                const colSel = document.getElementById('editCol');
+    // フォームに現在の値をセット
+    document.getElementById('editId').value = item.id;
+    document.getElementById('editName').value = item.name;
+    document.getElementById('editQty').value = item.qty;
+    document.getElementById('editStatus').value = item.status;
+    document.getElementById('editArea').value = item.area;
 
-                // Populate Areas (Static)
-                // Assuming options are already there or need manual populating? 
-                // They are not in HTML yet. I will update HTML to include them.
-                // For now, let's just set values, assuming options exist.
-                areaSel.value = item.area;
+    // 棚と列の選択肢を更新してから値をセット
+    updateEditLocOptions(item.area);
+    document.getElementById('editShelf').value = item.shelf;
+    document.getElementById('editCol').value = item.column;
 
-                // Trigger update for shelf/col options based on area
-                updateEditLocOptions(item.area);
-
-                // Set values after options update
-                shelfSel.value = item.shelf;
-                colSel.value = item.column;
-
-                document.getElementById('editModal').classList.add('open');
-            }
+    // モーダルを表示
+    document.getElementById('editModal').classList.add('open');
+}
 
             function updateEditLocOptions(area) {
                 const config = SHELF_CONFIG[area];
