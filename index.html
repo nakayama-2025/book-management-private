@@ -1111,9 +1111,9 @@
                             <option value="G">G</option>
                         </select>
                         <select id="filterStatus" onchange="filterItems()">
+                            <option value="all" selected>全て</option>
                             <option value="有効">在庫あり</option>
                             <option value="空き">空き</option>
-                            <option value="all">全て</option>
                         </select>
                     </div>
                 </div>
@@ -1558,8 +1558,20 @@
         /**
          * Configuration & State
          */
+        const CONFIG = {
+            USE_REAL_API: true,
+            GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbzymB9lco_JkhGR3DyF9qsKks_suS6Px2zK_pxeZ0-0pJMRvM0c-FEhOJ0ipBAPKO6z/exec",
+        };
 
-
+        let appState = {
+            inventory: [],
+            logs: [],
+            currentView: 'dashboard',
+            filter: { text: '', area: '', status: 'all' },
+            mergedShelves: false,
+            selectedShelves: [],
+            disabledShelves: []
+        };
 
         const SHELF_CONFIG = {
             'A': { rows: ['天', '上', '中', '下', '底'], cols: 10 },

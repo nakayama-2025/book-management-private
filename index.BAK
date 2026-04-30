@@ -1111,9 +1111,9 @@
                             <option value="G">G</option>
                         </select>
                         <select id="filterStatus" onchange="filterItems()">
+                            <option value="all" selected>全て</option>
                             <option value="有効">在庫あり</option>
                             <option value="空き">空き</option>
-                            <option value="all">全て</option>
                         </select>
                     </div>
                 </div>
@@ -1558,8 +1558,20 @@
         /**
          * Configuration & State
          */
+        const CONFIG = {
+            USE_REAL_API: true,
+            GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbzymB9lco_JkhGR3DyF9qsKks_suS6Px2zK_pxeZ0-0pJMRvM0c-FEhOJ0ipBAPKO6z/exec",
+        };
 
-
+        let appState = {
+            inventory: [],
+            logs: [],
+            currentView: 'dashboard',
+            filter: { text: '', area: '', status: 'all' },
+            mergedShelves: false,
+            selectedShelves: [],
+            disabledShelves: []
+        };
 
         const SHELF_CONFIG = {
             'A': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
@@ -1691,7 +1703,6 @@
          * Rendering
          */
         function renderTable() {
-            {
                 const tbody = document.querySelector('#inventoryTable tbody');
                 tbody.innerHTML = '';
 
@@ -2691,12 +2702,12 @@ function openEditModal(id) {
                         return await res.json();
                     } catch (err) {
                         console.error("GAS Post Error:", err);
-                        return { status: 'error' };
-                    }
+return { status: 'error' };
                 }
             }
+        } // ← APIクラスを閉じるカッコ
 
-function showImage(url) {
+        function showImage(url) {
             const modal = document.getElementById('imageDisplayModal');
             const content = document.getElementById('imagePopupContent');
             content.innerHTML = `<img src="${url}" style="max-width:100%; max-height:80vh; border-radius:8px;">`;
