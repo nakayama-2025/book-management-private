@@ -1584,6 +1584,61 @@
         };
 
         /**
+         * API Abstraction (GAS vs Mock)
+         */
+        class API {
+            static getUrl() {
+                return CONFIG.GAS_WEB_APP_URL;
+            }
+
+            static async getData() {
+                try {
+                    const res = await fetch(this.getUrl(), {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'getData' }),
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8'
+                        }
+                    });
+                    const json = await res.json();
+                    if (json.status === 'success') {
+                        appState.disabledShelves = json.data.disabled || [];
+                        return json;
+                    }
+                    throw new Error(json.message || "Failed to getData");
+                } catch (err) {
+                    console.error("GAS API Error:", err);
+                    return { status: 'error', data: { inventory: [], logs: [], disabled: [] } };
+                }
+            }
+
+            static async getLogs() {
+                try {
+                    const res = await this.getData();
+                    return res.data ? res.data.logs : [];
+                } catch (err) {
+                    return [];
+                }
+            }
+
+            static async post(action, payload) {
+                try {
+                    const res = await fetch(this.getUrl(), {
+                        method: 'POST',
+                        body: JSON.stringify({ action: action, payload: payload }),
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8'
+                        }
+                    });
+                    return await res.json();
+                } catch (err) {
+                    console.error("GAS Post Error:", err);
+                    return { status: 'error' };
+                }
+            }
+        } // ← APIクラスを閉じるカッコ
+
+        /**
          * Initialization
          */
         document.addEventListener('DOMContentLoaded', () => {
@@ -2651,61 +2706,7 @@ function openEditModal(id) {
                 }
             }
 
-            /**
-             * API Abstraction (GAS vs Mock)
-             */
-            class API {
-                static getUrl() {
-                    return "https://script.google.com/macros/s/AKfycbzymB9lco_JkhGR3DyF9qsKks_suS6Px2zK_pxeZ0-0pJMRvM0c-FEhOJ0ipBAPKO6z/exec";
-                }
 
-                static async getData() {
-                    try {
-                        const res = await fetch(this.getUrl(), {
-                            method: 'POST',
-                            // Using text/plain to bypass CORS preflight in standard GAS deployments
-                            body: JSON.stringify({ action: 'getData' }),
-                            headers: {
-                                'Content-Type': 'text/plain;charset=utf-8'
-                            }
-                        });
-                        const json = await res.json();
-                        if (json.status === 'success') {
-                            appState.disabledShelves = json.data.disabled || [];
-                            return json;
-                        }
-                        throw new Error(json.message || "Failed to getData");
-                    } catch (err) {
-                        console.error("GAS API Error:", err);
-                        return { status: 'error', data: { inventory: [], logs: [], disabled: [] } };
-                    }
-                }
-
-                static async getLogs() {
-                    try {
-                        const res = await this.getData();
-                        return res.data ? res.data.logs : [];
-                    } catch (err) {
-                        return [];
-                    }
-                }
-
-                static async post(action, payload) {
-                    try {
-                        const res = await fetch(this.getUrl(), {
-                            method: 'POST',
-                            body: JSON.stringify({ action: action, payload: payload }),
-                            headers: {
-                                'Content-Type': 'text/plain;charset=utf-8' // CORS回避
-                            }
-                        });
-                        return await res.json();
-                    } catch (err) {
-                        console.error("GAS Post Error:", err);
-return { status: 'error' };
-                }
-            }
-        } // ← APIクラスを閉じるカッコ
 
         function showImage(url) {
             const modal = document.getElementById('imageDisplayModal');
