@@ -2230,14 +2230,17 @@ if (imgPath && String(imgPath).includes('http')) {
 
 
             function openEditModal(id) {
+                console.log("Opening modal for ID:", id);
                 const item = appState.inventory.find(i => String(i.id) === String(id));
                 if (!item) {
                     console.error("Item not found:", id);
                     return;
                 }
+                
+                console.log("Found item in openEditModal:", item);
 
-                // フォームに現在の値を確実にセット（0や空文字が無視されないように変更）
-                document.getElementById('editId').value = item.id !== undefined ? item.id : '';
+                // フォームに現在の値を確実にセット（ここで確実に editId.value へ代入）
+                document.getElementById('editId').value = item.id;
                 document.getElementById('editName').value = item.name !== undefined ? item.name : '';
                 document.getElementById('editQty').value = item.qty !== undefined ? item.qty : 0;
                 document.getElementById('editStatus').value = item.status || '有効';
@@ -2305,6 +2308,7 @@ if (imgPath && String(imgPath).includes('http')) {
 
             async function submitEdit() {
                 const id = document.getElementById('editId').value;
+                console.log("Saving ID:", id);
                 const status = document.getElementById('editStatus').value;
                 const name = document.getElementById('editName').value;
                 const qty = document.getElementById('editQty').value;
@@ -2361,6 +2365,7 @@ if (imgPath && String(imgPath).includes('http')) {
                 if (!confirm('本当に削除しますか？')) return;
                 
                 const id = document.getElementById('editId').value;
+                console.log("Deleting ID:", id);
                 if (!id) {
                     alert('削除対象のIDが取得できませんでした。');
                     return;
