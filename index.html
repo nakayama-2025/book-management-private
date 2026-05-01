@@ -1527,8 +1527,8 @@
 
         const SHELF_CONFIG = {
             'A': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
-            'B': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
-            'C': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
+            'B': { rows: ['天', '上', '中', '下', '底'], cols: 8 },
+            'C': { rows: ['天', '上', '中', '下', '底'], cols: 8 },
             'D': { rows: ['天', '上', '中', '下', '底'], cols: 5 },
             'E': { rows: ['天', '上', '中', '下', '底'], cols: 4 },
             'F': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
@@ -1701,7 +1701,11 @@
                     // Support both formats for backward compat if needed, but here we change mock
                     if (response.data.inventory) {
                         appState.inventory = response.data.inventory;
-                        appState.disabledShelves = response.data.disabled || [];
+                        // 過去のグレーアウト設定（D・E棚など）を完全に解除し、A棚の指定箇所のみに固定（クリーン化）
+                        appState.disabledShelves = [
+                            'A-天-5', 'A-上-5', 'A-中-5', 'A-下-5', 'A-底-5',
+                            'A-天-10', 'A-上-10', 'A-中-10', 'A-下-10', 'A-底-10'
+                        ];
                     } else {
                         appState.inventory = response.data; // fallback
                     }
