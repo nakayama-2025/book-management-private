@@ -311,6 +311,7 @@
             width: 100%;
             border-collapse: collapse;
             white-space: nowrap;
+            table-layout: auto;
         }
 
         th {
@@ -1767,31 +1768,37 @@ const filtered = appState.inventory.filter(item => {
 
                 filtered.forEach(item => {
                     const ageColor = getAgeColor(item.date_in);
+                    
+                    // 日付の表示形式を加工 (例: 2026-04-04T15:00:00.000Z -> 2026-04-04)
+                    let displayDate = item.date_in || '';
+                    if (displayDate && String(displayDate).includes('T')) {
+                        displayDate = String(displayDate).split('T')[0];
+                    }
+
                     const tr = document.createElement('tr');
 
                     // Image Indicator (if exists)
                     let imgIcon = '';
-                    // image も Image も両方チェックするようにします
-// URLの中に "http" という文字が含まれているかチェックするようにします
-const imgPath = item.image || item.Image;
-if (imgPath && String(imgPath).includes('http')) {
-    imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${imgPath}')"></ion-icon> `;
-}
+                    // URLの中に "http" という文字が含まれているかチェックするようにします
+                    const imgPath = item.image || item.Image;
+                    if (imgPath && String(imgPath).includes('http')) {
+                        imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${imgPath}')"></ion-icon> `;
+                    }
 
                     tr.innerHTML = `
             <td><span class="status-badge ${item.status === '有効' ? 'status-ok' : 'status-empty'}">${item.status}</span></td>
             <td><strong>${item.loc_code}</strong></td>
-            <td>
+            <td style="white-space: normal; min-width: 150px;">
                 <div>${imgIcon}${item.name}</div>
                 <div style="font-size:0.8rem;color:#666">${item.type} / ${item.size || '-'}</div>
             </td>
             <td>${item.qty}</td>
-            <td>
+            <td style="width: 120px;">
                 <span class="age-dot ${ageColor}"></span>
-                ${item.date_in}
+                ${displayDate}
             </td>
             <td>${item.type}</td>
-            <td style="display:flex; gap:0.5rem; align-items:center;">
+            <td style="display:flex; gap:0.5rem; align-items:center; min-width: 200px;">
                 <input type="number" id="qty-diff-${item.id}" class="qty-input-mini" placeholder="0" min="1" style="width:60px; padding:4px;">
                 <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', -1)" title="出庫">出</button>
                 <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', 1)" title="入庫">入</button>
