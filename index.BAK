@@ -1584,6 +1584,61 @@
         };
 
         /**
+         * API Abstraction (GAS vs Mock)
+         */
+        class API {
+            static getUrl() {
+                return CONFIG.GAS_WEB_APP_URL;
+            }
+
+            static async getData() {
+                try {
+                    const res = await fetch(this.getUrl(), {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'getData' }),
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8'
+                        }
+                    });
+                    const json = await res.json();
+                    if (json.status === 'success') {
+                        appState.disabledShelves = json.data.disabled || [];
+                        return json;
+                    }
+                    throw new Error(json.message || "Failed to getData");
+                } catch (err) {
+                    console.error("GAS API Error:", err);
+                    return { status: 'error', data: { inventory: [], logs: [], disabled: [] } };
+                }
+            }
+
+            static async getLogs() {
+                try {
+                    const res = await this.getData();
+                    return res.data ? res.data.logs : [];
+                } catch (err) {
+                    return [];
+                }
+            }
+
+            static async post(action, payload) {
+                try {
+                    const res = await fetch(this.getUrl(), {
+                        method: 'POST',
+                        body: JSON.stringify({ action: action, payload: payload }),
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8'
+                        }
+                    });
+                    return await res.json();
+                } catch (err) {
+                    console.error("GAS Post Error:", err);
+                    return { status: 'error' };
+                }
+            }
+        } // ← APIクラスを閉じるカッコ
+
+        /**
          * Initialization
          */
         document.addEventListener('DOMContentLoaded', () => {
@@ -2174,34 +2229,65 @@ if (imgPath && String(imgPath).includes('http')) {
             }
 
 
-function openEditModal(id) {
-    const item = appState.inventory.find(i => i.id == id);
-    if (!item) return;
+            function openEditModal(id) {
+                console.log("Opening modal for ID:", id);
+                const item = appState.inventory.find(i => String(i.id) === String(id));
+                if (!item) {
+                    console.error("Item not found:", id);
+                    return;
+                }
+                
+                console.log("Found item in openEditModal:", item);
 
-    // フォームに現在の値をセット
-    document.getElementById('editId').value = item.id;
-    document.getElementById('editName').value = item.name;
-    document.getElementById('editQty').value = item.qty;
-    document.getElementById('editStatus').value = item.status;
-    document.getElementById('editArea').value = item.area;
+                // フォームに現在の値を確実にセット（ここで確実に editId.value へ代入）
+                document.getElementById('editId').value = item.id;
+                document.getElementById('editName').value = item.name !== undefined ? item.name : '';
+                document.getElementById('editQty').value = item.qty !== undefined ? item.qty : 0;
+                document.getElementById('editStatus').value = item.status || '有効';
 
-    // 棚と列の選択肢を更新してから値をセット
-    updateEditLocOptions(item.area);
-    document.getElementById('editShelf').value = item.shelf;
-    document.getElementById('editCol').value = item.column;
+                let area = item.area;
+                let shelf = item.shelf;
+                let col = item.column;
 
-    // モーダルを表示
-    document.getElementById('editModal').classList.add('open');
-}
+                // もし個別のプロパティが無く、loc_code がある場合はそこから抽出
+                if ((!area || !shelf || !col) && item.loc_code) {
+                    const parts = item.loc_code.split('-');
+                    if (parts.length >= 3) {
+                        area = parts[0];
+                        shelf = parts[1];
+                        col = parts[2];
+                    }
+                }
+
+                if (area) {
+                    document.getElementById('editArea').value = area;
+                    // 棚と列の選択肢を更新してから値をセット
+                    updateEditLocOptions(area);
+                    if (shelf) document.getElementById('editShelf').value = shelf;
+                    if (col) document.getElementById('editCol').value = col;
+                } else {
+                    // エリア情報がない場合の予備処理
+                    document.getElementById('editArea').value = 'A';
+                    updateEditLocOptions('A');
+                    document.getElementById('editShelf').value = '天';
+                    document.getElementById('editCol').value = '1';
+                }
+
+                // モーダルを表示
+                document.getElementById('editModal').classList.add('open');
+            }
 
             function updateEditLocOptions(area) {
                 const config = SHELF_CONFIG[area];
                 const shelfSelect = document.getElementById('editShelf');
                 const colSelect = document.getElementById('editCol');
 
-                if (!config) return;
+                if (!config) {
+                    shelfSelect.innerHTML = '<option value="">-</option>';
+                    colSelect.innerHTML = '<option value="">-</option>';
+                    return;
+                }
 
-                // Save current if needed, but we usually overwrite
                 shelfSelect.innerHTML = '';
                 config.rows.forEach(r => {
                     const op = document.createElement('option');
@@ -2222,36 +2308,54 @@ function openEditModal(id) {
 
             async function submitEdit() {
                 const id = document.getElementById('editId').value;
+                console.log("Saving ID:", id);
                 const status = document.getElementById('editStatus').value;
                 const name = document.getElementById('editName').value;
                 const qty = document.getElementById('editQty').value;
 
-                // New Loc
-                const area = document.getElementById('editArea').value;
-                const shelf = document.getElementById('editShelf').value;
-                const col = document.getElementById('editCol').value;
+                let area = document.getElementById('editArea').value;
+                let shelf = document.getElementById('editShelf').value;
+                let col = document.getElementById('editCol').value;
+                
+                // 予備処理: 取得できなかった場合はデフォルト値をセット
+                if (!area) area = 'A';
+                if (!shelf) shelf = '天';
+                if (!col) col = '1';
+
+                // エラー箇所の特定を分かりやすく変更
+                if (!id) { alert("IDが取得できませんでした。"); return; }
+                if (!name) { alert("商品名が入力されていません。"); return; }
+                if (qty === '' || qty === null) { alert("数量が入力されていません。"); return; }
+
                 const loc_code = `${area}-${shelf}-${col}`;
+                
+                // 必要であればローディング表示
+                if(typeof toggleLoading === 'function') toggleLoading(true);
 
-                if (!id || !name || !qty) {
-                    alert("必須項目が空です");
-                    return;
-                }
+                try {
+                    const res = await API.post('edit', {
+                        id: id,
+                        status: status,
+                        name: name,
+                        qty: parseInt(qty, 10),
+                        area: area,
+                        shelf: shelf,
+                        column: col,
+                        loc_code: loc_code
+                    });
 
-                const res = await API.post('edit', {
-                    id: id,
-                    status: status,
-                    name: name,
-                    qty: qty,
-                    // Add location update
-                    area: area,
-                    shelf: shelf,
-                    column: col,
-                    loc_code: loc_code
-                });
-
-                if (res.status === 'success') {
-                    closeModal('editModal');
-                    refreshData();
+                    if (res.status === 'success') {
+                        closeModal('editModal');
+                        alert('更新しました');
+                        await refreshData();
+                    } else {
+                        alert('更新に失敗しました: ' + (res.message || '不明なエラー'));
+                    }
+                } catch (e) {
+                    console.error("Edit submission error:", e);
+                    alert("通信エラーが発生しました");
+                } finally {
+                    if(typeof toggleLoading === 'function') toggleLoading(false);
                 }
             }
 
@@ -2259,11 +2363,30 @@ function openEditModal(id) {
 
             async function deleteItem() {
                 if (!confirm('本当に削除しますか？')) return;
+                
                 const id = document.getElementById('editId').value;
-                const res = await API.post('delete', { id });
-                if (res.status === 'success') {
-                    closeModal('editModal');
-                    refreshData();
+                console.log("Deleting ID:", id);
+                if (!id) {
+                    alert('削除対象のIDが取得できませんでした。');
+                    return;
+                }
+
+                if(typeof toggleLoading === 'function') toggleLoading(true);
+
+                try {
+                    const res = await API.post('delete', { id: id });
+                    if (res.status === 'success') {
+                        closeModal('editModal');
+                        alert('削除しました');
+                        await refreshData();
+                    } else {
+                        alert('削除に失敗しました: ' + (res.message || '不明なエラー'));
+                    }
+                } catch (e) {
+                    console.error("Delete error:", e);
+                    alert("通信エラーが発生しました");
+                } finally {
+                    if(typeof toggleLoading === 'function') toggleLoading(false);
                 }
             }
 
@@ -2651,61 +2774,7 @@ function openEditModal(id) {
                 }
             }
 
-            /**
-             * API Abstraction (GAS vs Mock)
-             */
-            class API {
-                static getUrl() {
-                    return "https://script.google.com/macros/s/AKfycbzymB9lco_JkhGR3DyF9qsKks_suS6Px2zK_pxeZ0-0pJMRvM0c-FEhOJ0ipBAPKO6z/exec";
-                }
 
-                static async getData() {
-                    try {
-                        const res = await fetch(this.getUrl(), {
-                            method: 'POST',
-                            // Using text/plain to bypass CORS preflight in standard GAS deployments
-                            body: JSON.stringify({ action: 'getData' }),
-                            headers: {
-                                'Content-Type': 'text/plain;charset=utf-8'
-                            }
-                        });
-                        const json = await res.json();
-                        if (json.status === 'success') {
-                            appState.disabledShelves = json.data.disabled || [];
-                            return json;
-                        }
-                        throw new Error(json.message || "Failed to getData");
-                    } catch (err) {
-                        console.error("GAS API Error:", err);
-                        return { status: 'error', data: { inventory: [], logs: [], disabled: [] } };
-                    }
-                }
-
-                static async getLogs() {
-                    try {
-                        const res = await this.getData();
-                        return res.data ? res.data.logs : [];
-                    } catch (err) {
-                        return [];
-                    }
-                }
-
-                static async post(action, payload) {
-                    try {
-                        const res = await fetch(this.getUrl(), {
-                            method: 'POST',
-                            body: JSON.stringify({ action: action, payload: payload }),
-                            headers: {
-                                'Content-Type': 'text/plain;charset=utf-8' // CORS回避
-                            }
-                        });
-                        return await res.json();
-                    } catch (err) {
-                        console.error("GAS Post Error:", err);
-return { status: 'error' };
-                }
-            }
-        } // ← APIクラスを閉じるカッコ
 
         function showImage(url) {
             const modal = document.getElementById('imageDisplayModal');
