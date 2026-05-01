@@ -2359,11 +2359,29 @@ if (imgPath && String(imgPath).includes('http')) {
 
             async function deleteItem() {
                 if (!confirm('本当に削除しますか？')) return;
+                
                 const id = document.getElementById('editId').value;
-                const res = await API.post('delete', { id });
-                if (res.status === 'success') {
-                    closeModal('editModal');
-                    refreshData();
+                if (!id) {
+                    alert('削除対象のIDが取得できませんでした。');
+                    return;
+                }
+
+                if(typeof toggleLoading === 'function') toggleLoading(true);
+
+                try {
+                    const res = await API.post('delete', { id: id });
+                    if (res.status === 'success') {
+                        closeModal('editModal');
+                        alert('削除しました');
+                        await refreshData();
+                    } else {
+                        alert('削除に失敗しました: ' + (res.message || '不明なエラー'));
+                    }
+                } catch (e) {
+                    console.error("Delete error:", e);
+                    alert("通信エラーが発生しました");
+                } finally {
+                    if(typeof toggleLoading === 'function') toggleLoading(false);
                 }
             }
 
