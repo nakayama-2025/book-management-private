@@ -1817,29 +1817,51 @@ const filtered = appState.inventory.filter(item => {
                     return;
                 }
 
-                // Logic: If multiplier is -1 (shipping), we subtract. If 1 (adding/return), we add.
-                const qtyDiff = val * multiplier;
+                // 対象アイテムを検索
+                const item = appState.inventory.find(i => String(i.id) === String(id));
+                if (!item) {
+                    alert("対象データが見つかりません");
+                    return;
+                }
 
-                // We reuse 'ship' endpoint logic for subtraction or add a new one. 
-                // Let's use a generic 'updateStock' logic.
-                const res = await API.post('ship', {
-                    qty_diff: -qtyDiff, // ship API subtracts 'qty_diff'. So if we want to add, we pass negative diff? No, let's look at logic.
-                    // Current 'ship' logic: item.qty -= payload.qty_diff
-                    // So for "Out" (multiplier -1), we pass +val. 
-                    // For "In" (multiplier 1), we pass -val.
-                    // wait, quickStockOp passes multiplier. 
-                    // If multiplier is -1 (Out), we want qty to decrease. 
-                    // qty_diff in backend is subtracted: `item.qty -= payload.qty_diff`
-                    // So for "Out", we send positive value `val`.
-                    // For "In", we send negative value `-val`.
+                // 新しい数量を計算
+                let currentQty = parseInt(item.qty) || 0;
+                let newQty = currentQty + (val * multiplier);
+                
+                // 0未満にならないようにする（マイナス在庫防止）
+                if (newQty < 0) {
+                    alert("出庫数が現在の在庫数を上回っています");
+                    return;
+                }
 
-                    qty_diff: (multiplier === -1) ? val : -val,
-                    memo: (multiplier === -1) ? 'クイック出庫' : 'クイック入庫',
-                    user: 'User'
-                });
+                if (typeof toggleLoading === 'function') toggleLoading(true);
 
-                if (res.status === 'success') {
-                    refreshData();
+                try {
+                    // edit APIを使用してスプレッドシート全体を安全に更新
+                    const res = await API.post('edit', {
+                        id: item.id,
+                        status: item.status || '有効',
+                        name: item.name,
+                        qty: newQty,
+                        area: item.area || '',
+                        shelf: item.shelf || '',
+                        column: item.column || '',
+                        loc_code: item.loc_code || ''
+                    });
+
+                    if (res.status === 'success') {
+                        // 入力欄をクリア
+                        input.value = '';
+                        // アラートは出さずに即座に最新データを取得・再描画
+                        await refreshData();
+                    } else {
+                        alert('更新に失敗しました: ' + (res.message || '不明なエラー'));
+                    }
+                } catch (e) {
+                    console.error("Quick stock operation error:", e);
+                    alert("通信エラーが発生しました");
+                } finally {
+                    if (typeof toggleLoading === 'function') toggleLoading(false);
                 }
             }
 
