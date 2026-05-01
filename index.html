@@ -522,12 +522,25 @@
             color: white;
         }
 
+        .map-container {
+            overflow-x: auto;
+            padding-right: 1rem;
+            -webkit-overflow-scrolling: touch;
+        }
+
         .shelf-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             justify-content: center;
             gap: 1rem;
             padding: 1rem 0;
+            min-width: max-content;
+        }
+
+        @media (max-width: 768px) {
+            .shelf-grid {
+                justify-content: flex-start;
+            }
         }
 
         .required {
@@ -546,7 +559,8 @@
             transition: all 0.2s;
             box-shadow: var(--shadow-sm);
             position: relative;
-            overflow: hidden;
+            min-width: 80px;
+            overflow: visible !important;
         }
 
         /* Grid borders based on area */
