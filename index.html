@@ -2236,10 +2236,10 @@ if (imgPath && String(imgPath).includes('http')) {
                     return;
                 }
 
-                // フォームに現在の値をセット
-                document.getElementById('editId').value = item.id || '';
-                document.getElementById('editName').value = item.name || '';
-                document.getElementById('editQty').value = item.qty || 0;
+                // フォームに現在の値を確実にセット（0や空文字が無視されないように変更）
+                document.getElementById('editId').value = item.id !== undefined ? item.id : '';
+                document.getElementById('editName').value = item.name !== undefined ? item.name : '';
+                document.getElementById('editQty').value = item.qty !== undefined ? item.qty : 0;
                 document.getElementById('editStatus').value = item.status || '有効';
 
                 let area = item.area;
@@ -2263,9 +2263,11 @@ if (imgPath && String(imgPath).includes('http')) {
                     if (shelf) document.getElementById('editShelf').value = shelf;
                     if (col) document.getElementById('editCol').value = col;
                 } else {
-                    // エリア情報がない場合はAエリアをデフォルトに
+                    // エリア情報がない場合の予備処理
                     document.getElementById('editArea').value = 'A';
                     updateEditLocOptions('A');
+                    document.getElementById('editShelf').value = '天';
+                    document.getElementById('editCol').value = '1';
                 }
 
                 // モーダルを表示
@@ -2307,14 +2309,19 @@ if (imgPath && String(imgPath).includes('http')) {
                 const name = document.getElementById('editName').value;
                 const qty = document.getElementById('editQty').value;
 
-                const area = document.getElementById('editArea').value;
-                const shelf = document.getElementById('editShelf').value;
-                const col = document.getElementById('editCol').value;
+                let area = document.getElementById('editArea').value;
+                let shelf = document.getElementById('editShelf').value;
+                let col = document.getElementById('editCol').value;
                 
-                if (!id || !name || !qty || !area || !shelf || !col) {
-                    alert("必須項目が入力されていません");
-                    return;
-                }
+                // 予備処理: 取得できなかった場合はデフォルト値をセット
+                if (!area) area = 'A';
+                if (!shelf) shelf = '天';
+                if (!col) col = '1';
+
+                // エラー箇所の特定を分かりやすく変更
+                if (!id) { alert("IDが取得できませんでした。"); return; }
+                if (!name) { alert("商品名が入力されていません。"); return; }
+                if (qty === '' || qty === null) { alert("数量が入力されていません。"); return; }
 
                 const loc_code = `${area}-${shelf}-${col}`;
                 
