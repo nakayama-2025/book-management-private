@@ -42,6 +42,8 @@
             /* Cyan */
             --area-g: #EC4899;
             /* Pink */
+            --area-h: #2563EB;
+            /* Royal Blue */
 
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
@@ -514,6 +516,12 @@
             color: white;
         }
 
+        .chip[data-area="H"].active {
+            background: var(--area-h);
+            border-color: var(--area-h);
+            color: white;
+        }
+
         .shelf-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -570,6 +578,10 @@
             border-color: var(--area-g);
         }
 
+        .shelf-grid[data-active-area="H"] .shelf-cell {
+            border-color: var(--area-h);
+        }
+
         .shelf-cell:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
@@ -607,6 +619,10 @@
 
         .shelf-grid[data-active-area="G"] .shelf-cell.occupied {
             background: #FDF2F8;
+        }
+
+        .shelf-grid[data-active-area="H"] .shelf-cell.occupied {
+            background: #EFF6FF;
         }
 
         .shelf-cell.grayed-out {
@@ -1038,6 +1054,7 @@
                             <option value="E">E</option>
                             <option value="F">F</option>
                             <option value="G">G</option>
+                            <option value="H">H</option>
                         </select>
                         <select id="filterStatus" onchange="filterItems()">
                             <option value="all" selected>全て</option>
@@ -1096,6 +1113,7 @@
                                         <option value="E">E</option>
                                         <option value="F">F</option>
                                         <option value="G">G</option>
+                                        <option value="H">H</option>
                                     </select>
                                     <select id="regShelf" required>
                                         <option value="" disabled selected>段</option>
@@ -1289,6 +1307,7 @@
                         <button class="chip" data-area="E" onclick="setMapArea('E')">E</button>
                         <button class="chip" data-area="F" onclick="setMapArea('F')">F</button>
                         <button class="chip" data-area="G" onclick="setMapArea('G')">G</button>
+                        <button class="chip" data-area="H" onclick="setMapArea('H')">H</button>
                     </div>
                     <div class="map-toggles"
                         style="margin-top: 0.5rem; text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
@@ -1401,6 +1420,7 @@
                         <option value="E">E</option>
                         <option value="F">F</option>
                         <option value="G">G</option>
+                        <option value="H">H</option>
                     </select>
                     <select id="editShelf"></select>
                     <select id="editCol"></select>
@@ -1512,7 +1532,8 @@
             'D': { rows: ['天', '上', '中', '下', '底'], cols: 5 },
             'E': { rows: ['天', '上', '中', '下', '底'], cols: 4 },
             'F': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
-            'G': { rows: ['天', '底'], cols: 4 }
+            'G': { rows: ['天', '底'], cols: 4 },
+            'H': { rows: ['奥', '手前'], cols: 6 }
         };
 
         /**
@@ -1622,7 +1643,8 @@
             { id: 'D', name: 'D', color: '#E67E22', top: 64, left: 10, width: 40, height: 8 },
             { id: 'E', name: 'E', color: '#A592C4', top: 76, left: 10, width: 30, height: 8 },
             { id: 'F', name: 'F', color: '#6FB3C9', top: 88, left: 10, width: 45, height: 6 },
-            { id: 'G', name: 'G', color: '#EC4899', top: 70, left: 65, width: 12, height: 12, label: { text: '用紙保管<br>エリア', top: 71, left: 79 } }
+            { id: 'G', name: 'G', color: '#EC4899', top: 70, left: 65, width: 12, height: 12, label: { text: '用紙保管<br>エリア', top: 71, left: 79 } },
+            { id: 'H', name: 'H', color: '#2563EB', top: 85, left: 65, width: 12, height: 12 }
         ];
 
         function renderOverviewMap() {
