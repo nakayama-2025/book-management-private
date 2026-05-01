@@ -2229,34 +2229,60 @@ if (imgPath && String(imgPath).includes('http')) {
             }
 
 
-function openEditModal(id) {
-    const item = appState.inventory.find(i => i.id == id);
-    if (!item) return;
+            function openEditModal(id) {
+                const item = appState.inventory.find(i => String(i.id) === String(id));
+                if (!item) {
+                    console.error("Item not found:", id);
+                    return;
+                }
 
-    // フォームに現在の値をセット
-    document.getElementById('editId').value = item.id;
-    document.getElementById('editName').value = item.name;
-    document.getElementById('editQty').value = item.qty;
-    document.getElementById('editStatus').value = item.status;
-    document.getElementById('editArea').value = item.area;
+                // フォームに現在の値をセット
+                document.getElementById('editId').value = item.id || '';
+                document.getElementById('editName').value = item.name || '';
+                document.getElementById('editQty').value = item.qty || 0;
+                document.getElementById('editStatus').value = item.status || '有効';
 
-    // 棚と列の選択肢を更新してから値をセット
-    updateEditLocOptions(item.area);
-    document.getElementById('editShelf').value = item.shelf;
-    document.getElementById('editCol').value = item.column;
+                let area = item.area;
+                let shelf = item.shelf;
+                let col = item.column;
 
-    // モーダルを表示
-    document.getElementById('editModal').classList.add('open');
-}
+                // もし個別のプロパティが無く、loc_code がある場合はそこから抽出
+                if ((!area || !shelf || !col) && item.loc_code) {
+                    const parts = item.loc_code.split('-');
+                    if (parts.length >= 3) {
+                        area = parts[0];
+                        shelf = parts[1];
+                        col = parts[2];
+                    }
+                }
+
+                if (area) {
+                    document.getElementById('editArea').value = area;
+                    // 棚と列の選択肢を更新してから値をセット
+                    updateEditLocOptions(area);
+                    if (shelf) document.getElementById('editShelf').value = shelf;
+                    if (col) document.getElementById('editCol').value = col;
+                } else {
+                    // エリア情報がない場合はAエリアをデフォルトに
+                    document.getElementById('editArea').value = 'A';
+                    updateEditLocOptions('A');
+                }
+
+                // モーダルを表示
+                document.getElementById('editModal').classList.add('open');
+            }
 
             function updateEditLocOptions(area) {
                 const config = SHELF_CONFIG[area];
                 const shelfSelect = document.getElementById('editShelf');
                 const colSelect = document.getElementById('editCol');
 
-                if (!config) return;
+                if (!config) {
+                    shelfSelect.innerHTML = '<option value="">-</option>';
+                    colSelect.innerHTML = '<option value="">-</option>';
+                    return;
+                }
 
-                // Save current if needed, but we usually overwrite
                 shelfSelect.innerHTML = '';
                 config.rows.forEach(r => {
                     const op = document.createElement('option');
@@ -2281,32 +2307,44 @@ function openEditModal(id) {
                 const name = document.getElementById('editName').value;
                 const qty = document.getElementById('editQty').value;
 
-                // New Loc
                 const area = document.getElementById('editArea').value;
                 const shelf = document.getElementById('editShelf').value;
                 const col = document.getElementById('editCol').value;
-                const loc_code = `${area}-${shelf}-${col}`;
-
-                if (!id || !name || !qty) {
-                    alert("必須項目が空です");
+                
+                if (!id || !name || !qty || !area || !shelf || !col) {
+                    alert("必須項目が入力されていません");
                     return;
                 }
 
-                const res = await API.post('edit', {
-                    id: id,
-                    status: status,
-                    name: name,
-                    qty: qty,
-                    // Add location update
-                    area: area,
-                    shelf: shelf,
-                    column: col,
-                    loc_code: loc_code
-                });
+                const loc_code = `${area}-${shelf}-${col}`;
+                
+                // 必要であればローディング表示
+                if(typeof toggleLoading === 'function') toggleLoading(true);
 
-                if (res.status === 'success') {
-                    closeModal('editModal');
-                    refreshData();
+                try {
+                    const res = await API.post('edit', {
+                        id: id,
+                        status: status,
+                        name: name,
+                        qty: parseInt(qty, 10),
+                        area: area,
+                        shelf: shelf,
+                        column: col,
+                        loc_code: loc_code
+                    });
+
+                    if (res.status === 'success') {
+                        closeModal('editModal');
+                        alert('更新しました');
+                        await refreshData();
+                    } else {
+                        alert('更新に失敗しました: ' + (res.message || '不明なエラー'));
+                    }
+                } catch (e) {
+                    console.error("Edit submission error:", e);
+                    alert("通信エラーが発生しました");
+                } finally {
+                    if(typeof toggleLoading === 'function') toggleLoading(false);
                 }
             }
 
