@@ -625,6 +625,107 @@
             background: #EFF6FF;
         }
 
+        .shelf-popover {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 350px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 2000;
+            overflow: hidden;
+            border: 1px solid #e1e4e8;
+            animation: slideUp 0.3s ease-out;
+        }
+        .popover-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        .popover-content {
+            padding: 15px;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        .popover-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+        }
+        .popover-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .popover-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        .popover-actions {
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-top: 1px solid #e1e4e8;
+        }
+        @keyframes slideUp {
+            from { transform: translate(-50%, 20px); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+        /* PC Hover Tooltip */
+        .shelf-cell { overflow: visible !important; }
+        .shelf-cell .pc-tooltip {
+            display: none;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .shelf-cell .pc-tooltip {
+                display: block;
+                visibility: hidden;
+                opacity: 0;
+                position: absolute;
+                bottom: calc(100% + 10px);
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(30, 41, 59, 0.95);
+                color: white;
+                padding: 10px;
+                border-radius: 8px;
+                font-size: 0.85rem;
+                z-index: 100;
+                pointer-events: none;
+                transition: opacity 0.2s, bottom 0.2s;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                width: max-content;
+                max-width: 250px;
+                text-align: left;
+            }
+            .shelf-cell .pc-tooltip::after {
+                content: '';
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                margin-left: -6px;
+                border-width: 6px;
+                border-style: solid;
+                border-color: rgba(30, 41, 59, 0.95) transparent transparent transparent;
+            }
+            .shelf-cell:hover .pc-tooltip {
+                visibility: visible;
+                opacity: 1;
+                bottom: calc(100% + 15px);
+            }
+        }
+
         .shelf-cell.grayed-out {
             background-color: #E5E7EB;
             border-color: #D1D5DB !important;
@@ -1310,9 +1411,8 @@
                         <button class="chip" data-area="H" onclick="setMapArea('H')">H</button>
                     </div>
                     <div class="map-toggles"
-                        style="margin-top: 0.5rem; text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
-                        <button class="btn-sm btn-secondary" onclick="toggleShelfStatus(true)">選択不可(グレー)にする</button>
-                        <button class="btn-sm btn-secondary" onclick="toggleShelfStatus(false)">使用可能にする(グレー解除)</button>
+                        style="margin-top: 0.5rem; text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end; color: #666; font-size: 0.8rem;">
+                        <span>※ 棚をタップ/クリックして詳細確認・設定</span>
                     </div>
                 </header>
                 <div class="map-container">
@@ -1505,6 +1605,17 @@
         </div>
     </div>
 
+    <!-- Shelf Popover -->
+    <div id="shelfPopover" class="shelf-popover" style="display:none;">
+        <div class="popover-header">
+            <h3 id="poLocCode" style="margin:0; font-size:1.1rem;"></h3>
+            <button class="btn-text" onclick="closeShelfPopover()" style="font-size:1.5rem; padding:0; line-height:1;"><ion-icon name="close-outline"></ion-icon></button>
+        </div>
+        <div id="poContent" class="popover-content"></div>
+        <div class="popover-actions">
+            <button id="poToggleBtn" class="btn-sm btn-secondary" style="width:100%;" onclick="toggleSingleShelfStatus()">設定変更</button>
+        </div>
+    </div>
 
     <script>
         /**
@@ -1944,65 +2055,121 @@ const filtered = appState.inventory.filter(item => {
                         cell.className = `shelf-cell ${isOccupied ? 'occupied' : ''} ${isDisabled ? 'grayed-out' : ''} ${isSelected ? 'selected' : ''}`;
 
                         cell.onclick = (e) => {
-                            // If checking stock logic
-                            // e.stopPropagation();
-                            handleShelfClick(locCode, isOccupied);
+                            e.preventDefault();
+                            openShelfPopover(locCode, items, isDisabled);
                         };
+
+                        // PC tooltip HTML
+                        let tooltipHTML = '';
+                        if (items.length > 0) {
+                            let itemsHTML = items.map(item => {
+                                let imgStr = '';
+                                const imgPath = item.image || item.Image;
+                                if (imgPath && String(imgPath).includes('http')) {
+                                    imgStr = `<img src="${imgPath}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; flex-shrink:0;">`;
+                                }
+                                return `
+                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;">
+                                        ${imgStr}
+                                        <div style="font-weight:normal; white-space:normal; line-height:1.3; overflow:hidden;">
+                                            <div style="font-weight:bold; font-size:0.9rem;">${item.name}</div>
+                                            <div style="font-size:0.75rem; color:#ccc;">在庫: ${item.qty}</div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('');
+                            tooltipHTML = `<div class="pc-tooltip">${itemsHTML}</div>`;
+                        } else if (isDisabled) {
+                            tooltipHTML = `<div class="pc-tooltip" style="text-align:center;">選択不可（グレーアウト）</div>`;
+                        } else {
+                            tooltipHTML = `<div class="pc-tooltip" style="text-align:center;">空き棚</div>`;
+                        }
 
                         cell.innerHTML = `
                 <span class="code">${shelf}-${col}</span>
                 <span class="count">${isDisabled ? '-' : (isOccupied ? items.length + '件' : '空')}</span>
+                ${tooltipHTML}
             `;
                         grid.appendChild(cell);
                     }
                 });
             }
 
-            function handleShelfClick(locCode, isOccupied) {
-                // Toggle selection
-                if (appState.selectedShelves.includes(locCode)) {
-                    appState.selectedShelves = appState.selectedShelves.filter(s => s !== locCode);
+            let currentPopoverLoc = null;
+
+            function openShelfPopover(locCode, items, isDisabled) {
+                currentPopoverLoc = locCode;
+                document.getElementById('poLocCode').textContent = locCode;
+                
+                const contentDiv = document.getElementById('poContent');
+                if (items.length > 0) {
+                    let itemsHTML = items.map(item => {
+                        let imgStr = '';
+                        const imgPath = item.image || item.Image;
+                        if (imgPath && String(imgPath).includes('http')) {
+                            imgStr = `<img src="${imgPath}">`;
+                        }
+                        return `
+                            <div class="popover-item">
+                                ${imgStr}
+                                <div>
+                                    <div style="font-weight:bold; font-size:0.95rem;">${item.name}</div>
+                                    <div style="font-size:0.8rem; color:#666;">在庫: ${item.qty}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    contentDiv.innerHTML = itemsHTML;
+                } else if (isDisabled) {
+                    contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">選択不可（グレーアウト）</div>`;
                 } else {
-                    appState.selectedShelves.push(locCode);
+                    contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">空き棚</div>`;
                 }
-                renderMap();
+
+                const toggleBtn = document.getElementById('poToggleBtn');
+                if (isDisabled) {
+                    toggleBtn.textContent = '使用可能にする（グレー解除）';
+                    toggleBtn.onclick = () => toggleSingleShelfStatus(false);
+                } else {
+                    toggleBtn.textContent = 'この棚を選択不可にする';
+                    toggleBtn.onclick = () => toggleSingleShelfStatus(true);
+                }
+
+                document.getElementById('shelfPopover').style.display = 'block';
             }
 
-            async function toggleShelfStatus(disable) {
-                if (appState.selectedShelves.length === 0) return;
+            function closeShelfPopover() {
+                document.getElementById('shelfPopover').style.display = 'none';
+                currentPopoverLoc = null;
+            }
 
-                // disable の時だけ「在庫がある棚は不可」チェック
+            async function toggleSingleShelfStatus(disable) {
+                if (!currentPopoverLoc) return;
+                const locCode = currentPopoverLoc;
+
                 if (disable) {
-                    const errorLocs = appState.selectedShelves.filter(loc =>
-                        appState.inventory.some(i => i.loc_code === loc && i.status === "有効")
-                    );
-                    if (errorLocs.length > 0) {
-                        alert(`以下の棚には在庫があるため、使用不可(グレーアウト)にできません:\n${errorLocs.join(", ")}`);
+                    const isOccupied = appState.inventory.some(i => i.loc_code === locCode && i.status === "有効");
+                    if (isOccupied) {
+                        alert("この棚には在庫があるため、使用不可(グレーアウト)にできません。");
                         return;
                     }
                 }
 
-                // 次の disabled 配列を作る（ローカルの状態更新）
-                let newDisabled;
                 if (disable) {
-                    newDisabled = [...new Set([...appState.disabledShelves, ...appState.selectedShelves])];
+                    if (!appState.disabledShelves.includes(locCode)) {
+                        appState.disabledShelves.push(locCode);
+                    }
                 } else {
-                    newDisabled = appState.disabledShelves.filter(s => !appState.selectedShelves.includes(s));
+                    appState.disabledShelves = appState.disabledShelves.filter(s => s !== locCode);
                 }
 
                 try {
-                    // ★サーバーへ一括保存（全置換）
-                    await saveDisabledShelvesToServer(newDisabled);
-
-                    // UI反映
-                    appState.disabledShelves = newDisabled;
-                    appState.selectedShelves = [];
-
-                    renderMap();          // まず見た目を即反映
-                    // await refreshData(); // 必要なら同期用に（inventoryも更新したい時）
+                    await saveDisabledShelvesToServer(appState.disabledShelves);
+                    closeShelfPopover();
+                    renderMap();
                 } catch (e) {
                     console.error(e);
-                    alert("棚状態の保存に失敗しました。Flask起動とURL( http://127.0.0.1:5000 )を確認してください。");
+                    alert("棚状態の保存に失敗しました。");
                 }
             }
 
