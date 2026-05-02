@@ -1325,6 +1325,7 @@
                             <label style="color:#0369a1; display:flex; align-items:center; gap:5px; margin-bottom:10px;">
                                 <ion-icon name="copy-outline"></ion-icon> 既存の在庫からコピーして登録 (オプション)
                             </label>
+                            <input type="text" id="regCloneSearch" placeholder="IDや名称で検索して絞り込み..." onkeyup="filterCloneSearch()" style="margin-bottom: 8px;">
                             <select id="regCloneSelect" onchange="fillCloneData(this.value)">
                                 <option value="">-- コピー元を選択 (ID / 名称) --</option>
                             </select>
@@ -3278,7 +3279,7 @@ const filtered = appState.inventory.filter(item => {
         }
 
         // --- Clone Registration Feature ---
-        function updateCloneSelect() {
+        function updateCloneSelect(filterQuery = '') {
             const select = document.getElementById('regCloneSelect');
             if (!select) return;
             select.innerHTML = '<option value="">-- コピー元を選択 (ID / 名称) --</option>';
@@ -3291,36 +3292,53 @@ const filtered = appState.inventory.filter(item => {
                 }
             });
             uniqueItems.sort((a,b) => String(a.id).localeCompare(String(b.id)));
+            
+            const q = filterQuery.toLowerCase();
             uniqueItems.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.id;
-                opt.textContent = `${item.id} : ${item.name} (${item.type})`;
-                select.appendChild(opt);
+                const text = `${item.id} : ${item.name} (${item.type})`;
+                if (!q || text.toLowerCase().includes(q)) {
+                    const opt = document.createElement('option');
+                    opt.value = item.id;
+                    opt.textContent = text;
+                    select.appendChild(opt);
+                }
             });
+        }
+
+        function filterCloneSearch() {
+            const query = document.getElementById('regCloneSearch').value;
+            updateCloneSelect(query);
         }
 
         function fillCloneData(cloneId) {
             if (!cloneId) return;
-            const item = appState.inventory.find(i => i.id === cloneId);
+            const item = appState.inventory.find(i => String(i.id) === String(cloneId));
             if (!item) return;
 
-            document.getElementById('regType').value = item.type || '書籍';
+            if (document.getElementById('regType')) document.getElementById('regType').value = item.type || '書籍';
             handleTypeChange();
             
-            document.getElementById('regName').value = item.name || '';
-            document.getElementById('regSize').value = item.size || '';
-            document.getElementById('regQty').value = '';
-            document.getElementById('regIsbn').value = item.isbn || '';
+            if (document.getElementById('regName')) document.getElementById('regName').value = item.name || '';
+            if (document.getElementById('regSize')) document.getElementById('regSize').value = item.size || '';
+            if (document.getElementById('regQty')) document.getElementById('regQty').value = '';
+            if (document.getElementById('regISBN')) document.getElementById('regISBN').value = item.isbn || '';
             
-            if (item.genre) document.getElementById('regGenre').value = item.genre;
-            if (item.base_price) document.getElementById('regBasePrice').value = item.base_price;
-            if (item.retail_price) document.getElementById('regRetailPrice').value = item.retail_price;
-            if (item.author) document.getElementById('regAuthor').value = item.author;
-            if (item.weight) document.getElementById('regWeight').value = item.weight;
-            if (item.thickness) document.getElementById('regThickness').value = item.thickness;
-            if (item.format) document.getElementById('regFormat').value = item.format;
-            if (item.sales_rep) document.getElementById('regSalesRep').value = item.sales_rep;
-            if (item.book_id) document.getElementById('regBookId').value = item.book_id;
+            if (item.genre && document.getElementById('regGenre')) document.getElementById('regGenre').value = item.genre;
+            if (item.base_price && document.getElementById('regBasePrice')) document.getElementById('regBasePrice').value = item.base_price;
+            if (item.retail_price && document.getElementById('regPrice')) document.getElementById('regPrice').value = item.retail_price;
+            if (item.author && document.getElementById('regAuthor')) document.getElementById('regAuthor').value = item.author;
+            if (item.weight && document.getElementById('regWeight')) document.getElementById('regWeight').value = item.weight;
+            if (item.thickness && document.getElementById('regThickness')) document.getElementById('regThickness').value = item.thickness;
+            if (item.format && document.getElementById('regFormat')) document.getElementById('regFormat').value = item.format;
+            if (item.sales && document.getElementById('regSales')) document.getElementById('regSales').value = item.sales;
+            if (item.book_id && document.getElementById('regBookId')) document.getElementById('regBookId').value = item.book_id;
+            
+            // Clear Image
+            if (document.getElementById('regShowFile')) document.getElementById('regShowFile').value = '';
+            currentImageBase64 = null;
+            if (document.getElementById('imagePreview')) {
+                document.getElementById('imagePreview').innerHTML = '<span><ion-icon name="image-outline"></ion-icon> クリックして画像を選択</span>';
+            }
             
             alert(`「${item.name}」の基本情報をコピーしました。\\n新しい保管場所と数量を設定して「登録」してください。`);
         }
