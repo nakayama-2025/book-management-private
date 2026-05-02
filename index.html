@@ -765,6 +765,105 @@
             color: var(--text-muted);
         }
 
+        /* ID Memo Panel */
+        .id-memo-panel {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 2000;
+            overflow: hidden;
+            border: 1px solid #e1e4e8;
+            display: flex;
+            flex-direction: column;
+        }
+        .memo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        .memo-header h4 { margin: 0; font-size: 1rem; display: flex; align-items: center; gap: 5px; }
+        .memo-content {
+            padding: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+        }
+        .memo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .memo-fab {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: none;
+            cursor: pointer;
+            z-index: 1999;
+        }
+        .memo-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        .copy-badge {
+            position: absolute;
+            background: #10b981;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.2s;
+            z-index: 100;
+            white-space: nowrap;
+        }
+        .copy-badge.show {
+            opacity: 1;
+            transform: translateY(-20px);
+        }
+        .id-clickable {
+            cursor: pointer;
+            color: var(--primary);
+            font-family: monospace;
+            font-weight: bold;
+            text-decoration: underline;
+            position: relative;
+            display: inline-block;
+            padding: 2px 4px;
+        }
+        .id-clickable:hover {
+            background-color: #f3f4f6;
+            border-radius: 4px;
+        }
+
         /* Mobile Bottom Nav */
         .bottom-nav {
             position: fixed;
@@ -1185,6 +1284,7 @@
                     <table id="inventoryTable">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>ステータス</th>
                                 <th>場所</th>
                                 <th>名称 / 用紙名</th>
@@ -1192,6 +1292,7 @@
                                 <th>入荷日 (経過)</th>
                                 <th>種別</th>
                                 <th>入出庫 / 編集</th>
+                                <th>メモ</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1621,6 +1722,24 @@
         </div>
     </div>
 
+    <!-- ID Memo Floating Panel -->
+    <div id="idMemoPanel" class="id-memo-panel" style="display:none;">
+        <div class="memo-header">
+            <h4><ion-icon name="list-outline"></ion-icon> IDメモ (<span id="memoCount">0</span>)</h4>
+            <div>
+                <button class="btn-text" onclick="copyMemoList()" title="全てコピー"><ion-icon name="copy-outline"></ion-icon></button>
+                <button class="btn-text" onclick="clearMemoList()" title="クリア"><ion-icon name="trash-outline"></ion-icon></button>
+                <button class="btn-text" onclick="toggleMemoPanel()"><ion-icon name="chevron-down-outline"></ion-icon></button>
+            </div>
+        </div>
+        <div id="memoListContent" class="memo-content"></div>
+    </div>
+    
+    <button id="memoFab" class="memo-fab" onclick="toggleMemoPanel()" style="display:none;">
+        <ion-icon name="list-outline"></ion-icon>
+        <span id="memoFabBadge" class="memo-badge">0</span>
+    </button>
+
     <!-- Shelf Popover -->
     <div id="shelfPopover" class="shelf-popover" style="display:none;">
         <div class="popover-header">
@@ -1649,7 +1768,8 @@
             filter: { text: '', area: '', status: 'all' },
             mergedShelves: false,
             selectedShelves: [],
-            disabledShelves: []
+            disabledShelves: [],
+            memoList: []
         };
 
         const SHELF_CONFIG = {
@@ -1938,7 +2058,11 @@ const filtered = appState.inventory.filter(item => {
                         imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${imgPath}')"></ion-icon> `;
                     }
 
+                    const isMemo = appState.memoList.some(m => m.id === item.id);
                     tr.innerHTML = `
+            <td>
+                <span class="id-clickable" onclick="copyId(event, '${item.id}')">${item.id}</span>
+            </td>
             <td><span class="status-badge ${item.status === '有効' ? 'status-ok' : 'status-empty'}">${item.status}</span></td>
             <td><strong>${item.loc_code}</strong></td>
             <td style="white-space: normal; min-width: 150px;">
@@ -1956,6 +2080,11 @@ const filtered = appState.inventory.filter(item => {
                 <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', -1)" title="出庫">出</button>
                 <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', 1)" title="入庫">入</button>
                 <button class="btn-sm btn-text" onclick="openEditModal('${item.id}')"><ion-icon name="create-outline"></ion-icon></button>
+            </td>
+            <td>
+                <button class="btn-sm ${isMemo ? 'btn-primary' : 'btn-text'}" onclick="toggleMemo('${item.id}', \`${(item.name || '').replace(/`/g, '')}\`)" title="メモに追加">
+                    <ion-icon name="${isMemo ? 'checkmark-circle' : 'add-circle-outline'}"></ion-icon>
+                </button>
             </td>
         `;
                     tbody.appendChild(tr);
@@ -3007,6 +3136,98 @@ const filtered = appState.inventory.filter(item => {
 
         function closeModal(id) {
             document.getElementById(id).classList.remove('open');
+        }
+
+        // --- ID Copy & Memo Feature ---
+        function copyId(event, id) {
+            navigator.clipboard.writeText(id).then(() => {
+                const target = event.currentTarget;
+                const badge = document.createElement('span');
+                badge.className = 'copy-badge';
+                badge.textContent = 'Copied!';
+                target.appendChild(badge);
+                
+                // trigger reflow
+                void badge.offsetWidth;
+                badge.classList.add('show');
+                
+                setTimeout(() => {
+                    badge.classList.remove('show');
+                    setTimeout(() => badge.remove(), 200);
+                }, 1000);
+            });
+        }
+
+        function toggleMemo(id, name) {
+            const index = appState.memoList.findIndex(item => item.id === id);
+            if (index > -1) {
+                appState.memoList.splice(index, 1);
+            } else {
+                appState.memoList.push({ id, name });
+            }
+            renderMemoList();
+            renderTable(); // Update the button icon
+        }
+
+        function renderMemoList() {
+            const count = appState.memoList.length;
+            document.getElementById('memoCount').textContent = count;
+            document.getElementById('memoFabBadge').textContent = count;
+            
+            if (count > 0) {
+                document.getElementById('memoFab').style.display = 'flex';
+            } else {
+                document.getElementById('memoFab').style.display = 'none';
+                document.getElementById('idMemoPanel').style.display = 'none';
+            }
+
+            const content = document.getElementById('memoListContent');
+            if (count === 0) {
+                content.innerHTML = '<div style="text-align:center;color:#999;padding:10px;">メモはありません</div>';
+                return;
+            }
+            
+            content.innerHTML = appState.memoList.map(item => `
+                <div class="memo-item">
+                    <div style="flex:1; overflow:hidden;">
+                        <span style="font-family:monospace; font-weight:bold; color:var(--primary); margin-right:5px;">${item.id}</span>
+                        <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:inline-block; vertical-align:bottom; max-width:180px;">${item.name}</span>
+                    </div>
+                    <button class="btn-text" style="color:#ef4444; padding:0;" onclick="toggleMemo('${item.id}', '')"><ion-icon name="close-circle-outline"></ion-icon></button>
+                </div>
+            `).join('');
+        }
+
+        function toggleMemoPanel() {
+            const panel = document.getElementById('idMemoPanel');
+            const fab = document.getElementById('memoFab');
+            if (panel.style.display === 'none' || panel.style.display === '') {
+                panel.style.display = 'flex';
+                fab.style.display = 'none';
+            } else {
+                panel.style.display = 'none';
+                if (appState.memoList.length > 0) {
+                    fab.style.display = 'flex';
+                }
+            }
+        }
+
+        function clearMemoList() {
+            if (confirm("メモリストをクリアしますか？")) {
+                appState.memoList = [];
+                renderMemoList();
+                renderTable();
+            }
+        }
+
+        function copyMemoList() {
+            if (appState.memoList.length === 0) return;
+            const text = appState.memoList.map(i => `${i.id}\t${i.name}`).join('\n');
+            navigator.clipboard.writeText(text).then(() => {
+                alert("リストをクリップボードにコピーしました！\\n（スプレッドシート等に貼り付けられます）");
+            }).catch(e => {
+                alert("コピーに失敗しました。");
+            });
         }
 
     </script>
