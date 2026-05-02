@@ -1277,10 +1277,6 @@
                             <option value="有効">在庫あり</option>
                             <option value="空き">空き</option>
                         </select>
-                        <label class="toggle-switch" style="margin-left: 0.5rem; background: white; padding: 0.2rem 0.6rem; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <input type="checkbox" id="aggregateToggle" onchange="renderTable()">
-                            <span class="toggle-label" style="font-weight:bold; font-size:0.8rem;">集約表示</span>
-                        </label>
                     </div>
                 </div>
 
@@ -1321,15 +1317,6 @@
 
                 <div class="form-card">
                     <form id="registerForm" onsubmit="handleRegister(event)">
-                        <div class="form-group full-width" style="background:#f0f9ff; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #bae6fd;">
-                            <label style="color:#0369a1; display:flex; align-items:center; gap:5px; margin-bottom:10px;">
-                                <ion-icon name="copy-outline"></ion-icon> 既存の在庫からコピーして登録 (オプション)
-                            </label>
-                            <select id="regCloneSelect" onchange="fillCloneData(this.value)">
-                                <option value="">-- コピー元を選択 (ID / 名称) --</option>
-                            </select>
-                            <div style="font-size:0.75rem; color:#0284c7; margin-top:5px;">※選択すると「名称」「種別」「ISBN」等が自動入力されます。</div>
-                        </div>
                         <div class="form-grid">
                             <!-- Location Section -->
                             <div class="form-group full-width">
@@ -1969,7 +1956,6 @@
                     } else {
                         appState.inventory = response.data; // fallback
                     }
-                    updateCloneSelect();
                     renderTable();
                 } else {
                     console.error(response.message);
@@ -2047,36 +2033,13 @@ const filtered = appState.inventory.filter(item => {
                 return matchText && matchArea && matchStatus;
             });
 
-                const aggregateToggle = document.getElementById('aggregateToggle');
-                let displayList = filtered;
-                
-                if (aggregateToggle && aggregateToggle.checked) {
-                    const grouped = {};
-                    filtered.forEach(item => {
-                        const key = item.id || item.name; // IDがあればID、なければ名称でグループ化
-                        if (!grouped[key]) {
-                            grouped[key] = { ...item };
-                            grouped[key].loc_code = item.loc_code || '-';
-                            grouped[key].qty = parseInt(item.qty || 0);
-                            grouped[key].isAggregated = true;
-                        } else {
-                            grouped[key].qty += parseInt(item.qty || 0);
-                            // 場所が異なれば追記
-                            if (!grouped[key].loc_code.includes(item.loc_code)) {
-                                grouped[key].loc_code += `, ${item.loc_code}`;
-                            }
-                        }
-                    });
-                    displayList = Object.values(grouped);
-                }
-
-                if (displayList.length === 0) {
+                if (filtered.length === 0) {
                     document.getElementById('emptyState').style.display = 'block';
                     return;
                 }
                 document.getElementById('emptyState').style.display = 'none';
 
-                displayList.forEach(item => {
+                filtered.forEach(item => {
                     const ageColor = getAgeColor(item.date_in);
                     
                     // 日付の表示形式を加工 (例: 2026-04-04T15:00:00.000Z -> 2026-04-04)
@@ -2113,12 +2076,10 @@ const filtered = appState.inventory.filter(item => {
             </td>
             <td>${item.type}</td>
             <td style="display:flex; gap:0.5rem; align-items:center; min-width: 200px;">
-                ${item.isAggregated ? \`<span style="font-size:0.8rem;color:#999;">集約表示中は編集不可</span>\` : \`
                 <input type="number" id="qty-diff-${item.id}" class="qty-input-mini" placeholder="0" min="1" style="width:60px; padding:4px;">
                 <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', -1)" title="出庫">出</button>
                 <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', 1)" title="入庫">入</button>
                 <button class="btn-sm btn-text" onclick="openEditModal('${item.id}')"><ion-icon name="create-outline"></ion-icon></button>
-                \`}
             </td>
             <td>
                 <button class="btn-sm ${isMemo ? 'btn-primary' : 'btn-text'}" onclick="toggleMemo('${item.id}', \`${(item.name || '').replace(/`/g, '')}\`)" title="メモに追加">
@@ -3267,54 +3228,6 @@ const filtered = appState.inventory.filter(item => {
             }).catch(e => {
                 alert("コピーに失敗しました。");
             });
-        }
-
-        // --- Clone Registration Feature ---
-        function updateCloneSelect() {
-            const select = document.getElementById('regCloneSelect');
-            if (!select) return;
-            select.innerHTML = '<option value="">-- コピー元を選択 (ID / 名称) --</option>';
-            const uniqueItems = [];
-            const seenIds = new Set();
-            appState.inventory.forEach(item => {
-                if (item.id && !seenIds.has(item.id)) {
-                    seenIds.add(item.id);
-                    uniqueItems.push(item);
-                }
-            });
-            uniqueItems.sort((a,b) => String(a.id).localeCompare(String(b.id)));
-            uniqueItems.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.id;
-                opt.textContent = `${item.id} : ${item.name} (${item.type})`;
-                select.appendChild(opt);
-            });
-        }
-
-        function fillCloneData(cloneId) {
-            if (!cloneId) return;
-            const item = appState.inventory.find(i => i.id === cloneId);
-            if (!item) return;
-
-            document.getElementById('regType').value = item.type || '書籍';
-            handleTypeChange();
-            
-            document.getElementById('regName').value = item.name || '';
-            document.getElementById('regSize').value = item.size || '';
-            document.getElementById('regQty').value = '';
-            document.getElementById('regIsbn').value = item.isbn || '';
-            
-            if (item.genre) document.getElementById('regGenre').value = item.genre;
-            if (item.base_price) document.getElementById('regBasePrice').value = item.base_price;
-            if (item.retail_price) document.getElementById('regRetailPrice').value = item.retail_price;
-            if (item.author) document.getElementById('regAuthor').value = item.author;
-            if (item.weight) document.getElementById('regWeight').value = item.weight;
-            if (item.thickness) document.getElementById('regThickness').value = item.thickness;
-            if (item.format) document.getElementById('regFormat').value = item.format;
-            if (item.sales_rep) document.getElementById('regSalesRep').value = item.sales_rep;
-            if (item.book_id) document.getElementById('regBookId').value = item.book_id;
-            
-            alert(`「${item.name}」の基本情報をコピーしました。\\n新しい保管場所と数量を設定して「登録」してください。`);
         }
 
     </script>
