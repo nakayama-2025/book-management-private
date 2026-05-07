@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-title" content="Stocker">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <title>Stocker - 在庫管理システム</title>
     <!-- Google Fonts -->
     <link
@@ -42,6 +44,8 @@
             /* Cyan */
             --area-g: #EC4899;
             /* Pink */
+            --area-h: #2563EB;
+            /* Royal Blue */
 
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
@@ -311,6 +315,7 @@
             width: 100%;
             border-collapse: collapse;
             white-space: nowrap;
+            table-layout: auto;
         }
 
         th {
@@ -513,12 +518,31 @@
             color: white;
         }
 
+        .chip[data-area="H"].active {
+            background: var(--area-h);
+            border-color: var(--area-h);
+            color: white;
+        }
+
+        .map-container {
+            overflow-x: auto;
+            padding-right: 1rem;
+            -webkit-overflow-scrolling: touch;
+        }
+
         .shelf-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             justify-content: center;
             gap: 1rem;
             padding: 1rem 0;
+            min-width: max-content;
+        }
+
+        @media (max-width: 768px) {
+            .shelf-grid {
+                justify-content: flex-start;
+            }
         }
 
         .required {
@@ -537,7 +561,8 @@
             transition: all 0.2s;
             box-shadow: var(--shadow-sm);
             position: relative;
-            overflow: hidden;
+            min-width: 80px;
+            overflow: visible !important;
         }
 
         /* Grid borders based on area */
@@ -567,6 +592,10 @@
 
         .shelf-grid[data-active-area="G"] .shelf-cell {
             border-color: var(--area-g);
+        }
+
+        .shelf-grid[data-active-area="H"] .shelf-cell {
+            border-color: var(--area-h);
         }
 
         .shelf-cell:hover {
@@ -608,6 +637,111 @@
             background: #FDF2F8;
         }
 
+        .shelf-grid[data-active-area="H"] .shelf-cell.occupied {
+            background: #EFF6FF;
+        }
+
+        .shelf-popover {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 350px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 2000;
+            overflow: hidden;
+            border: 1px solid #e1e4e8;
+            animation: slideUp 0.3s ease-out;
+        }
+        .popover-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        .popover-content {
+            padding: 15px;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        .popover-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+        }
+        .popover-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .popover-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        .popover-actions {
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-top: 1px solid #e1e4e8;
+        }
+        @keyframes slideUp {
+            from { transform: translate(-50%, 20px); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+        /* PC Hover Tooltip */
+        .shelf-cell { overflow: visible !important; }
+        .shelf-cell .pc-tooltip {
+            display: none;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .shelf-cell .pc-tooltip {
+                display: block;
+                visibility: hidden;
+                opacity: 0;
+                position: absolute;
+                bottom: calc(100% + 10px);
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(30, 41, 59, 0.95);
+                color: white;
+                padding: 10px;
+                border-radius: 8px;
+                font-size: 0.85rem;
+                z-index: 100;
+                pointer-events: none;
+                transition: opacity 0.2s, bottom 0.2s;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                width: max-content;
+                max-width: 250px;
+                text-align: left;
+            }
+            .shelf-cell .pc-tooltip::after {
+                content: '';
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                margin-left: -6px;
+                border-width: 6px;
+                border-style: solid;
+                border-color: rgba(30, 41, 59, 0.95) transparent transparent transparent;
+            }
+            .shelf-cell:hover .pc-tooltip {
+                visibility: visible;
+                opacity: 1;
+                bottom: calc(100% + 15px);
+            }
+        }
+
         .shelf-cell.grayed-out {
             background-color: #E5E7EB;
             border-color: #D1D5DB !important;
@@ -629,6 +763,105 @@
         .shelf-cell .count {
             font-size: 0.8rem;
             color: var(--text-muted);
+        }
+
+        /* ID Memo Panel */
+        .id-memo-panel {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 2000;
+            overflow: hidden;
+            border: 1px solid #e1e4e8;
+            display: flex;
+            flex-direction: column;
+        }
+        .memo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        .memo-header h4 { margin: 0; font-size: 1rem; display: flex; align-items: center; gap: 5px; }
+        .memo-content {
+            padding: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+        }
+        .memo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .memo-fab {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: none;
+            cursor: pointer;
+            z-index: 1999;
+        }
+        .memo-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        .copy-badge {
+            position: absolute;
+            background: #10b981;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.2s;
+            z-index: 100;
+            white-space: nowrap;
+        }
+        .copy-badge.show {
+            opacity: 1;
+            transform: translateY(-20px);
+        }
+        .id-clickable {
+            cursor: pointer;
+            color: var(--primary);
+            font-family: monospace;
+            font-weight: bold;
+            text-decoration: underline;
+            position: relative;
+            display: inline-block;
+            padding: 2px 4px;
+        }
+        .id-clickable:hover {
+            background-color: #f3f4f6;
+            border-radius: 4px;
         }
 
         /* Mobile Bottom Nav */
@@ -1010,79 +1243,7 @@
                         <span class="text-sm text-muted">クリックで拡大 / エリア選択で移動</span>
                     </div>
                     <div class="map-image-container" style="padding: 1rem 0;">
-                        <svg version="1.1" id="レイヤー_1" xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100%" height="auto"
-                            viewBox="0 0 1078 436" style="display:block; margin: 0 auto; max-width: 1000px;">
-                            <style>
-                                .area-box {
-                                    cursor: pointer;
-                                    transition: opacity 0.2s;
-                                }
-
-                                .area-box:hover {
-                                    opacity: 0.8;
-                                }
-
-                                .area-text {
-                                    pointer-events: none;
-                                    font-family: 'Noto Sans JP', sans-serif;
-                                    font-weight: bold;
-                                }
-
-                                .label-text {
-                                    pointer-events: none;
-                                    fill: #BDC3C7;
-                                    font-size: 32px;
-                                    font-family: 'Noto Sans JP', sans-serif;
-                                }
-                            </style>
-                            <g>
-                                <rect x="50" y="40" width="160" height="130" fill="#4573AD" rx="10" class="area-box"
-                                    onclick="jumpToArea('A')" />
-                                <text x="130" y="115" fill="white" font-size="48" text-anchor="middle"
-                                    class="area-text">A</text>
-                                <text x="950" y="130" class="label-text" text-anchor="end">工場エリア</text>
-
-                                <rect x="50" y="195" width="400" height="40" fill="#2AB074" rx="5" class="area-box"
-                                    onclick="jumpToArea('B')" />
-                                <rect x="650" y="195" width="230" height="40" fill="#2AB074" rx="5" class="area-box"
-                                    onclick="jumpToArea('B')" />
-                                <text x="430" y="225" fill="white" font-size="28" text-anchor="middle"
-                                    class="area-text">B</text>
-
-                                <rect x="50" y="245" width="400" height="40" fill="#F2C61F" rx="5" class="area-box"
-                                    onclick="jumpToArea('C')" />
-                                <rect x="660" y="245" width="220" height="40" fill="#F2C61F" rx="5" class="area-box"
-                                    onclick="jumpToArea('C')" />
-                                <text x="430" y="275" fill="white" font-size="28" text-anchor="middle"
-                                    class="area-text">C</text>
-                                <text x="950" y="275" class="label-text" text-anchor="end">ＰＰ室</text>
-
-                                <rect x="50" y="315" width="400" height="40" fill="#E67E22" rx="5" class="area-box"
-                                    onclick="jumpToArea('D')" />
-                                <text x="430" y="345" fill="white" font-size="28" text-anchor="middle"
-                                    class="area-text">D</text>
-
-                                <rect x="50" y="365" width="320" height="40" fill="#A592C4" rx="5" class="area-box"
-                                    onclick="jumpToArea('E')" />
-                                <text x="350" y="395" fill="white" font-size="28" text-anchor="middle"
-                                    class="area-text">E</text>
-
-                                <rect x="50" y="415" width="400" height="35" fill="#6FB3C9" rx="5" class="area-box"
-                                    onclick="jumpToArea('F')" />
-                                <rect x="520" y="415" width="370" height="35" fill="#6FB3C9" rx="5" class="area-box"
-                                    onclick="jumpToArea('F')" />
-                                <text x="430" y="442" fill="white" font-size="28" text-anchor="middle"
-                                    class="area-text">F</text>
-
-                                <rect x="800" y="325" width="100" height="80" fill="#EC4899" rx="8" class="area-box"
-                                    onclick="jumpToArea('G')" />
-                                <text x="850" y="375" fill="white" font-size="32" text-anchor="middle"
-                                    class="area-text">G</text>
-                                <text x="950" y="380" class="label-text" text-anchor="end">用紙保管<tspan x="950" dy="35">
-                                        エリア</tspan></text>
-                            </g>
-                        </svg>
+                        <div id="dashboardOverviewMap" class="overview-map-wrapper"></div>
                     </div>
                 </div>
 
@@ -1109,12 +1270,17 @@
                             <option value="E">E</option>
                             <option value="F">F</option>
                             <option value="G">G</option>
+                            <option value="H">H</option>
                         </select>
                         <select id="filterStatus" onchange="filterItems()">
                             <option value="all" selected>全て</option>
                             <option value="有効">在庫あり</option>
                             <option value="空き">空き</option>
                         </select>
+                        <label class="toggle-switch" style="margin-left: 0.5rem; background: white; padding: 0.2rem 0.6rem; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            <input type="checkbox" id="aggregateToggle" onchange="renderTable()">
+                            <span class="toggle-label" style="font-weight:bold; font-size:0.8rem;">集約表示</span>
+                        </label>
                     </div>
                 </div>
 
@@ -1122,6 +1288,7 @@
                     <table id="inventoryTable">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>ステータス</th>
                                 <th>場所</th>
                                 <th>名称 / 用紙名</th>
@@ -1129,6 +1296,7 @@
                                 <th>入荷日 (経過)</th>
                                 <th>種別</th>
                                 <th>入出庫 / 編集</th>
+                                <th>メモ</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1153,6 +1321,16 @@
 
                 <div class="form-card">
                     <form id="registerForm" onsubmit="handleRegister(event)">
+                        <div class="form-group full-width" style="background:#f0f9ff; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #bae6fd;">
+                            <label style="color:#0369a1; display:flex; align-items:center; gap:5px; margin-bottom:10px;">
+                                <ion-icon name="copy-outline"></ion-icon> 既存の在庫からコピーして登録 (オプション)
+                            </label>
+                            <input type="text" id="regCloneSearch" placeholder="IDや名称で検索して絞り込み..." onkeyup="filterCloneSearch()" style="margin-bottom: 8px;">
+                            <select id="regCloneSelect" onchange="fillCloneData(this.value)">
+                                <option value="">-- コピー元を選択 (ID / 名称) --</option>
+                            </select>
+                            <div style="font-size:0.75rem; color:#0284c7; margin-top:5px;">※選択すると「名称」「種別」「ISBN」等が自動入力されます。</div>
+                        </div>
                         <div class="form-grid">
                             <!-- Location Section -->
                             <div class="form-group full-width">
@@ -1167,6 +1345,7 @@
                                         <option value="E">E</option>
                                         <option value="F">F</option>
                                         <option value="G">G</option>
+                                        <option value="H">H</option>
                                     </select>
                                     <select id="regShelf" required>
                                         <option value="" disabled selected>段</option>
@@ -1360,11 +1539,11 @@
                         <button class="chip" data-area="E" onclick="setMapArea('E')">E</button>
                         <button class="chip" data-area="F" onclick="setMapArea('F')">F</button>
                         <button class="chip" data-area="G" onclick="setMapArea('G')">G</button>
+                        <button class="chip" data-area="H" onclick="setMapArea('H')">H</button>
                     </div>
                     <div class="map-toggles"
-                        style="margin-top: 0.5rem; text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
-                        <button class="btn-sm btn-secondary" onclick="toggleShelfStatus(true)">選択不可(グレー)にする</button>
-                        <button class="btn-sm btn-secondary" onclick="toggleShelfStatus(false)">使用可能にする(グレー解除)</button>
+                        style="margin-top: 0.5rem; text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end; color: #666; font-size: 0.8rem;">
+                        <span>※ 棚をタップ/クリックして詳細確認・設定</span>
                     </div>
                 </header>
                 <div class="map-container">
@@ -1472,6 +1651,7 @@
                         <option value="E">E</option>
                         <option value="F">F</option>
                         <option value="G">G</option>
+                        <option value="H">H</option>
                     </select>
                     <select id="editShelf"></select>
                     <select id="editCol"></select>
@@ -1493,44 +1673,47 @@
 <div id="mapViewModal" class="modal image-modal" onclick="closeModal('mapViewModal')">
         <div class="modal-content-image" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeModal('mapViewModal')"><ion-icon name="close"></ion-icon></button>
-            <svg version="1.1" id="レイヤー_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                x="0px" y="0px" width="100%" height="auto" viewBox="0 0 1078 436"
-                style="display:block; margin: 0 auto; max-width: 1000px;">
-                <style>
-                    .area-box { cursor: pointer; transition: opacity 0.2s; }
-                    .area-box:hover { opacity: 0.8; }
-                    .area-text { pointer-events: none; font-family: 'Noto Sans JP', sans-serif; font-weight: bold; }
-                    .label-text { pointer-events: none; fill: #BDC3C7; font-size: 32px; font-family: 'Noto Sans JP', sans-serif; }
-                </style>
-                <g>
-                    <rect x="50" y="40" width="160" height="130" fill="#4573AD" rx="10" class="area-box" onclick="jumpToArea('A')" />
-                    <text x="130" y="115" fill="white" font-size="48" text-anchor="middle" class="area-text">A</text>
-                    <text x="230" y="110" class="label-text" text-anchor="start" font-size="28">工場エリア</text>
-
-                    <rect x="50" y="195" width="400" height="40" fill="#2AB074" rx="5" class="area-box" onclick="jumpToArea('B')" />
-                    <rect x="650" y="195" width="230" height="40" fill="#2AB074" rx="5" class="area-box" onclick="jumpToArea('B')" />
-                    <text x="430" y="225" fill="white" font-size="28" text-anchor="middle" class="area-text">B</text>
-
-                    <rect x="50" y="245" width="400" height="40" fill="#F2C61F" rx="5" class="area-box" onclick="jumpToArea('C')" />
-                    <rect x="660" y="245" width="220" height="40" fill="#F2C61F" rx="5" class="area-box" onclick="jumpToArea('C')" />
-                    <text x="430" y="275" fill="white" font-size="28" text-anchor="middle" class="area-text">C</text>
-                    <text x="900" y="275" class="label-text" text-anchor="start" font-size="28">ＰＰ室</text>
-
-                    <rect x="50" y="315" width="400" height="40" fill="#E67E22" rx="5" class="area-box" onclick="jumpToArea('D')" />
-                    <text x="430" y="345" fill="white" font-size="28" text-anchor="middle" class="area-text">D</text>
-
-                    <rect x="50" y="365" width="320" height="40" fill="#A592C4" rx="5" class="area-box" onclick="jumpToArea('E')" />
-                    <text x="350" y="395" fill="white" font-size="28" text-anchor="middle" class="area-text">E</text>
-
-                    <rect x="50" y="415" width="400" height="35" fill="#6FB3C9" rx="5" class="area-box" onclick="jumpToArea('F')" />
-                    <rect x="520" y="415" width="370" height="35" fill="#6FB3C9" rx="5" class="area-box" onclick="jumpToArea('F')" />
-                    <text x="430" y="442" fill="white" font-size="28" text-anchor="middle" class="area-text">F</text>
-
-                    <rect x="750" y="325" width="100" height="80" fill="#EC4899" rx="8" class="area-box" onclick="jumpToArea('G')" />
-                    <text x="800" y="375" fill="white" font-size="32" text-anchor="middle" class="area-text">G</text>
-                    <text x="870" y="365" class="label-text" text-anchor="start" font-size="28">用紙保管<tspan x="870" dy="30">エリア</tspan></text>
-                </g>
-            </svg>
+            <style>
+                .overview-map-wrapper {
+                    position: relative;
+                    width: 100%;
+                    max-width: 900px;
+                    aspect-ratio: 16 / 9;
+                    background-color: #f4f6f8;
+                    border: 2px solid #e1e4e8;
+                    border-radius: 12px;
+                    margin: 0 auto;
+                    overflow: hidden;
+                }
+                .map-area {
+                    position: absolute;
+                    border-radius: 8px; /* 角を少し丸く */
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    cursor: pointer;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+                }
+                .map-area:hover {
+                    opacity: 0.9;
+                    transform: translateY(-2px); /* 浮き上がるエフェクト */
+                    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+                }
+                .map-area-label {
+                    position: absolute;
+                    color: #555;
+                    font-weight: bold;
+                    font-size: 1.2rem;
+                    pointer-events: none;
+                    white-space: nowrap;
+                    line-height: 1.2;
+                }
+            </style>
+            <div id="overviewMapContainer" class="overview-map-wrapper"></div>
         </div>
     </div>
 
@@ -1553,6 +1736,35 @@
         </div>
     </div>
 
+    <!-- ID Memo Floating Panel -->
+    <div id="idMemoPanel" class="id-memo-panel" style="display:none;">
+        <div class="memo-header">
+            <h4><ion-icon name="list-outline"></ion-icon> IDメモ (<span id="memoCount">0</span>)</h4>
+            <div>
+                <button class="btn-text" onclick="copyMemoList()" title="全てコピー"><ion-icon name="copy-outline"></ion-icon></button>
+                <button class="btn-text" onclick="clearMemoList()" title="クリア"><ion-icon name="trash-outline"></ion-icon></button>
+                <button class="btn-text" onclick="toggleMemoPanel()"><ion-icon name="chevron-down-outline"></ion-icon></button>
+            </div>
+        </div>
+        <div id="memoListContent" class="memo-content"></div>
+    </div>
+    
+    <button id="memoFab" class="memo-fab" onclick="toggleMemoPanel()" style="display:none;">
+        <ion-icon name="list-outline"></ion-icon>
+        <span id="memoFabBadge" class="memo-badge">0</span>
+    </button>
+
+    <!-- Shelf Popover -->
+    <div id="shelfPopover" class="shelf-popover" style="display:none;">
+        <div class="popover-header">
+            <h3 id="poLocCode" style="margin:0; font-size:1.1rem;"></h3>
+            <button class="btn-text" onclick="closeShelfPopover()" style="font-size:1.5rem; padding:0; line-height:1;"><ion-icon name="close-outline"></ion-icon></button>
+        </div>
+        <div id="poContent" class="popover-content"></div>
+        <div class="popover-actions">
+            <button id="poToggleBtn" class="btn-sm btn-secondary" style="width:100%;" onclick="toggleSingleShelfStatus()">設定変更</button>
+        </div>
+    </div>
 
     <script>
         /**
@@ -1570,17 +1782,19 @@
             filter: { text: '', area: '', status: 'all' },
             mergedShelves: false,
             selectedShelves: [],
-            disabledShelves: []
+            disabledShelves: [],
+            memoList: []
         };
 
         const SHELF_CONFIG = {
             'A': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
-            'B': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
-            'C': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
+            'B': { rows: ['天', '上', '中', '下', '底'], cols: 8 },
+            'C': { rows: ['天', '上', '中', '下', '底'], cols: 8 },
             'D': { rows: ['天', '上', '中', '下', '底'], cols: 5 },
             'E': { rows: ['天', '上', '中', '下', '底'], cols: 4 },
             'F': { rows: ['天', '上', '中', '下', '底'], cols: 10 },
-            'G': { rows: ['天', '底'], cols: 4 }
+            'G': { rows: ['天', '底'], cols: 4 },
+            'H': { rows: ['奥', '手前'], cols: 6 }
         };
 
         /**
@@ -1642,6 +1856,7 @@
          * Initialization
          */
         document.addEventListener('DOMContentLoaded', () => {
+            renderOverviewMap();
             // Check URL Params for QR Code Entry
             const urlParams = new URLSearchParams(window.location.search);
             const locParam = urlParams.get('loc');
@@ -1682,6 +1897,55 @@
             }
         }
 
+        const mapData = [
+            { id: 'A', name: 'A', color: '#4573AD', top: 10, left: 10, width: 25, height: 25, label: { text: '工場エリア', top: 18, left: 38 } },
+            { id: 'B', name: 'B', color: '#2AB074', top: 40, left: 10, width: 40, height: 8 },
+            { id: 'C', name: 'C', color: '#F2C61F', top: 52, left: 10, width: 40, height: 8, label: { text: 'ＰＰ室', top: 52, left: 52 } },
+            { id: 'D', name: 'D', color: '#E67E22', top: 64, left: 10, width: 40, height: 8 },
+            { id: 'E', name: 'E', color: '#A592C4', top: 76, left: 10, width: 30, height: 8 },
+            { id: 'F', name: 'F', color: '#6FB3C9', top: 88, left: 10, width: 45, height: 6 },
+            { id: 'G', name: 'G', color: '#EC4899', top: 70, left: 65, width: 12, height: 12, label: { text: '用紙保管<br>エリア', top: 71, left: 79 } },
+            { id: 'H', name: 'H', color: '#2563EB', top: 85, left: 65, width: 12, height: 12 }
+        ];
+
+        function renderOverviewMap() {
+            const containers = [
+                document.getElementById('dashboardOverviewMap'),
+                document.getElementById('overviewMapContainer')
+            ];
+            
+            containers.forEach(container => {
+                if (!container) return;
+                container.innerHTML = '';
+                
+                mapData.forEach(area => {
+                    const block = document.createElement('div');
+                    block.className = 'map-area';
+                    block.style.top = area.top + '%';
+                    block.style.left = area.left + '%';
+                    block.style.width = area.width + '%';
+                    block.style.height = area.height + '%';
+                    block.style.backgroundColor = area.color;
+                    block.textContent = area.name;
+                    block.onclick = (e) => {
+                        e.stopPropagation();
+                        jumpToArea(area.id);
+                    };
+                    
+                    container.appendChild(block);
+
+                    if (area.label) {
+                        const label = document.createElement('div');
+                        label.className = 'map-area-label';
+                        label.style.top = area.label.top + '%';
+                        label.style.left = area.label.left + '%';
+                        label.innerHTML = area.label.text;
+                        container.appendChild(label);
+                    }
+                });
+            });
+        }
+
         function jumpToArea(area) {
             router('map');
             setMapArea(area);
@@ -1698,10 +1962,15 @@
                     // Support both formats for backward compat if needed, but here we change mock
                     if (response.data.inventory) {
                         appState.inventory = response.data.inventory;
-                        appState.disabledShelves = response.data.disabled || [];
+                        // 過去のグレーアウト設定（D・E棚など）を完全に解除し、A棚の指定箇所のみに固定（クリーン化）
+                        appState.disabledShelves = [
+                            'A-天-5', 'A-上-5', 'A-中-5', 'A-下-5', 'A-底-5',
+                            'A-天-10', 'A-上-10', 'A-中-10', 'A-下-10', 'A-底-10'
+                        ];
                     } else {
                         appState.inventory = response.data; // fallback
                     }
+                    updateCloneSelect();
                     renderTable();
                 } else {
                     console.error(response.message);
@@ -1779,43 +2048,91 @@ const filtered = appState.inventory.filter(item => {
                 return matchText && matchArea && matchStatus;
             });
 
-                if (filtered.length === 0) {
+                const aggregateToggle = document.getElementById('aggregateToggle');
+                let displayList = filtered;
+                
+                if (aggregateToggle && aggregateToggle.checked) {
+                    const grouped = {};
+                    filtered.forEach(item => {
+                        const key = item.id || item.name; // IDがあればID、なければ名称でグループ化
+                        if (!grouped[key]) {
+                            grouped[key] = { ...item };
+                            grouped[key].loc_code = item.loc_code || '-';
+                            grouped[key].qty = parseInt(item.qty || 0);
+                            grouped[key].isAggregated = true;
+                        } else {
+                            grouped[key].qty += parseInt(item.qty || 0);
+                            if (!grouped[key].loc_code.includes(item.loc_code)) {
+                                grouped[key].loc_code += `, ${item.loc_code}`;
+                            }
+                        }
+                    });
+                    displayList = Object.values(grouped);
+                }
+
+                if (displayList.length === 0) {
                     document.getElementById('emptyState').style.display = 'block';
                     return;
                 }
                 document.getElementById('emptyState').style.display = 'none';
 
-                filtered.forEach(item => {
+                displayList.forEach(item => {
                     const ageColor = getAgeColor(item.date_in);
+                    
+                    // 日付の表示形式を加工 (例: 2026-04-04T15:00:00.000Z -> 2026-04-04)
+                    let displayDate = item.date_in || '';
+                    if (displayDate && String(displayDate).includes('T')) {
+                        displayDate = String(displayDate).split('T')[0];
+                    }
+
                     const tr = document.createElement('tr');
 
                     // Image Indicator (if exists)
                     let imgIcon = '';
-                    // image も Image も両方チェックするようにします
-// URLの中に "http" という文字が含まれているかチェックするようにします
-const imgPath = item.image || item.Image;
-if (imgPath && String(imgPath).includes('http')) {
-    imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${imgPath}')"></ion-icon> `;
-}
+                    // URLの中に "http" という文字が含まれているかチェックするようにします
+                    const imgPath = item.image || item.Image;
+                    if (imgPath && String(imgPath).includes('http')) {
+                        imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${imgPath}')"></ion-icon> `;
+                    }
 
+                    let actionsHtml = '';
+                    if (item.isAggregated) {
+                        actionsHtml = '<span style="font-size:0.8rem;color:#999;">集約表示中は編集不可</span>';
+                    } else {
+                        actionsHtml = `
+                            <input type="number" id="qty-diff-${item.id}" class="qty-input-mini" placeholder="0" min="1" style="width:60px; padding:4px;">
+                            <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', -1)" title="出庫">出</button>
+                            <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', 1)" title="入庫">入</button>
+                            <button class="btn-sm btn-text" onclick="openEditModal('${item.id}')"><ion-icon name="create-outline"></ion-icon></button>
+                        `;
+                    }
+                    
+                    const safeName = (item.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/`/g, "\\`");
+                    const isMemo = appState.memoList.some(m => m.id === item.id);
+                    
                     tr.innerHTML = `
+            <td>
+                <span class="id-clickable" onclick="copyId(event, '${item.id}')">${item.id}</span>
+            </td>
             <td><span class="status-badge ${item.status === '有効' ? 'status-ok' : 'status-empty'}">${item.status}</span></td>
             <td><strong>${item.loc_code}</strong></td>
-            <td>
+            <td style="white-space: normal; min-width: 150px;">
                 <div>${imgIcon}${item.name}</div>
                 <div style="font-size:0.8rem;color:#666">${item.type} / ${item.size || '-'}</div>
             </td>
             <td>${item.qty}</td>
-            <td>
+            <td style="width: 120px;">
                 <span class="age-dot ${ageColor}"></span>
-                ${item.date_in}
+                ${displayDate}
             </td>
             <td>${item.type}</td>
-            <td style="display:flex; gap:0.5rem; align-items:center;">
-                <input type="number" id="qty-diff-${item.id}" class="qty-input-mini" placeholder="0" min="1" style="width:60px; padding:4px;">
-                <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', -1)" title="出庫">出</button>
-                <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', 1)" title="入庫">入</button>
-                <button class="btn-sm btn-text" onclick="openEditModal('${item.id}')"><ion-icon name="create-outline"></ion-icon></button>
+            <td style="display:flex; gap:0.5rem; align-items:center; min-width: 200px;">
+                ${actionsHtml}
+            </td>
+            <td>
+                <button class="btn-sm ${isMemo ? 'btn-primary' : 'btn-text'}" onclick="toggleMemo('${item.id}', '${safeName}')" title="メモに追加">
+                    <ion-icon name="${isMemo ? 'checkmark-circle' : 'add-circle-outline'}"></ion-icon>
+                </button>
             </td>
         `;
                     tbody.appendChild(tr);
@@ -1830,29 +2147,51 @@ if (imgPath && String(imgPath).includes('http')) {
                     return;
                 }
 
-                // Logic: If multiplier is -1 (shipping), we subtract. If 1 (adding/return), we add.
-                const qtyDiff = val * multiplier;
+                // 対象アイテムを検索
+                const item = appState.inventory.find(i => String(i.id) === String(id));
+                if (!item) {
+                    alert("対象データが見つかりません");
+                    return;
+                }
 
-                // We reuse 'ship' endpoint logic for subtraction or add a new one. 
-                // Let's use a generic 'updateStock' logic.
-                const res = await API.post('ship', {
-                    qty_diff: -qtyDiff, // ship API subtracts 'qty_diff'. So if we want to add, we pass negative diff? No, let's look at logic.
-                    // Current 'ship' logic: item.qty -= payload.qty_diff
-                    // So for "Out" (multiplier -1), we pass +val. 
-                    // For "In" (multiplier 1), we pass -val.
-                    // wait, quickStockOp passes multiplier. 
-                    // If multiplier is -1 (Out), we want qty to decrease. 
-                    // qty_diff in backend is subtracted: `item.qty -= payload.qty_diff`
-                    // So for "Out", we send positive value `val`.
-                    // For "In", we send negative value `-val`.
+                // 新しい数量を計算
+                let currentQty = parseInt(item.qty) || 0;
+                let newQty = currentQty + (val * multiplier);
+                
+                // 0未満にならないようにする（マイナス在庫防止）
+                if (newQty < 0) {
+                    alert("出庫数が現在の在庫数を上回っています");
+                    return;
+                }
 
-                    qty_diff: (multiplier === -1) ? val : -val,
-                    memo: (multiplier === -1) ? 'クイック出庫' : 'クイック入庫',
-                    user: 'User'
-                });
+                if (typeof toggleLoading === 'function') toggleLoading(true);
 
-                if (res.status === 'success') {
-                    refreshData();
+                try {
+                    // edit APIを使用してスプレッドシート全体を安全に更新
+                    const res = await API.post('edit', {
+                        id: item.id,
+                        status: item.status || '有効',
+                        name: item.name,
+                        qty: newQty,
+                        area: item.area || '',
+                        shelf: item.shelf || '',
+                        column: item.column || '',
+                        loc_code: item.loc_code || ''
+                    });
+
+                    if (res.status === 'success') {
+                        // 入力欄をクリア
+                        input.value = '';
+                        // アラートは出さずに即座に最新データを取得・再描画
+                        await refreshData();
+                    } else {
+                        alert('更新に失敗しました: ' + (res.message || '不明なエラー'));
+                    }
+                } catch (e) {
+                    console.error("Quick stock operation error:", e);
+                    alert("通信エラーが発生しました");
+                } finally {
+                    if (typeof toggleLoading === 'function') toggleLoading(false);
                 }
             }
 
@@ -1909,65 +2248,121 @@ if (imgPath && String(imgPath).includes('http')) {
                         cell.className = `shelf-cell ${isOccupied ? 'occupied' : ''} ${isDisabled ? 'grayed-out' : ''} ${isSelected ? 'selected' : ''}`;
 
                         cell.onclick = (e) => {
-                            // If checking stock logic
-                            // e.stopPropagation();
-                            handleShelfClick(locCode, isOccupied);
+                            e.preventDefault();
+                            openShelfPopover(locCode, items, isDisabled);
                         };
+
+                        // PC tooltip HTML
+                        let tooltipHTML = '';
+                        if (items.length > 0) {
+                            let itemsHTML = items.map(item => {
+                                let imgStr = '';
+                                const imgPath = item.image || item.Image;
+                                if (imgPath && String(imgPath).includes('http')) {
+                                    imgStr = `<img src="${imgPath}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; flex-shrink:0;">`;
+                                }
+                                return `
+                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;">
+                                        ${imgStr}
+                                        <div style="font-weight:normal; white-space:normal; line-height:1.3; overflow:hidden;">
+                                            <div style="font-weight:bold; font-size:0.9rem;">${item.name}</div>
+                                            <div style="font-size:0.75rem; color:#ccc;">在庫: ${item.qty}</div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('');
+                            tooltipHTML = `<div class="pc-tooltip">${itemsHTML}</div>`;
+                        } else if (isDisabled) {
+                            tooltipHTML = `<div class="pc-tooltip" style="text-align:center;">選択不可（グレーアウト）</div>`;
+                        } else {
+                            tooltipHTML = `<div class="pc-tooltip" style="text-align:center;">空き棚</div>`;
+                        }
 
                         cell.innerHTML = `
                 <span class="code">${shelf}-${col}</span>
                 <span class="count">${isDisabled ? '-' : (isOccupied ? items.length + '件' : '空')}</span>
+                ${tooltipHTML}
             `;
                         grid.appendChild(cell);
                     }
                 });
             }
 
-            function handleShelfClick(locCode, isOccupied) {
-                // Toggle selection
-                if (appState.selectedShelves.includes(locCode)) {
-                    appState.selectedShelves = appState.selectedShelves.filter(s => s !== locCode);
+            let currentPopoverLoc = null;
+
+            function openShelfPopover(locCode, items, isDisabled) {
+                currentPopoverLoc = locCode;
+                document.getElementById('poLocCode').textContent = locCode;
+                
+                const contentDiv = document.getElementById('poContent');
+                if (items.length > 0) {
+                    let itemsHTML = items.map(item => {
+                        let imgStr = '';
+                        const imgPath = item.image || item.Image;
+                        if (imgPath && String(imgPath).includes('http')) {
+                            imgStr = `<img src="${imgPath}">`;
+                        }
+                        return `
+                            <div class="popover-item">
+                                ${imgStr}
+                                <div>
+                                    <div style="font-weight:bold; font-size:0.95rem;">${item.name}</div>
+                                    <div style="font-size:0.8rem; color:#666;">在庫: ${item.qty}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    contentDiv.innerHTML = itemsHTML;
+                } else if (isDisabled) {
+                    contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">選択不可（グレーアウト）</div>`;
                 } else {
-                    appState.selectedShelves.push(locCode);
+                    contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">空き棚</div>`;
                 }
-                renderMap();
+
+                const toggleBtn = document.getElementById('poToggleBtn');
+                if (isDisabled) {
+                    toggleBtn.textContent = '使用可能にする（グレー解除）';
+                    toggleBtn.onclick = () => toggleSingleShelfStatus(false);
+                } else {
+                    toggleBtn.textContent = 'この棚を選択不可にする';
+                    toggleBtn.onclick = () => toggleSingleShelfStatus(true);
+                }
+
+                document.getElementById('shelfPopover').style.display = 'block';
             }
 
-            async function toggleShelfStatus(disable) {
-                if (appState.selectedShelves.length === 0) return;
+            function closeShelfPopover() {
+                document.getElementById('shelfPopover').style.display = 'none';
+                currentPopoverLoc = null;
+            }
 
-                // disable の時だけ「在庫がある棚は不可」チェック
+            async function toggleSingleShelfStatus(disable) {
+                if (!currentPopoverLoc) return;
+                const locCode = currentPopoverLoc;
+
                 if (disable) {
-                    const errorLocs = appState.selectedShelves.filter(loc =>
-                        appState.inventory.some(i => i.loc_code === loc && i.status === "有効")
-                    );
-                    if (errorLocs.length > 0) {
-                        alert(`以下の棚には在庫があるため、使用不可(グレーアウト)にできません:\n${errorLocs.join(", ")}`);
+                    const isOccupied = appState.inventory.some(i => i.loc_code === locCode && i.status === "有効");
+                    if (isOccupied) {
+                        alert("この棚には在庫があるため、使用不可(グレーアウト)にできません。");
                         return;
                     }
                 }
 
-                // 次の disabled 配列を作る（ローカルの状態更新）
-                let newDisabled;
                 if (disable) {
-                    newDisabled = [...new Set([...appState.disabledShelves, ...appState.selectedShelves])];
+                    if (!appState.disabledShelves.includes(locCode)) {
+                        appState.disabledShelves.push(locCode);
+                    }
                 } else {
-                    newDisabled = appState.disabledShelves.filter(s => !appState.selectedShelves.includes(s));
+                    appState.disabledShelves = appState.disabledShelves.filter(s => s !== locCode);
                 }
 
                 try {
-                    // ★サーバーへ一括保存（全置換）
-                    await saveDisabledShelvesToServer(newDisabled);
-
-                    // UI反映
-                    appState.disabledShelves = newDisabled;
-                    appState.selectedShelves = [];
-
-                    renderMap();          // まず見た目を即反映
-                    // await refreshData(); // 必要なら同期用に（inventoryも更新したい時）
+                    await saveDisabledShelvesToServer(appState.disabledShelves);
+                    closeShelfPopover();
+                    renderMap();
                 } catch (e) {
                     console.error(e);
-                    alert("棚状態の保存に失敗しました。Flask起動とURL( http://127.0.0.1:5000 )を確認してください。");
+                    alert("棚状態の保存に失敗しました。");
                 }
             }
 
@@ -2789,6 +3184,163 @@ if (imgPath && String(imgPath).includes('http')) {
 
         function closeModal(id) {
             document.getElementById(id).classList.remove('open');
+        }
+
+        // --- ID Copy & Memo Feature ---
+        function copyId(event, id) {
+            navigator.clipboard.writeText(id).then(() => {
+                const target = event.currentTarget;
+                const badge = document.createElement('span');
+                badge.className = 'copy-badge';
+                badge.textContent = 'Copied!';
+                target.appendChild(badge);
+                
+                // trigger reflow
+                void badge.offsetWidth;
+                badge.classList.add('show');
+                
+                setTimeout(() => {
+                    badge.classList.remove('show');
+                    setTimeout(() => badge.remove(), 200);
+                }, 1000);
+            });
+        }
+
+        function toggleMemo(id, name) {
+            const index = appState.memoList.findIndex(item => item.id === id);
+            if (index > -1) {
+                appState.memoList.splice(index, 1);
+            } else {
+                appState.memoList.push({ id, name });
+            }
+            renderMemoList();
+            renderTable(); // Update the button icon
+        }
+
+        function renderMemoList() {
+            const count = appState.memoList.length;
+            document.getElementById('memoCount').textContent = count;
+            document.getElementById('memoFabBadge').textContent = count;
+            
+            if (count > 0) {
+                document.getElementById('memoFab').style.display = 'flex';
+            } else {
+                document.getElementById('memoFab').style.display = 'none';
+                document.getElementById('idMemoPanel').style.display = 'none';
+            }
+
+            const content = document.getElementById('memoListContent');
+            if (count === 0) {
+                content.innerHTML = '<div style="text-align:center;color:#999;padding:10px;">メモはありません</div>';
+                return;
+            }
+            
+            content.innerHTML = appState.memoList.map(item => `
+                <div class="memo-item">
+                    <div style="flex:1; overflow:hidden;">
+                        <span style="font-family:monospace; font-weight:bold; color:var(--primary); margin-right:5px;">${item.id}</span>
+                        <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:inline-block; vertical-align:bottom; max-width:180px;">${item.name}</span>
+                    </div>
+                    <button class="btn-text" style="color:#ef4444; padding:0;" onclick="toggleMemo('${item.id}', '')"><ion-icon name="close-circle-outline"></ion-icon></button>
+                </div>
+            `).join('');
+        }
+
+        function toggleMemoPanel() {
+            const panel = document.getElementById('idMemoPanel');
+            const fab = document.getElementById('memoFab');
+            if (panel.style.display === 'none' || panel.style.display === '') {
+                panel.style.display = 'flex';
+                fab.style.display = 'none';
+            } else {
+                panel.style.display = 'none';
+                if (appState.memoList.length > 0) {
+                    fab.style.display = 'flex';
+                }
+            }
+        }
+
+        function clearMemoList() {
+            if (confirm("メモリストをクリアしますか？")) {
+                appState.memoList = [];
+                renderMemoList();
+                renderTable();
+            }
+        }
+
+        function copyMemoList() {
+            if (appState.memoList.length === 0) return;
+            const text = appState.memoList.map(i => `${i.id}\t${i.name}`).join('\n');
+            navigator.clipboard.writeText(text).then(() => {
+                alert("リストをクリップボードにコピーしました！\\n（スプレッドシート等に貼り付けられます）");
+            }).catch(e => {
+                alert("コピーに失敗しました。");
+            });
+        }
+
+        // --- Clone Registration Feature ---
+        function updateCloneSelect(filterQuery = '') {
+            const select = document.getElementById('regCloneSelect');
+            if (!select) return;
+            select.innerHTML = '<option value="">-- コピー元を選択 (ID / 名称) --</option>';
+            const uniqueItems = [];
+            const seenIds = new Set();
+            appState.inventory.forEach(item => {
+                if (item.id && !seenIds.has(item.id)) {
+                    seenIds.add(item.id);
+                    uniqueItems.push(item);
+                }
+            });
+            uniqueItems.sort((a,b) => String(a.id).localeCompare(String(b.id)));
+            
+            const q = filterQuery.toLowerCase();
+            uniqueItems.forEach(item => {
+                const text = `${item.id} : ${item.name} (${item.type})`;
+                if (!q || text.toLowerCase().includes(q)) {
+                    const opt = document.createElement('option');
+                    opt.value = item.id;
+                    opt.textContent = text;
+                    select.appendChild(opt);
+                }
+            });
+        }
+
+        function filterCloneSearch() {
+            const query = document.getElementById('regCloneSearch').value;
+            updateCloneSelect(query);
+        }
+
+        function fillCloneData(cloneId) {
+            if (!cloneId) return;
+            const item = appState.inventory.find(i => String(i.id) === String(cloneId));
+            if (!item) return;
+
+            if (document.getElementById('regType')) document.getElementById('regType').value = item.type || '書籍';
+            handleTypeChange();
+            
+            if (document.getElementById('regName')) document.getElementById('regName').value = item.name || '';
+            if (document.getElementById('regSize')) document.getElementById('regSize').value = item.size || '';
+            if (document.getElementById('regQty')) document.getElementById('regQty').value = '';
+            if (document.getElementById('regISBN')) document.getElementById('regISBN').value = item.isbn || '';
+            
+            if (item.genre && document.getElementById('regGenre')) document.getElementById('regGenre').value = item.genre;
+            if (item.base_price && document.getElementById('regBasePrice')) document.getElementById('regBasePrice').value = item.base_price;
+            if (item.retail_price && document.getElementById('regPrice')) document.getElementById('regPrice').value = item.retail_price;
+            if (item.author && document.getElementById('regAuthor')) document.getElementById('regAuthor').value = item.author;
+            if (item.weight && document.getElementById('regWeight')) document.getElementById('regWeight').value = item.weight;
+            if (item.thickness && document.getElementById('regThickness')) document.getElementById('regThickness').value = item.thickness;
+            if (item.format && document.getElementById('regFormat')) document.getElementById('regFormat').value = item.format;
+            if (item.sales && document.getElementById('regSales')) document.getElementById('regSales').value = item.sales;
+            if (item.book_id && document.getElementById('regBookId')) document.getElementById('regBookId').value = item.book_id;
+            
+            // Clear Image
+            if (document.getElementById('regShowFile')) document.getElementById('regShowFile').value = '';
+            currentImageBase64 = null;
+            if (document.getElementById('imagePreview')) {
+                document.getElementById('imagePreview').innerHTML = '<span><ion-icon name="image-outline"></ion-icon> クリックして画像を選択</span>';
+            }
+            
+            alert(`「${item.name}」の基本情報をコピーしました。\\n新しい保管場所と数量を設定して「登録」してください。`);
         }
 
     </script>
