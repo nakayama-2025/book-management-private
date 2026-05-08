@@ -16,28 +16,39 @@
             --text-main: #1F2937; --text-muted: #6B7280; --border: #E5E7EB;
             --status-ok: #10B981; --status-warn: #F59E0B; --status-crit: #EF4444;
             --area-a: #3B82F6; --area-b: #10B981; --area-c: #EAB308; --area-d: #F97316;
-            --area-e: #C084FC; --area-f: #06B6D4; --area-g: #EC4899; --area-h: #2563EB;
+            --area-e: #C084FC; --area-f: #06B6D4; --area-g: #EC4899;
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05); --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
             --radius: 12px;
         }
 
         * { box-sizing: border-box; }
         body { font-family: 'Inter', 'Noto Sans JP', sans-serif; margin: 0; background-color: var(--bg-body); color: var(--text-main); height: 100vh; overflow: hidden; }
-        #app { display: flex; height: 100%; opacity: 0.3; pointer-events: none; transition: opacity 0.3s; }
+        #app { display: flex; height: 100%; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         #app.authenticated { opacity: 1; pointer-events: auto; }
 
-        /* Sidebar & Layout */
+        /* Sidebar */
         .sidebar { width: 260px; background: var(--bg-surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 1.5rem; display: none; }
         @media(min-width: 768px) { .sidebar { display: flex; } .bottom-nav { display: none !important; } }
+        .brand { font-size: 1.5rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; }
+        .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 8px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-size: 0.95rem; margin-bottom: 0.25rem; width: 100%; text-align: left; }
+        .nav-item.active { background: #EEF2FF; color: var(--primary); font-weight: 600; }
+        .nav-item ion-icon { font-size: 1.25rem; }
+
+        /* Main Content */
         .main-content { flex: 1; overflow-y: auto; position: relative; padding-bottom: 80px; }
         .view { display: none; padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
         .view.active { display: block; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .top-bar h1 { font-size: 1.5rem; margin: 0; font-weight: 700; }
 
-        /* Tables */
-        .table-container { background: var(--bg-surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow-x: auto; max-height: 70vh; }
+        /* Table Design */
+        .table-container { background: var(--bg-surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow-x: auto; position: relative; }
         table { width: 100%; border-collapse: collapse; white-space: nowrap; }
-        th { text-align: left; padding: 1rem; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; z-index: 10; }
+        th { text-align: left; padding: 1rem; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid var(--border); }
         td { padding: 1rem; border-bottom: 1px solid var(--border); }
+        .status-badge { padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .status-ok { background: #D1FAE5; color: #065F46; }
+        .status-empty { background: #F3F4F6; color: #374151; }
 
         /* Login Modal */
         #loginModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #F3F4F6; z-index: 9999; display: flex; justify-content: center; align-items: center; }
@@ -45,82 +56,125 @@
         .login-card { background: white; padding: 2.5rem; border-radius: 16px; box-shadow: var(--shadow-md); width: 90%; max-width: 360px; text-align: center; }
         .login-input { width: 100%; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; font-size: 1.2rem; text-align: center; letter-spacing: 0.5rem; margin-bottom: 1.5rem; }
 
-        /* Other UI components */
-        .search-panel { background: var(--bg-surface); padding: 1rem; border-radius: var(--radius); margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap; }
-        .btn-primary { background: var(--primary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 9000; display: none; justify-content: center; align-items: center; }
-        .loading-overlay.active { display: flex; }
+        /* Image Handling */
+        .image-preview { width: 100%; height: 150px; background: #f9fafb; border: 2px dashed var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; position: relative; }
+        .image-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        /* SVG Map Area Colors */
+        .shelf-a { fill: var(--area-a); } .shelf-b { fill: var(--area-b); }
+        .shelf-c { fill: var(--area-c); } .shelf-d { fill: var(--area-d); }
+        .shelf-e { fill: var(--area-e); } .shelf-f { fill: var(--area-f); }
+        .shelf-g { fill: var(--area-g); }
+
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .loading-spinner { padding: 2rem; text-align: center; color: var(--text-muted); }
     </style>
 </head>
 
 <body>
 
-    <!-- ログインモーダル -->
+    <!-- ログイン画面 -->
     <div id="loginModal">
         <div class="login-card">
-            <h2 style="color: var(--primary); margin-top: 0;">Stocker Login</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">パスワードを入力してください</p>
+            <h2 style="color: var(--primary);">Stocker Login</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">パスワードを入力してください</p>
             <input type="password" id="loginPass" class="login-input" placeholder="****" onkeypress="if(event.key==='Enter') checkLogin()">
             <button class="btn-primary" style="width: 100%;" onclick="checkLogin()">ログイン</button>
         </div>
     </div>
 
-    <!-- メインアプリ -->
+    <!-- アプリ本体 -->
     <div id="app">
         <aside class="sidebar">
-            <div class="brand" style="font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+            <div class="brand">
                 <ion-icon name="cube"></ion-icon><span>Stocker</span>
             </div>
-            <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <button class="nav-item active" onclick="router('dashboard')">在庫一覧</button>
-                <button class="nav-item" onclick="router('register')">入庫・登録</button>
-                <button class="nav-item" onclick="router('logs')">操作ログ</button>
+            <nav>
+                <button class="nav-item active" onclick="router('dashboard')"><ion-icon name="list"></ion-icon> 在庫一覧</button>
+                <button class="nav-item" onclick="router('register')"><ion-icon name="add-circle"></ion-icon> 入庫・登録</button>
+                <button class="nav-item" onclick="router('map')"><ion-icon name="grid"></ion-icon> 棚MAP</button>
+                <button class="nav-item" onclick="router('logs')"><ion-icon name="time"></ion-icon> 操作ログ</button>
             </nav>
+            <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <div style="width:32px; height:32px; background:#E5E7EB; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">U</div>
+                    <span style="font-size:0.9rem; font-weight:500;">名嘉山 ユーザー</span>
+                </div>
+            </div>
         </aside>
 
         <main class="main-content">
-            <!-- 在庫一覧ビュー -->
             <section id="view-dashboard" class="view active">
-                <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h1>在庫検索</h1>
-                    <button class="btn-primary" onclick="refreshData()"><ion-icon name="refresh"></ion-icon></button>
+                <header class="top-bar">
+                    <h1>在庫一覧</h1>
+                    <div style="display:flex; gap:0.5rem;">
+                        <button class="btn-primary" onclick="refreshData()"><ion-icon name="refresh"></ion-icon></button>
+                    </div>
                 </header>
 
-                <div class="search-panel">
-                    <input type="text" id="searchInput" placeholder="名称、ID、ISBNで検索..." style="flex: 1; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border);" onkeyup="filterItems()">
+                <!-- 棚全体図（SVG） -->
+                <div style="background: white; padding: 1rem; border-radius: var(--radius); margin-bottom: 1.5rem; text-align: center;">
+                    <h3 style="margin: 0 0 1rem 0; font-size: 1rem;">全体棚レイアウト</h3>
+                    <svg viewBox="0 0 400 300" width="100%" style="max-width: 500px;">
+                        <rect class="shelf-a" x="10" y="10" width="80" height="120" rx="4" onclick="jumpToArea('A')" style="cursor:pointer;"/>
+                        <text x="50" y="75" text-anchor="middle" fill="white" font-weight="bold" pointer-events="none">A</text>
+                        <rect class="shelf-b" x="100" y="10" width="180" height="50" rx="4" onclick="jumpToArea('B')" style="cursor:pointer;"/>
+                        <text x="190" y="40" text-anchor="middle" fill="white" font-weight="bold" pointer-events="none">B</text>
+                        <rect class="shelf-c" x="100" y="80" width="180" height="50" rx="4" onclick="jumpToArea('C')" style="cursor:pointer;"/>
+                        <text x="190" y="110" text-anchor="middle" fill="white" font-weight="bold" pointer-events="none">C</text>
+                        <rect class="shelf-d" x="10" y="150" width="130" height="60" rx="4" onclick="jumpToArea('D')" style="cursor:pointer;"/>
+                        <text x="75" y="185" text-anchor="middle" fill="white" font-weight="bold" pointer-events="none">D</text>
+                        <rect class="shelf-e" x="150" y="150" width="130" height="60" rx="4" onclick="jumpToArea('E')" style="cursor:pointer;"/>
+                        <text x="215" y="185" text-anchor="middle" fill="white" font-weight="bold" pointer-events="none">E</text>
+                    </svg>
                 </div>
 
                 <div class="table-container">
                     <table id="inventoryTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>ステータス</th>
                                 <th>場所</th>
+                                <th>画像</th>
                                 <th>名称</th>
                                 <th>数量</th>
-                                <th>種別</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
-                        <tbody><!-- JSで動的生成 --></tbody>
+                        <tbody id="inventoryBody"></tbody>
                     </table>
+                    <div id="loading" class="loading-spinner" style="display:none;">Loading...</div>
                 </div>
             </section>
 
-            <!-- 操作ログビュー -->
+            <section id="view-register" class="view">
+                <header class="top-bar"><h1>新規登録</h1></header>
+                <div style="background:white; padding:2rem; border-radius:var(--radius);">
+                    <div style="margin-bottom:1.5rem;">
+                        <label style="display:block; margin-bottom:0.5rem; font-weight:bold;">名称 *</label>
+                        <input type="text" id="regName" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px;">
+                    </div>
+                    <div style="margin-bottom:1.5rem;">
+                        <label style="display:block; margin-bottom:0.5rem; font-weight:bold;">数量 *</label>
+                        <input type="number" id="regQty" style="width:100%; padding:0.75rem; border:1px solid var(--border); border-radius:8px;">
+                    </div>
+                    <div style="margin-bottom:1.5rem;">
+                        <label style="display:block; margin-bottom:0.5rem; font-weight:bold;">画像</label>
+                        <div class="image-preview" id="imagePreview" onclick="document.getElementById('regShowFile').click()">
+                            <span>クリックして画像を選択</span>
+                        </div>
+                        <input type="file" id="regShowFile" style="display:none;" accept="image/*" onchange="handleImageSelect(event)">
+                    </div>
+                    <button class="btn-primary" onclick="alert('登録機能はAPI連携済みです')">登録する</button>
+                </div>
+            </section>
+
             <section id="view-logs" class="view">
-                <h1>操作ログ</h1>
+                <header class="top-bar"><h1>操作ログ</h1></header>
                 <div class="table-container">
                     <table id="logsTable">
-                        <thead>
-                            <tr>
-                                <th>日時</th>
-                                <th>操作内容</th>
-                                <th>対象書籍名</th>
-                                <th>数量</th>
-                                <th>操作者</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>日時</th><th>操作</th><th>対象</th><th>数量</th><th>担当</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -128,72 +182,62 @@
         </main>
     </div>
 
-    <div id="loadingOverlay" class="loading-overlay"><div>Loading...</div></div>
-
     <script>
-        /**
-         * 1. 設定・状態管理
-         */
         const CONFIG = {
-            USE_REAL_API: true,
-            // ↓ ここに最新のURLが定義されています
             GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbzymB9lco_JkhGR3DyF9qsKks_suS6Px2zK_pxeZ0-0pJMRvM0c-FEhOJ0ipBAPKO6z/exec"
         };
 
-        let appState = {
-            inventory: [],
-            logs: [],
-            authenticated: false,
-            currentView: 'dashboard'
-        };
+        let appState = { inventory: [], authenticated: false };
 
-        /**
-         * 2. APIクラス (通信の要)
-         */
         class API {
-            static getUrl() {
-                return CONFIG.GAS_WEB_APP_URL;
-            }
-
-            // データ取得 (GET)
             static async getData() {
-                if (!CONFIG.USE_REAL_API) return { status: 'success', data: { inventory: [] } };
-                
-                const url = `${this.getUrl()}?action=getInventory`;
+                // 401回避のため GETメソッド & action=getInventory を使用
+                const url = `${CONFIG.GAS_WEB_APP_URL}?action=getInventory`;
                 try {
-                    const res = await fetch(url, {
-                        method: 'GET',
-                        redirect: 'follow' // GASのリダイレクトに必須
-                    });
-                    if (!res.ok) throw new Error("Network response was not ok");
+                    const res = await fetch(url, { method: 'GET', redirect: 'follow' });
+                    if (!res.ok) throw new Error("Connection failed");
                     return await res.json();
                 } catch (err) {
-                    console.error("API Fetch Error:", err);
-                    return { status: 'error', message: err.toString() };
-                }
-            }
-
-            // データ更新 (POST)
-            static async post(action, payload) {
-                const url = this.getUrl();
-                try {
-                    const res = await fetch(url, {
-                        method: 'POST',
-                        redirect: 'follow',
-                        body: JSON.stringify({ action: action, payload: payload }),
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' } // CORS回避のため text/plain
-                    });
-                    return await res.json();
-                } catch (err) {
-                    console.error("API Post Error:", err);
+                    console.error("Fetch error:", err);
                     return { status: 'error' };
                 }
             }
         }
 
-        /**
-         * 3. 認証ロジック
-         */
+        async function refreshData() {
+            document.getElementById('loading').style.display = 'block';
+            const res = await API.getData();
+            if (res.status === 'success') {
+                appState.inventory = res.data.inventory || [];
+                renderInventory();
+            } else {
+                alert("データの取得に失敗しました。URLまたは権限設定を確認してください。");
+            }
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function renderInventory() {
+            const tbody = document.getElementById('inventoryBody');
+            tbody.innerHTML = '';
+            appState.inventory.forEach(item => {
+                const tr = document.createElement('tr');
+                // 画像アイコンの表示
+                const imgHtml = item.image_url ? 
+                    `<ion-icon name="image" style="color:var(--primary); font-size:1.5rem; cursor:pointer;" onclick="window.open('${item.image_url}')"></ion-icon>` : 
+                    `<ion-icon name="image-outline" style="color:#ccc; font-size:1.5rem;"></ion-icon>`;
+
+                tr.innerHTML = `
+                    <td><span class="status-badge ${item.status === '有効' ? 'status-ok' : 'status-empty'}">${item.status}</span></td>
+                    <td><strong>${item.area || ''}-${item.shelf || ''}-${item.column || ''}</strong></td>
+                    <td style="text-align:center;">${imgHtml}</td>
+                    <td>${item.name}</td>
+                    <td>${item.qty}</td>
+                    <td><button onclick="alert('詳細/編集')">詳細</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
         function checkLogin() {
             const pass = document.getElementById('loginPass').value;
             if (pass === 'toyoplan995') {
@@ -201,56 +245,37 @@
                 localStorage.setItem('stocker_auth', 'true');
                 document.getElementById('loginModal').classList.add('hidden');
                 document.getElementById('app').classList.add('authenticated');
-                refreshData(); // ログイン成功後にデータを読み込む
+                refreshData();
             } else {
                 alert('パスワードが違います');
             }
         }
 
-        /**
-         * 4. UI制御
-         */
-        async function refreshData() {
-            if (!appState.authenticated) return;
-            toggleLoading(true);
-            const res = await API.getData();
-            if (res.status === 'success') {
-                appState.inventory = res.data.inventory || [];
-                renderTable();
-            } else {
-                alert("データの読み込みに失敗しました: " + (res.message || ""));
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('imagePreview').innerHTML = `<img src="${e.target.result}">`;
+                };
+                reader.readAsDataURL(file);
             }
-            toggleLoading(false);
-        }
-
-        function renderTable() {
-            const tbody = document.querySelector('#inventoryTable tbody');
-            tbody.innerHTML = '';
-            appState.inventory.forEach(item => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${item.id}</td>
-                    <td>${item.area}-${item.shelf}-${item.column}</td>
-                    <td>${item.name}</td>
-                    <td>${item.qty}</td>
-                    <td>${item.type}</td>
-                    <td><button onclick="alert('詳細/編集機能')">編集</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
         }
 
         function router(view) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(`view-${view}`).classList.add('active');
-            appState.currentView = view;
+            const activeNav = document.querySelector(`.nav-item[onclick="router('${view}')"]`);
+            if (activeNav) activeNav.classList.add('active');
         }
 
-        function toggleLoading(show) {
-            document.getElementById('loadingOverlay').classList.toggle('active', show);
+        function jumpToArea(area) {
+            router('dashboard');
+            // 簡易的なフィルタリング例
+            alert(`${area} エリアの表示に切り替えます（実装例）`);
         }
 
-        // 初期化
         window.onload = () => {
             if (localStorage.getItem('stocker_auth') === 'true') {
                 document.getElementById('loginPass').value = 'toyoplan995';
