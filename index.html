@@ -52,11 +52,11 @@
             --radius: 12px;
         }
 
-/* --- ここから追加：在庫一覧のスクロールと編集パネルの設定 --- */
+        /* --- ここから追加：在庫一覧のスクロールと編集パネルの設定 --- */
         .table-container {
-            max-height: 65vh; 
-            overflow-y: auto; 
-            overflow-x: auto; 
+            max-height: 65vh;
+            overflow-y: auto;
+            overflow-x: auto;
             border: 1px solid var(--border);
             border-radius: var(--radius);
             background: var(--bg-surface);
@@ -64,28 +64,28 @@
         }
 
         #inventoryTable thead th {
-            position: sticky; 
+            position: sticky;
             top: 0;
-            background: #f8f9fa; 
+            background: #f8f9fa;
             z-index: 2;
-            box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1); 
+            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
         }
 
         .modal {
-            display: none; 
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5); 
+            background: rgba(0, 0, 0, 0.5);
             z-index: 2000;
             justify-content: center;
             align-items: center;
         }
 
         .modal.open {
-            display: flex; 
+            display: flex;
         }
 
         .modal-content {
@@ -94,8 +94,9 @@
             border-radius: 12px;
             width: 95%;
             max-width: 500px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
+
         /* --- ここまで追加 --- */
 
         * {
@@ -650,12 +651,13 @@
             max-width: 350px;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             z-index: 2000;
             overflow: hidden;
             border: 1px solid #e1e4e8;
             animation: slideUp 0.3s ease-out;
         }
+
         .popover-header {
             display: flex;
             justify-content: space-between;
@@ -664,11 +666,13 @@
             background: #f8f9fa;
             border-bottom: 1px solid #e1e4e8;
         }
+
         .popover-content {
             padding: 15px;
             max-height: 50vh;
             overflow-y: auto;
         }
+
         .popover-item {
             display: flex;
             align-items: center;
@@ -677,11 +681,13 @@
             padding-bottom: 10px;
             border-bottom: 1px dashed #eee;
         }
+
         .popover-item:last-child {
             border-bottom: none;
             margin-bottom: 0;
             padding-bottom: 0;
         }
+
         .popover-item img {
             width: 50px;
             height: 50px;
@@ -689,20 +695,34 @@
             border-radius: 6px;
             border: 1px solid #ddd;
         }
+
         .popover-actions {
             padding: 10px 15px;
             background: #f8f9fa;
             border-top: 1px solid #e1e4e8;
         }
+
         @keyframes slideUp {
-            from { transform: translate(-50%, 20px); opacity: 0; }
-            to { transform: translate(-50%, 0); opacity: 1; }
+            from {
+                transform: translate(-50%, 20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
         }
+
         /* PC Hover Tooltip */
-        .shelf-cell { overflow: visible !important; }
+        .shelf-cell {
+            overflow: visible !important;
+        }
+
         .shelf-cell .pc-tooltip {
             display: none;
         }
+
         @media (hover: hover) and (pointer: fine) {
             .shelf-cell .pc-tooltip {
                 display: block;
@@ -720,11 +740,12 @@
                 z-index: 100;
                 pointer-events: none;
                 transition: opacity 0.2s, bottom 0.2s;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
                 width: max-content;
                 max-width: 250px;
                 text-align: left;
             }
+
             .shelf-cell .pc-tooltip::after {
                 content: '';
                 position: absolute;
@@ -735,6 +756,7 @@
                 border-style: solid;
                 border-color: rgba(30, 41, 59, 0.95) transparent transparent transparent;
             }
+
             .shelf-cell:hover .pc-tooltip {
                 visibility: visible;
                 opacity: 1;
@@ -773,13 +795,14 @@
             width: 300px;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             z-index: 2000;
             overflow: hidden;
             border: 1px solid #e1e4e8;
             display: flex;
             flex-direction: column;
         }
+
         .memo-header {
             display: flex;
             justify-content: space-between;
@@ -788,13 +811,22 @@
             background: #f8f9fa;
             border-bottom: 1px solid #e1e4e8;
         }
-        .memo-header h4 { margin: 0; font-size: 1rem; display: flex; align-items: center; gap: 5px; }
+
+        .memo-header h4 {
+            margin: 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .memo-content {
             padding: 10px;
             max-height: 250px;
             overflow-y: auto;
             font-size: 0.85rem;
         }
+
         .memo-item {
             display: flex;
             justify-content: space-between;
@@ -802,6 +834,7 @@
             padding: 5px 0;
             border-bottom: 1px dashed #eee;
         }
+
         .memo-fab {
             position: fixed;
             bottom: 80px;
@@ -815,11 +848,12 @@
             justify-content: center;
             align-items: center;
             font-size: 1.5rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             border: none;
             cursor: pointer;
             z-index: 1999;
         }
+
         .memo-badge {
             position: absolute;
             top: -5px;
@@ -831,6 +865,7 @@
             padding: 2px 6px;
             border-radius: 10px;
         }
+
         .copy-badge {
             position: absolute;
             background: #10b981;
@@ -845,10 +880,12 @@
             z-index: 100;
             white-space: nowrap;
         }
+
         .copy-badge.show {
             opacity: 1;
             transform: translateY(-20px);
         }
+
         .id-clickable {
             cursor: pointer;
             color: var(--primary);
@@ -859,6 +896,7 @@
             display: inline-block;
             padding: 2px 4px;
         }
+
         .id-clickable:hover {
             background-color: #f3f4f6;
             border-radius: 4px;
@@ -1277,7 +1315,8 @@
                             <option value="有効">在庫あり</option>
                             <option value="空き">空き</option>
                         </select>
-                        <label class="toggle-switch" style="margin-left: 0.5rem; background: white; padding: 0.2rem 0.6rem; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <label class="toggle-switch"
+                            style="margin-left: 0.5rem; background: white; padding: 0.2rem 0.6rem; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                             <input type="checkbox" id="aggregateToggle" onchange="renderTable()">
                             <span class="toggle-label" style="font-weight:bold; font-size:0.8rem;">集約表示</span>
                         </label>
@@ -1321,15 +1360,19 @@
 
                 <div class="form-card">
                     <form id="registerForm" onsubmit="handleRegister(event)">
-                        <div class="form-group full-width" style="background:#f0f9ff; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #bae6fd;">
-                            <label style="color:#0369a1; display:flex; align-items:center; gap:5px; margin-bottom:10px;">
+                        <div class="form-group full-width"
+                            style="background:#f0f9ff; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #bae6fd;">
+                            <label
+                                style="color:#0369a1; display:flex; align-items:center; gap:5px; margin-bottom:10px;">
                                 <ion-icon name="copy-outline"></ion-icon> 既存の在庫からコピーして登録 (オプション)
                             </label>
-                            <input type="text" id="regCloneSearch" placeholder="IDや名称で検索して絞り込み..." onkeyup="filterCloneSearch()" style="margin-bottom: 8px;">
+                            <input type="text" id="regCloneSearch" placeholder="IDや名称で検索して絞り込み..."
+                                onkeyup="filterCloneSearch()" style="margin-bottom: 8px;">
                             <select id="regCloneSelect" onchange="fillCloneData(this.value)">
                                 <option value="">-- コピー元を選択 (ID / 名称) --</option>
                             </select>
-                            <div style="font-size:0.75rem; color:#0284c7; margin-top:5px;">※選択すると「名称」「種別」「ISBN」等が自動入力されます。</div>
+                            <div style="font-size:0.75rem; color:#0284c7; margin-top:5px;">
+                                ※選択すると「名称」「種別」「ISBN」等が自動入力されます。</div>
                         </div>
                         <div class="form-grid">
                             <!-- Location Section -->
@@ -1439,7 +1482,8 @@
                                 style="border: 1px solid var(--border); padding: 1rem; border-radius: 8px; background: #fafafa;">
                                 <h4
                                     style="margin-top:0; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                                    <ion-icon name="book-outline"></ion-icon> 書籍詳細情報</h4>
+                                    <ion-icon name="book-outline"></ion-icon> 書籍詳細情報
+                                </h4>
                                 <div class="form-grid">
                                     <div class="form-group">
                                         <label>ジャンル</label>
@@ -1613,64 +1657,67 @@
         </div>
     </div>
 
-<!-- Edit Modal (在庫情報の編集画面) -->
-<div id="editModal" class="modal">
-    <div class="modal-content" onclick="event.stopPropagation()" style="max-width:500px;">
-        <h3>在庫情報の編集</h3>
-        <form id="editForm" onsubmit="event.preventDefault(); submitEdit();">
-            <input type="hidden" id="editId">
-            
-            <div class="form-group">
-                <label>商品名 / 銘柄</label>
-                <input type="text" id="editName" required>
-            </div>
+    <!-- Edit Modal (在庫情報の編集画面) -->
+    <div id="editModal" class="modal">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width:500px;">
+            <h3>在庫情報の編集</h3>
+            <form id="editForm" onsubmit="event.preventDefault(); submitEdit();">
+                <input type="hidden" id="editId">
 
-            <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                 <div class="form-group">
-                    <label>数量</label>
-                    <input type="number" id="editQty" required>
+                    <label>商品名 / 銘柄</label>
+                    <input type="text" id="editName" required>
                 </div>
+
+                <div class="form-grid"
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label>数量</label>
+                        <input type="number" id="editQty" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ステータス</label>
+                        <select id="editStatus">
+                            <option value="有効">有効</option>
+                            <option value="空き">空き（削除扱い）</option>
+                            <option value="保留">保留</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label>ステータス</label>
-                    <select id="editStatus">
-                        <option value="有効">有効</option>
-                        <option value="空き">空き（削除扱い）</option>
-                        <option value="保留">保留</option>
-                    </select>
+                    <label>保管場所変更</label>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.5rem;">
+                        <select id="editArea" onchange="updateEditLocOptions(this.value)">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                            <option value="H">H</option>
+                        </select>
+                        <select id="editShelf"></select>
+                        <select id="editCol"></select>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label>保管場所変更</label>
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.5rem;">
-                    <select id="editArea" onchange="updateEditLocOptions(this.value)">
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                        <option value="E">E</option>
-                        <option value="F">F</option>
-                        <option value="G">G</option>
-                        <option value="H">H</option>
-                    </select>
-                    <select id="editShelf"></select>
-                    <select id="editCol"></select>
+                <div class="modal-actions" style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <button type="button" class="btn-danger" onclick="deleteItem()"
+                        style="color: red; border: 1px solid red; background: none; padding: 5px 10px; border-radius: 4px;">削除</button>
+                    <div>
+                        <button type="button" class="btn-secondary" onclick="closeModal('editModal')"
+                            style="margin-right: 10px;">キャンセル</button>
+                        <button type="submit" class="btn-primary">保存する</button>
+                    </div>
                 </div>
-            </div>
-
-            <div class="modal-actions" style="display: flex; justify-content: space-between; margin-top: 20px;">
-                <button type="button" class="btn-danger" onclick="deleteItem()" style="color: red; border: 1px solid red; background: none; padding: 5px 10px; border-radius: 4px;">削除</button>
-                <div>
-                    <button type="button" class="btn-secondary" onclick="closeModal('editModal')" style="margin-right: 10px;">キャンセル</button>
-                    <button type="submit" class="btn-primary">保存する</button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 
     <!-- Map View Modal -->
-<div id="mapViewModal" class="modal image-modal" onclick="closeModal('mapViewModal')">
+    <div id="mapViewModal" class="modal image-modal" onclick="closeModal('mapViewModal')">
         <div class="modal-content-image" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeModal('mapViewModal')"><ion-icon name="close"></ion-icon></button>
             <style>
@@ -1685,9 +1732,11 @@
                     margin: 0 auto;
                     overflow: hidden;
                 }
+
                 .map-area {
                     position: absolute;
-                    border-radius: 8px; /* 角を少し丸く */
+                    border-radius: 8px;
+                    /* 角を少し丸く */
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -1695,14 +1744,17 @@
                     font-size: 1.5rem;
                     font-weight: bold;
                     cursor: pointer;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                     transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
                 }
+
                 .map-area:hover {
                     opacity: 0.9;
-                    transform: translateY(-2px); /* 浮き上がるエフェクト */
-                    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+                    transform: translateY(-2px);
+                    /* 浮き上がるエフェクト */
+                    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
                 }
+
                 .map-area-label {
                     position: absolute;
                     color: #555;
@@ -1719,9 +1771,11 @@
 
     <div id="imageDisplayModal" class="modal image-modal" onclick="closeModal('imageDisplayModal')">
         <div class="modal-content-image" onclick="event.stopPropagation()">
-            <button class="close-btn" onclick="closeModal('imageDisplayModal')"><ion-icon name="close-circle-outline"></ion-icon></button>
-            <div id="imagePopupContent" style="background:white; padding:10px; border-radius:8px; display:flex; justify-content:center;">
-                </div>
+            <button class="close-btn" onclick="closeModal('imageDisplayModal')"><ion-icon
+                    name="close-circle-outline"></ion-icon></button>
+            <div id="imagePopupContent"
+                style="background:white; padding:10px; border-radius:8px; display:flex; justify-content:center;">
+            </div>
         </div>
     </div>
 
@@ -1741,14 +1795,17 @@
         <div class="memo-header">
             <h4><ion-icon name="list-outline"></ion-icon> IDメモ (<span id="memoCount">0</span>)</h4>
             <div>
-                <button class="btn-text" onclick="copyMemoList()" title="全てコピー"><ion-icon name="copy-outline"></ion-icon></button>
-                <button class="btn-text" onclick="clearMemoList()" title="クリア"><ion-icon name="trash-outline"></ion-icon></button>
-                <button class="btn-text" onclick="toggleMemoPanel()"><ion-icon name="chevron-down-outline"></ion-icon></button>
+                <button class="btn-text" onclick="copyMemoList()" title="全てコピー"><ion-icon
+                        name="copy-outline"></ion-icon></button>
+                <button class="btn-text" onclick="clearMemoList()" title="クリア"><ion-icon
+                        name="trash-outline"></ion-icon></button>
+                <button class="btn-text" onclick="toggleMemoPanel()"><ion-icon
+                        name="chevron-down-outline"></ion-icon></button>
             </div>
         </div>
         <div id="memoListContent" class="memo-content"></div>
     </div>
-    
+
     <button id="memoFab" class="memo-fab" onclick="toggleMemoPanel()" style="display:none;">
         <ion-icon name="list-outline"></ion-icon>
         <span id="memoFabBadge" class="memo-badge">0</span>
@@ -1758,11 +1815,13 @@
     <div id="shelfPopover" class="shelf-popover" style="display:none;">
         <div class="popover-header">
             <h3 id="poLocCode" style="margin:0; font-size:1.1rem;"></h3>
-            <button class="btn-text" onclick="closeShelfPopover()" style="font-size:1.5rem; padding:0; line-height:1;"><ion-icon name="close-outline"></ion-icon></button>
+            <button class="btn-text" onclick="closeShelfPopover()"
+                style="font-size:1.5rem; padding:0; line-height:1;"><ion-icon name="close-outline"></ion-icon></button>
         </div>
         <div id="poContent" class="popover-content"></div>
         <div class="popover-actions">
-            <button id="poToggleBtn" class="btn-sm btn-secondary" style="width:100%;" onclick="toggleSingleShelfStatus()">設定変更</button>
+            <button id="poToggleBtn" class="btn-sm btn-secondary" style="width:100%;"
+                onclick="toggleSingleShelfStatus()">設定変更</button>
         </div>
     </div>
 
@@ -1802,24 +1861,31 @@
          */
         class API {
             static getUrl() {
+                // CONFIG.GAS_WEB_APP_URL を参照
                 return CONFIG.GAS_WEB_APP_URL;
             }
 
             static async getData() {
                 try {
-                    const res = await fetch(this.getUrl(), {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'getData' }),
-                        headers: {
-                            'Content-Type': 'text/plain;charset=utf-8'
-                        }
+                    // 401エラー対策: method: 'GET', mode: 'cors', redirect: 'follow' を確実に適用
+                    // アクション名も指示に合わせて getInventory に変更
+                    const url = new URL(this.getUrl());
+                    url.searchParams.set('action', 'getInventory');
+
+                    const res = await fetch(url.toString(), {
+                        method: 'GET',
+                        mode: 'cors',
+                        redirect: 'follow'
                     });
+
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
                     const json = await res.json();
                     if (json.status === 'success') {
                         appState.disabledShelves = json.data.disabled || [];
                         return json;
                     }
-                    throw new Error(json.message || "Failed to getData");
+                    throw new Error(json.message || "Failed to getInventory");
                 } catch (err) {
                     console.error("GAS API Error:", err);
                     return { status: 'error', data: { inventory: [], logs: [], disabled: [] } };
@@ -1837,16 +1903,25 @@
 
             static async post(action, payload) {
                 try {
-                    const res = await fetch(this.getUrl(), {
-                        method: 'POST',
-                        body: JSON.stringify({ action: action, payload: payload }),
-                        headers: {
-                            'Content-Type': 'text/plain;charset=utf-8'
-                        }
+                    // 401エラー対策: 指示に従い全通信をGETメソッドで行うように変更
+                    // mode: 'cors', redirect: 'follow' を適用
+                    const url = new URL(this.getUrl());
+                    url.searchParams.set('action', action);
+                    if (payload) {
+                        url.searchParams.set('payload', JSON.stringify(payload));
+                    }
+
+                    const res = await fetch(url.toString(), {
+                        method: 'GET',
+                        mode: 'cors',
+                        redirect: 'follow'
                     });
+
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
                     return await res.json();
                 } catch (err) {
-                    console.error("GAS Post Error:", err);
+                    console.error("GAS API Error:", err);
                     return { status: 'error' };
                 }
             }
@@ -1913,11 +1988,11 @@
                 document.getElementById('dashboardOverviewMap'),
                 document.getElementById('overviewMapContainer')
             ];
-            
+
             containers.forEach(container => {
                 if (!container) return;
                 container.innerHTML = '';
-                
+
                 mapData.forEach(area => {
                     const block = document.createElement('div');
                     block.className = 'map-area';
@@ -1931,7 +2006,7 @@
                         e.stopPropagation();
                         jumpToArea(area.id);
                     };
-                    
+
                     container.appendChild(block);
 
                     if (area.label) {
@@ -2027,90 +2102,90 @@
          * Rendering
          */
         function renderTable() {
-                const tbody = document.querySelector('#inventoryTable tbody');
-                tbody.innerHTML = '';
+            const tbody = document.querySelector('#inventoryTable tbody');
+            tbody.innerHTML = '';
 
-const filtered = appState.inventory.filter(item => {
+            const filtered = appState.inventory.filter(item => {
                 const matchText = (String(item.name || '') + String(item.id || '') + String(item.isbn || '')).toLowerCase().includes(appState.filter.text);
                 const matchArea = appState.filter.area ? item.area === appState.filter.area : true;
-                
+
                 // ステータスの判定をより確実にする修正
                 let matchStatus = true;
                 if (appState.filter.status === '有効') {
                     // 「有効」以外（欠品や削除など）を除外する
-                    matchStatus = (item.status === '有効' || item.status === ''); 
+                    matchStatus = (item.status === '有効' || item.status === '');
                 } else if (appState.filter.status === '空き') {
                     matchStatus = (item.status === '空き');
                 } else if (appState.filter.status === 'all') {
                     matchStatus = true;
                 }
-                
+
                 return matchText && matchArea && matchStatus;
             });
 
-                const aggregateToggle = document.getElementById('aggregateToggle');
-                let displayList = filtered;
-                
-                if (aggregateToggle && aggregateToggle.checked) {
-                    const grouped = {};
-                    filtered.forEach(item => {
-                        const key = item.id || item.name; // IDがあればID、なければ名称でグループ化
-                        if (!grouped[key]) {
-                            grouped[key] = { ...item };
-                            grouped[key].loc_code = item.loc_code || '-';
-                            grouped[key].qty = parseInt(item.qty || 0);
-                            grouped[key].isAggregated = true;
-                        } else {
-                            grouped[key].qty += parseInt(item.qty || 0);
-                            if (!grouped[key].loc_code.includes(item.loc_code)) {
-                                grouped[key].loc_code += `, ${item.loc_code}`;
-                            }
-                        }
-                    });
-                    displayList = Object.values(grouped);
-                }
+            const aggregateToggle = document.getElementById('aggregateToggle');
+            let displayList = filtered;
 
-                if (displayList.length === 0) {
-                    document.getElementById('emptyState').style.display = 'block';
-                    return;
-                }
-                document.getElementById('emptyState').style.display = 'none';
-
-                displayList.forEach(item => {
-                    const ageColor = getAgeColor(item.date_in);
-                    
-                    // 日付の表示形式を加工 (例: 2026-04-04T15:00:00.000Z -> 2026-04-04)
-                    let displayDate = item.date_in || '';
-                    if (displayDate && String(displayDate).includes('T')) {
-                        displayDate = String(displayDate).split('T')[0];
-                    }
-
-                    const tr = document.createElement('tr');
-
-                    // Image Indicator (if exists)
-                    let imgIcon = '';
-                    // URLの中に "http" という文字が含まれているかチェックするようにします
-                    const imgPath = item.image || item.Image;
-                    if (imgPath && String(imgPath).includes('http')) {
-                        imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${imgPath}')"></ion-icon> `;
-                    }
-
-                    let actionsHtml = '';
-                    if (item.isAggregated) {
-                        actionsHtml = '<span style="font-size:0.8rem;color:#999;">集約表示中は編集不可</span>';
+            if (aggregateToggle && aggregateToggle.checked) {
+                const grouped = {};
+                filtered.forEach(item => {
+                    const key = item.id || item.name; // IDがあればID、なければ名称でグループ化
+                    if (!grouped[key]) {
+                        grouped[key] = { ...item };
+                        grouped[key].loc_code = item.loc_code || '-';
+                        grouped[key].qty = parseInt(item.qty || 0);
+                        grouped[key].isAggregated = true;
                     } else {
-                        actionsHtml = `
+                        grouped[key].qty += parseInt(item.qty || 0);
+                        if (!grouped[key].loc_code.includes(item.loc_code)) {
+                            grouped[key].loc_code += `, ${item.loc_code}`;
+                        }
+                    }
+                });
+                displayList = Object.values(grouped);
+            }
+
+            if (displayList.length === 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                return;
+            }
+            document.getElementById('emptyState').style.display = 'none';
+
+            displayList.forEach(item => {
+                const ageColor = getAgeColor(item.date_in);
+
+                // 日付の表示形式を加工 (例: 2026-04-04T15:00:00.000Z -> 2026-04-04)
+                let displayDate = item.date_in || '';
+                if (displayDate && String(displayDate).includes('T')) {
+                    displayDate = String(displayDate).split('T')[0];
+                }
+
+                const tr = document.createElement('tr');
+
+                // Image Indicator (if exists)
+                let imgIcon = '';
+                // URLの中に "http" という文字が含まれているかチェックするようにします
+                const imgPath = item.image || item.Image;
+                if (imgPath && String(imgPath).includes('http')) {
+                    imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${imgPath}')"></ion-icon> `;
+                }
+
+                let actionsHtml = '';
+                if (item.isAggregated) {
+                    actionsHtml = '<span style="font-size:0.8rem;color:#999;">集約表示中は編集不可</span>';
+                } else {
+                    actionsHtml = `
                             <input type="number" id="qty-diff-${item.id}" class="qty-input-mini" placeholder="0" min="1" style="width:60px; padding:4px;">
                             <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', -1)" title="出庫">出</button>
                             <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', 1)" title="入庫">入</button>
                             <button class="btn-sm btn-text" onclick="openEditModal('${item.id}')"><ion-icon name="create-outline"></ion-icon></button>
                         `;
-                    }
-                    
-                    const safeName = (item.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/`/g, "\\`");
-                    const isMemo = appState.memoList.some(m => m.id === item.id);
-                    
-                    tr.innerHTML = `
+                }
+
+                const safeName = (item.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/`/g, "\\`");
+                const isMemo = appState.memoList.some(m => m.id === item.id);
+
+                tr.innerHTML = `
             <td>
                 <span class="id-clickable" onclick="copyId(event, '${item.id}')">${item.id}</span>
             </td>
@@ -2135,133 +2210,133 @@ const filtered = appState.inventory.filter(item => {
                 </button>
             </td>
         `;
-                    tbody.appendChild(tr);
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function quickStockOp(id, multiplier) {
+            const input = document.getElementById(`qty-diff-${id}`);
+            const val = parseInt(input.value);
+            if (!val || val <= 0) {
+                alert("数量を入力してください");
+                return;
+            }
+
+            // 対象アイテムを検索
+            const item = appState.inventory.find(i => String(i.id) === String(id));
+            if (!item) {
+                alert("対象データが見つかりません");
+                return;
+            }
+
+            // 新しい数量を計算
+            let currentQty = parseInt(item.qty) || 0;
+            let newQty = currentQty + (val * multiplier);
+
+            // 0未満にならないようにする（マイナス在庫防止）
+            if (newQty < 0) {
+                alert("出庫数が現在の在庫数を上回っています");
+                return;
+            }
+
+            if (typeof toggleLoading === 'function') toggleLoading(true);
+
+            try {
+                // edit APIを使用してスプレッドシート全体を安全に更新
+                const res = await API.post('edit', {
+                    id: item.id,
+                    status: item.status || '有効',
+                    name: item.name,
+                    qty: newQty,
+                    area: item.area || '',
+                    shelf: item.shelf || '',
+                    column: item.column || '',
+                    loc_code: item.loc_code || ''
                 });
-            }
 
-            async function quickStockOp(id, multiplier) {
-                const input = document.getElementById(`qty-diff-${id}`);
-                const val = parseInt(input.value);
-                if (!val || val <= 0) {
-                    alert("数量を入力してください");
-                    return;
-                }
-
-                // 対象アイテムを検索
-                const item = appState.inventory.find(i => String(i.id) === String(id));
-                if (!item) {
-                    alert("対象データが見つかりません");
-                    return;
-                }
-
-                // 新しい数量を計算
-                let currentQty = parseInt(item.qty) || 0;
-                let newQty = currentQty + (val * multiplier);
-                
-                // 0未満にならないようにする（マイナス在庫防止）
-                if (newQty < 0) {
-                    alert("出庫数が現在の在庫数を上回っています");
-                    return;
-                }
-
-                if (typeof toggleLoading === 'function') toggleLoading(true);
-
-                try {
-                    // edit APIを使用してスプレッドシート全体を安全に更新
-                    const res = await API.post('edit', {
-                        id: item.id,
-                        status: item.status || '有効',
-                        name: item.name,
-                        qty: newQty,
-                        area: item.area || '',
-                        shelf: item.shelf || '',
-                        column: item.column || '',
-                        loc_code: item.loc_code || ''
-                    });
-
-                    if (res.status === 'success') {
-                        // 入力欄をクリア
-                        input.value = '';
-                        // アラートは出さずに即座に最新データを取得・再描画
-                        await refreshData();
-                    } else {
-                        alert('更新に失敗しました: ' + (res.message || '不明なエラー'));
-                    }
-                } catch (e) {
-                    console.error("Quick stock operation error:", e);
-                    alert("通信エラーが発生しました");
-                } finally {
-                    if (typeof toggleLoading === 'function') toggleLoading(false);
-                }
-            }
-
-
-            function showImage(url) {
-                if (url.startsWith('data:')) {
-                    // Mock mode (base64)
-                    const w = window.open("");
-                    w.document.write(`<img src="${url}" style="max-width:100%">`);
+                if (res.status === 'success') {
+                    // 入力欄をクリア
+                    input.value = '';
+                    // アラートは出さずに即座に最新データを取得・再描画
+                    await refreshData();
                 } else {
-                    window.open(url, '_blank');
+                    alert('更新に失敗しました: ' + (res.message || '不明なエラー'));
                 }
+            } catch (e) {
+                console.error("Quick stock operation error:", e);
+                alert("通信エラーが発生しました");
+            } finally {
+                if (typeof toggleLoading === 'function') toggleLoading(false);
             }
+        }
 
 
-            function setMapArea(area) {
-                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-                const target = document.querySelector(`.chip[data-area="${area}"]`);
-                if (target) target.classList.add('active');
-                appState.selectedShelves = []; // Clear selection on switch
-                renderMap();
+        function showImage(url) {
+            if (url.startsWith('data:')) {
+                // Mock mode (base64)
+                const w = window.open("");
+                w.document.write(`<img src="${url}" style="max-width:100%">`);
+            } else {
+                window.open(url, '_blank');
             }
+        }
 
-            function renderMap() {
-                const activeArea = document.querySelector('.chip.active').getAttribute('data-area') || 'A';
-                const config = SHELF_CONFIG[activeArea];
-                if (!config) return;
 
-                // Update Map Container style for coloring
-                const grid = document.getElementById('shelfGrid');
-                grid.setAttribute('data-active-area', activeArea);
-                grid.innerHTML = '';
+        function setMapArea(area) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            const target = document.querySelector(`.chip[data-area="${area}"]`);
+            if (target) target.classList.add('active');
+            appState.selectedShelves = []; // Clear selection on switch
+            renderMap();
+        }
 
-                // Dynamic Grid Columns
-                grid.style.gridTemplateColumns = `repeat(${config.cols}, 1fr)`;
+        function renderMap() {
+            const activeArea = document.querySelector('.chip.active').getAttribute('data-area') || 'A';
+            const config = SHELF_CONFIG[activeArea];
+            if (!config) return;
 
-                const rows = config.rows; // Now 5 rows
+            // Update Map Container style for coloring
+            const grid = document.getElementById('shelfGrid');
+            grid.setAttribute('data-active-area', activeArea);
+            grid.innerHTML = '';
 
-                // We need to know disabled shelves for this area
-                // In mock data, we will simulate this.
-                // For now, let's assume appState.disabledShelves contains full loc codes "A-天-1"
+            // Dynamic Grid Columns
+            grid.style.gridTemplateColumns = `repeat(${config.cols}, 1fr)`;
 
-                rows.forEach(shelf => {
-                    for (let col = 1; col <= config.cols; col++) {
-                        let locCode = `${activeArea}-${shelf}-${col}`;
+            const rows = config.rows; // Now 5 rows
 
-                        // Filter items
-                        const items = appState.inventory.filter(i => i.loc_code === locCode && i.status === '有効');
-                        const isOccupied = items.length > 0;
-                        const isDisabled = appState.disabledShelves.includes(locCode);
-                        const isSelected = appState.selectedShelves.includes(locCode);
+            // We need to know disabled shelves for this area
+            // In mock data, we will simulate this.
+            // For now, let's assume appState.disabledShelves contains full loc codes "A-天-1"
 
-                        const cell = document.createElement('div');
-                        cell.className = `shelf-cell ${isOccupied ? 'occupied' : ''} ${isDisabled ? 'grayed-out' : ''} ${isSelected ? 'selected' : ''}`;
+            rows.forEach(shelf => {
+                for (let col = 1; col <= config.cols; col++) {
+                    let locCode = `${activeArea}-${shelf}-${col}`;
 
-                        cell.onclick = (e) => {
-                            e.preventDefault();
-                            openShelfPopover(locCode, items, isDisabled);
-                        };
+                    // Filter items
+                    const items = appState.inventory.filter(i => i.loc_code === locCode && i.status === '有効');
+                    const isOccupied = items.length > 0;
+                    const isDisabled = appState.disabledShelves.includes(locCode);
+                    const isSelected = appState.selectedShelves.includes(locCode);
 
-                        // PC tooltip HTML
-                        let tooltipHTML = '';
-                        if (items.length > 0) {
-                            let itemsHTML = items.map(item => {
-                                let imgStr = '';
-                                const imgPath = item.image || item.Image;
-                                if (imgPath && String(imgPath).includes('http')) {
-                                    imgStr = `<img src="${imgPath}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; flex-shrink:0;">`;
-                                }
-                                return `
+                    const cell = document.createElement('div');
+                    cell.className = `shelf-cell ${isOccupied ? 'occupied' : ''} ${isDisabled ? 'grayed-out' : ''} ${isSelected ? 'selected' : ''}`;
+
+                    cell.onclick = (e) => {
+                        e.preventDefault();
+                        openShelfPopover(locCode, items, isDisabled);
+                    };
+
+                    // PC tooltip HTML
+                    let tooltipHTML = '';
+                    if (items.length > 0) {
+                        let itemsHTML = items.map(item => {
+                            let imgStr = '';
+                            const imgPath = item.image || item.Image;
+                            if (imgPath && String(imgPath).includes('http')) {
+                                imgStr = `<img src="${imgPath}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; flex-shrink:0;">`;
+                            }
+                            return `
                                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;">
                                         ${imgStr}
                                         <div style="font-weight:normal; white-space:normal; line-height:1.3; overflow:hidden;">
@@ -2270,39 +2345,39 @@ const filtered = appState.inventory.filter(item => {
                                         </div>
                                     </div>
                                 `;
-                            }).join('');
-                            tooltipHTML = `<div class="pc-tooltip">${itemsHTML}</div>`;
-                        } else if (isDisabled) {
-                            tooltipHTML = `<div class="pc-tooltip" style="text-align:center;">選択不可（グレーアウト）</div>`;
-                        } else {
-                            tooltipHTML = `<div class="pc-tooltip" style="text-align:center;">空き棚</div>`;
-                        }
+                        }).join('');
+                        tooltipHTML = `<div class="pc-tooltip">${itemsHTML}</div>`;
+                    } else if (isDisabled) {
+                        tooltipHTML = `<div class="pc-tooltip" style="text-align:center;">選択不可（グレーアウト）</div>`;
+                    } else {
+                        tooltipHTML = `<div class="pc-tooltip" style="text-align:center;">空き棚</div>`;
+                    }
 
-                        cell.innerHTML = `
+                    cell.innerHTML = `
                 <span class="code">${shelf}-${col}</span>
                 <span class="count">${isDisabled ? '-' : (isOccupied ? items.length + '件' : '空')}</span>
                 ${tooltipHTML}
             `;
-                        grid.appendChild(cell);
+                    grid.appendChild(cell);
+                }
+            });
+        }
+
+        let currentPopoverLoc = null;
+
+        function openShelfPopover(locCode, items, isDisabled) {
+            currentPopoverLoc = locCode;
+            document.getElementById('poLocCode').textContent = locCode;
+
+            const contentDiv = document.getElementById('poContent');
+            if (items.length > 0) {
+                let itemsHTML = items.map(item => {
+                    let imgStr = '';
+                    const imgPath = item.image || item.Image;
+                    if (imgPath && String(imgPath).includes('http')) {
+                        imgStr = `<img src="${imgPath}">`;
                     }
-                });
-            }
-
-            let currentPopoverLoc = null;
-
-            function openShelfPopover(locCode, items, isDisabled) {
-                currentPopoverLoc = locCode;
-                document.getElementById('poLocCode').textContent = locCode;
-                
-                const contentDiv = document.getElementById('poContent');
-                if (items.length > 0) {
-                    let itemsHTML = items.map(item => {
-                        let imgStr = '';
-                        const imgPath = item.image || item.Image;
-                        if (imgPath && String(imgPath).includes('http')) {
-                            imgStr = `<img src="${imgPath}">`;
-                        }
-                        return `
+                    return `
                             <div class="popover-item">
                                 ${imgStr}
                                 <div>
@@ -2311,80 +2386,80 @@ const filtered = appState.inventory.filter(item => {
                                 </div>
                             </div>
                         `;
-                    }).join('');
-                    contentDiv.innerHTML = itemsHTML;
-                } else if (isDisabled) {
-                    contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">選択不可（グレーアウト）</div>`;
-                } else {
-                    contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">空き棚</div>`;
-                }
-
-                const toggleBtn = document.getElementById('poToggleBtn');
-                if (isDisabled) {
-                    toggleBtn.textContent = '使用可能にする（グレー解除）';
-                    toggleBtn.onclick = () => toggleSingleShelfStatus(false);
-                } else {
-                    toggleBtn.textContent = 'この棚を選択不可にする';
-                    toggleBtn.onclick = () => toggleSingleShelfStatus(true);
-                }
-
-                document.getElementById('shelfPopover').style.display = 'block';
+                }).join('');
+                contentDiv.innerHTML = itemsHTML;
+            } else if (isDisabled) {
+                contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">選択不可（グレーアウト）</div>`;
+            } else {
+                contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">空き棚</div>`;
             }
 
-            function closeShelfPopover() {
-                document.getElementById('shelfPopover').style.display = 'none';
-                currentPopoverLoc = null;
+            const toggleBtn = document.getElementById('poToggleBtn');
+            if (isDisabled) {
+                toggleBtn.textContent = '使用可能にする（グレー解除）';
+                toggleBtn.onclick = () => toggleSingleShelfStatus(false);
+            } else {
+                toggleBtn.textContent = 'この棚を選択不可にする';
+                toggleBtn.onclick = () => toggleSingleShelfStatus(true);
             }
 
-            async function toggleSingleShelfStatus(disable) {
-                if (!currentPopoverLoc) return;
-                const locCode = currentPopoverLoc;
+            document.getElementById('shelfPopover').style.display = 'block';
+        }
 
-                if (disable) {
-                    const isOccupied = appState.inventory.some(i => i.loc_code === locCode && i.status === "有効");
-                    if (isOccupied) {
-                        alert("この棚には在庫があるため、使用不可(グレーアウト)にできません。");
-                        return;
-                    }
-                }
+        function closeShelfPopover() {
+            document.getElementById('shelfPopover').style.display = 'none';
+            currentPopoverLoc = null;
+        }
 
-                if (disable) {
-                    if (!appState.disabledShelves.includes(locCode)) {
-                        appState.disabledShelves.push(locCode);
-                    }
-                } else {
-                    appState.disabledShelves = appState.disabledShelves.filter(s => s !== locCode);
-                }
+        async function toggleSingleShelfStatus(disable) {
+            if (!currentPopoverLoc) return;
+            const locCode = currentPopoverLoc;
 
-                try {
-                    await saveDisabledShelvesToServer(appState.disabledShelves);
-                    closeShelfPopover();
-                    renderMap();
-                } catch (e) {
-                    console.error(e);
-                    alert("棚状態の保存に失敗しました。");
+            if (disable) {
+                const isOccupied = appState.inventory.some(i => i.loc_code === locCode && i.status === "有効");
+                if (isOccupied) {
+                    alert("この棚には在庫があるため、使用不可(グレーアウト)にできません。");
+                    return;
                 }
             }
 
-            // --- Scanner ---
-            let html5QrcodeScanner = null;
+            if (disable) {
+                if (!appState.disabledShelves.includes(locCode)) {
+                    appState.disabledShelves.push(locCode);
+                }
+            } else {
+                appState.disabledShelves = appState.disabledShelves.filter(s => s !== locCode);
+            }
 
-            function startScanner() {
-                document.getElementById('scannerModal').classList.add('open');
-                if (html5QrcodeScanner) return; // already running?
+            try {
+                await saveDisabledShelvesToServer(appState.disabledShelves);
+                closeShelfPopover();
+                renderMap();
+            } catch (e) {
+                console.error(e);
+                alert("棚状態の保存に失敗しました。");
+            }
+        }
 
-                // Use Html5Qrcode class
-                const html5QrCode = new Html5Qrcode("reader");
-                html5QrcodeScanner = html5QrCode;
+        // --- Scanner ---
+        let html5QrcodeScanner = null;
 
-                const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        function startScanner() {
+            document.getElementById('scannerModal').classList.add('open');
+            if (html5QrcodeScanner) return; // already running?
 
-                html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
-                    .catch(err => {
-                        console.error("Error starting scanner", err);
-                        // カメラ起動失敗時（GASのiframe制限など）のフォールバックUIを表示
-                        const readerDiv = document.getElementById('reader');
-                        readerDiv.innerHTML = `
+            // Use Html5Qrcode class
+            const html5QrCode = new Html5Qrcode("reader");
+            html5QrcodeScanner = html5QrCode;
+
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+                .catch(err => {
+                    console.error("Error starting scanner", err);
+                    // カメラ起動失敗時（GASのiframe制限など）のフォールバックUIを表示
+                    const readerDiv = document.getElementById('reader');
+                    readerDiv.innerHTML = `
                 <div style="padding: 1.5rem; background: white; text-align: center; border-radius: 8px;">
                     <p style="color: var(--status-crit); font-size: 0.9rem; margin-bottom: 0.5rem; font-weight: bold;">カメラの直接起動が制限されています</p>
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">下記のボタンを押して、スマホの標準カメラでバーコードを撮影してください。</p>
@@ -2395,88 +2470,88 @@ const filtered = appState.inventory.filter(item => {
                     <input type="file" accept="image/*" capture="environment" id="qr-fallback-input" style="display:none;" onchange="handleFallbackScan(event)">
                 </div>
             `;
-                    });
-            }
-
-            window.handleFallbackScan = function (event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                if (!html5QrcodeScanner) {
-                    html5QrcodeScanner = new Html5Qrcode("reader");
-                }
-
-                const readerDiv = document.getElementById('reader');
-                readerDiv.innerHTML = '<div style="padding: 3rem 1rem; background: #fff; text-align: center; color: var(--primary); font-weight: bold;">画像からバーコードを解析中...<br><br><div class="loading-spinner active" style="display:inline-block;"></div></div>';
-
-                html5QrcodeScanner.scanFile(file, true)
-                    .then(decodedText => {
-                        onScanSuccess(decodedText);
-                    })
-                    .catch(err => {
-                        alert("バーコードが読み取れませんでした。ピントを合わせて再度撮影してください。");
-                        document.getElementById('scannerModal').classList.remove('open');
-                    });
-            };
-
-            function stopScanner() {
-                document.getElementById('scannerModal').classList.remove('open');
-                if (html5QrcodeScanner) {
-                    html5QrcodeScanner.stop().then((ignore) => {
-                        // QR Code scanning is stopped.
-                        html5QrcodeScanner.clear();
-                        html5QrcodeScanner = null;
-                    }).catch((err) => {
-                        // Stop failed, handle it.
-                    });
-                }
-            }
-
-            function onScanSuccess(decodedText, decodedResult) {
-                // 2段バーコード（ISBN=978/979〜、Cコード=192〜等）のうち、ISBN以外は無視してスキャン続行
-                // ただし在庫ID(ID-)の直接読み取りは許可
-                if (!decodedText.startsWith("978") && !decodedText.startsWith("979") && !decodedText.startsWith("ID-")) {
-                    return;
-                }
-
-                // Hit!
-                stopScanner();
-                const cleanScanText = cleanIsbn(decodedText);
-
-                // 検索窓に流し込んで自動検索
-                const searchInput = document.getElementById('searchInput');
-                if (searchInput) {
-                    searchInput.value = cleanScanText;
-                    filterItems();
-                }
-
-                // Check DB
-                const hits = appState.inventory.filter(i => {
-                    if (i.status !== '有効') return false;
-                    if (i.id === decodedText) return true;
-                    if (i.isbn && cleanIsbn(i.isbn) === cleanScanText) return true;
-                    return false;
                 });
+        }
 
-                if (hits.length > 0) {
-                    showScanResultCard(hits[0]);
-                } else {
-                    alert(`未登録または在庫のないISBNです: ${decodedText}`);
-                }
+        window.handleFallbackScan = function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!html5QrcodeScanner) {
+                html5QrcodeScanner = new Html5Qrcode("reader");
             }
 
-            function showScanResultCard(hit) {
-                let card = document.getElementById('scanResultCard');
-                if (!card) {
-                    card = document.createElement('div');
-                    card.id = 'scanResultCard';
-                    card.className = 'modal';
-                    document.body.appendChild(card);
-                }
+            const readerDiv = document.getElementById('reader');
+            readerDiv.innerHTML = '<div style="padding: 3rem 1rem; background: #fff; text-align: center; color: var(--primary); font-weight: bold;">画像からバーコードを解析中...<br><br><div class="loading-spinner active" style="display:inline-block;"></div></div>';
 
-                let coverImg = hit.image_url ? `<img src="${hit.image_url}" alt="表紙" style="max-height: 200px; max-width: 100%; border-radius: 8px; margin-bottom: 1rem; box-shadow: var(--shadow-md); object-fit: contain;">` : `<div style="height: 150px; background: #f3f4f6; border-radius: 8px; display:flex; align-items:center; justify-content:center; color: var(--text-muted); margin-bottom: 1rem;"><ion-icon name="image-outline" style="font-size: 3rem;"></ion-icon></div>`;
+            html5QrcodeScanner.scanFile(file, true)
+                .then(decodedText => {
+                    onScanSuccess(decodedText);
+                })
+                .catch(err => {
+                    alert("バーコードが読み取れませんでした。ピントを合わせて再度撮影してください。");
+                    document.getElementById('scannerModal').classList.remove('open');
+                });
+        };
 
-                card.innerHTML = `
+        function stopScanner() {
+            document.getElementById('scannerModal').classList.remove('open');
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().then((ignore) => {
+                    // QR Code scanning is stopped.
+                    html5QrcodeScanner.clear();
+                    html5QrcodeScanner = null;
+                }).catch((err) => {
+                    // Stop failed, handle it.
+                });
+            }
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // 2段バーコード（ISBN=978/979〜、Cコード=192〜等）のうち、ISBN以外は無視してスキャン続行
+            // ただし在庫ID(ID-)の直接読み取りは許可
+            if (!decodedText.startsWith("978") && !decodedText.startsWith("979") && !decodedText.startsWith("ID-")) {
+                return;
+            }
+
+            // Hit!
+            stopScanner();
+            const cleanScanText = cleanIsbn(decodedText);
+
+            // 検索窓に流し込んで自動検索
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = cleanScanText;
+                filterItems();
+            }
+
+            // Check DB
+            const hits = appState.inventory.filter(i => {
+                if (i.status !== '有効') return false;
+                if (i.id === decodedText) return true;
+                if (i.isbn && cleanIsbn(i.isbn) === cleanScanText) return true;
+                return false;
+            });
+
+            if (hits.length > 0) {
+                showScanResultCard(hits[0]);
+            } else {
+                alert(`未登録または在庫のないISBNです: ${decodedText}`);
+            }
+        }
+
+        function showScanResultCard(hit) {
+            let card = document.getElementById('scanResultCard');
+            if (!card) {
+                card = document.createElement('div');
+                card.id = 'scanResultCard';
+                card.className = 'modal';
+                document.body.appendChild(card);
+            }
+
+            let coverImg = hit.image_url ? `<img src="${hit.image_url}" alt="表紙" style="max-height: 200px; max-width: 100%; border-radius: 8px; margin-bottom: 1rem; box-shadow: var(--shadow-md); object-fit: contain;">` : `<div style="height: 150px; background: #f3f4f6; border-radius: 8px; display:flex; align-items:center; justify-content:center; color: var(--text-muted); margin-bottom: 1rem;"><ion-icon name="image-outline" style="font-size: 3rem;"></ion-icon></div>`;
+
+            card.innerHTML = `
         <div class="modal-content" style="text-align: center; max-width: 350px;">
             <h3 style="margin-top: 0; color: var(--primary); font-size: 1.2rem;">書籍を特定しました</h3>
             ${coverImg}
@@ -2498,676 +2573,676 @@ const filtered = appState.inventory.filter(item => {
         </div>
     `;
 
-                card.classList.add('open');
+            card.classList.add('open');
+        }
+
+        function goToMapLocation(locCode) {
+            const parts = locCode.split('-');
+            if (parts.length >= 3) {
+                router('map');
+                setMapArea(parts[0]);
+
+                // ハイライトの初期化
+                document.querySelectorAll('.shelf-cell').forEach(c => {
+                    c.style.border = "";
+                    c.style.boxShadow = "";
+                    c.style.transform = "";
+                });
+
+                setTimeout(() => {
+                    const cells = document.querySelectorAll('.shelf-cell');
+                    cells.forEach(c => {
+                        const elShelf = c.querySelector('.code');
+                        if (elShelf && elShelf.innerText === (`${parts[1]}-${parts[2]}`)) {
+                            // 対象セルを強調ハイライト
+                            c.style.border = "4px solid red";
+                            c.style.boxShadow = "0 0 15px rgba(255, 0, 0, 0.6)";
+                            c.style.transform = "scale(1.05)";
+                            c.scrollIntoView({ behavior: "smooth", block: "center" });
+                        }
+                    });
+                }, 500);
+            }
+        }
+
+        /**
+         * Logic Helpers
+         */
+        function getAgeColor(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffDays = (now - date) / (1000 * 60 * 60 * 24);
+
+            if (diffDays < 180) return 'age-new'; // 0.5y
+            if (diffDays < 365) return 'age-mid'; // 1y
+            if (diffDays < 730) return 'age-mid'; // 2y (using same yellow for mid range)
+            return 'age-old'; // > 2y
+        }
+
+        function parseLocCode(code) {
+            // Expected format: Area-Shelf-Col (e.g. A-天-1)
+            const parts = code.split('-');
+            if (parts.length === 3) {
+                document.getElementById('regArea').value = parts[0];
+                updateLocOptions();
+                document.getElementById('regShelf').value = parts[1];
+                document.getElementById('regCol').value = parts[2];
+                document.getElementById('loc-display-header').textContent = code;
+            }
+        }
+
+        /**
+         * Forms & Actions
+         */
+        async function handleRegister(e) {
+            e.preventDefault();
+            const formData = {
+                area: document.getElementById('regArea').value,
+                shelf: document.getElementById('regShelf').value,
+                column: document.getElementById('regCol').value,
+                name: document.getElementById('regName').value,
+                type: document.getElementById('regType').value,
+                qty: parseInt(document.getElementById('regQty').value), // FIX: Parse INT
+                size: document.getElementById('regSize').value,
+                date_in: document.getElementById('regDate').value,
+                slip_no: document.getElementById('regSlip').value,
+                client: document.getElementById('regClient').value,
+                memo: document.getElementById('regMemo').value,
+                memo: document.getElementById('regMemo').value,
+                isbn: document.getElementById('regISBN').value, // ISBN
+                book_id: document.getElementById('regBookId').value, // Book ID
+                sales: document.getElementById('regSales').value, // Sales Rep
+                image_data: currentImageBase64, // Add image data
+                loc_code: null
+            };
+
+            const res = await API.post('register', formData);
+            if (res.status === 'success') {
+                alert('登録しました');
+                document.getElementById('registerForm').reset();
+                currentImageBase64 = null;
+                document.getElementById('imagePreview').innerHTML = '<span><ion-icon name="image-outline"></ion-icon> クリックして画像を選択</span>';
+                router('dashboard');
+                refreshData();
+            }
+        }
+
+        let currentShipId = null;
+        function openShipModal(id) {
+            currentShipId = id;
+            const item = appState.inventory.find(i => i.id === id);
+            document.getElementById('shipTargetName').textContent = item.name;
+            document.getElementById('shipModal').classList.add('open');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        async function submitShip() {
+            const qty = document.getElementById('shipQty').value;
+            const memo = document.getElementById('shipMemo').value;
+
+            if (!qty) return;
+
+            const res = await API.post('ship', {
+                qty_diff: qty,
+                memo: memo,
+                user: 'User' // Mock user
+            });
+
+            if (res.status === 'success') {
+                closeModal('shipModal');
+                refreshData();
+            }
+        }
+
+
+        function openEditModal(id) {
+            console.log("Opening modal for ID:", id);
+            const item = appState.inventory.find(i => String(i.id) === String(id));
+            if (!item) {
+                console.error("Item not found:", id);
+                return;
             }
 
-            function goToMapLocation(locCode) {
-                const parts = locCode.split('-');
+            console.log("Found item in openEditModal:", item);
+
+            // フォームに現在の値を確実にセット（ここで確実に editId.value へ代入）
+            document.getElementById('editId').value = item.id;
+            document.getElementById('editName').value = item.name !== undefined ? item.name : '';
+            document.getElementById('editQty').value = item.qty !== undefined ? item.qty : 0;
+            document.getElementById('editStatus').value = item.status || '有効';
+
+            let area = item.area;
+            let shelf = item.shelf;
+            let col = item.column;
+
+            // もし個別のプロパティが無く、loc_code がある場合はそこから抽出
+            if ((!area || !shelf || !col) && item.loc_code) {
+                const parts = item.loc_code.split('-');
                 if (parts.length >= 3) {
-                    router('map');
-                    setMapArea(parts[0]);
-
-                    // ハイライトの初期化
-                    document.querySelectorAll('.shelf-cell').forEach(c => {
-                        c.style.border = "";
-                        c.style.boxShadow = "";
-                        c.style.transform = "";
-                    });
-
-                    setTimeout(() => {
-                        const cells = document.querySelectorAll('.shelf-cell');
-                        cells.forEach(c => {
-                            const elShelf = c.querySelector('.code');
-                            if (elShelf && elShelf.innerText === (`${parts[1]}-${parts[2]}`)) {
-                                // 対象セルを強調ハイライト
-                                c.style.border = "4px solid red";
-                                c.style.boxShadow = "0 0 15px rgba(255, 0, 0, 0.6)";
-                                c.style.transform = "scale(1.05)";
-                                c.scrollIntoView({ behavior: "smooth", block: "center" });
-                            }
-                        });
-                    }, 500);
+                    area = parts[0];
+                    shelf = parts[1];
+                    col = parts[2];
                 }
             }
 
-            /**
-             * Logic Helpers
-             */
-            function getAgeColor(dateStr) {
-                if (!dateStr) return '';
-                const date = new Date(dateStr);
-                const now = new Date();
-                const diffDays = (now - date) / (1000 * 60 * 60 * 24);
-
-                if (diffDays < 180) return 'age-new'; // 0.5y
-                if (diffDays < 365) return 'age-mid'; // 1y
-                if (diffDays < 730) return 'age-mid'; // 2y (using same yellow for mid range)
-                return 'age-old'; // > 2y
+            if (area) {
+                document.getElementById('editArea').value = area;
+                // 棚と列の選択肢を更新してから値をセット
+                updateEditLocOptions(area);
+                if (shelf) document.getElementById('editShelf').value = shelf;
+                if (col) document.getElementById('editCol').value = col;
+            } else {
+                // エリア情報がない場合の予備処理
+                document.getElementById('editArea').value = 'A';
+                updateEditLocOptions('A');
+                document.getElementById('editShelf').value = '天';
+                document.getElementById('editCol').value = '1';
             }
 
-            function parseLocCode(code) {
-                // Expected format: Area-Shelf-Col (e.g. A-天-1)
-                const parts = code.split('-');
-                if (parts.length === 3) {
-                    document.getElementById('regArea').value = parts[0];
-                    updateLocOptions();
-                    document.getElementById('regShelf').value = parts[1];
-                    document.getElementById('regCol').value = parts[2];
-                    document.getElementById('loc-display-header').textContent = code;
-                }
+            // モーダルを表示
+            document.getElementById('editModal').classList.add('open');
+        }
+
+        function updateEditLocOptions(area) {
+            const config = SHELF_CONFIG[area];
+            const shelfSelect = document.getElementById('editShelf');
+            const colSelect = document.getElementById('editCol');
+
+            if (!config) {
+                shelfSelect.innerHTML = '<option value="">-</option>';
+                colSelect.innerHTML = '<option value="">-</option>';
+                return;
             }
 
-            /**
-             * Forms & Actions
-             */
-            async function handleRegister(e) {
-                e.preventDefault();
-                const formData = {
-                    area: document.getElementById('regArea').value,
-                    shelf: document.getElementById('regShelf').value,
-                    column: document.getElementById('regCol').value,
-                    name: document.getElementById('regName').value,
-                    type: document.getElementById('regType').value,
-                    qty: parseInt(document.getElementById('regQty').value), // FIX: Parse INT
-                    size: document.getElementById('regSize').value,
-                    date_in: document.getElementById('regDate').value,
-                    slip_no: document.getElementById('regSlip').value,
-                    client: document.getElementById('regClient').value,
-                    memo: document.getElementById('regMemo').value,
-                    memo: document.getElementById('regMemo').value,
-                    isbn: document.getElementById('regISBN').value, // ISBN
-                    book_id: document.getElementById('regBookId').value, // Book ID
-                    sales: document.getElementById('regSales').value, // Sales Rep
-                    image_data: currentImageBase64, // Add image data
-                    loc_code: null
-                };
+            shelfSelect.innerHTML = '';
+            config.rows.forEach(r => {
+                const op = document.createElement('option');
+                op.value = r;
+                op.textContent = r;
+                shelfSelect.appendChild(op);
+            });
 
-                const res = await API.post('register', formData);
-                if (res.status === 'success') {
-                    alert('登録しました');
-                    document.getElementById('registerForm').reset();
-                    currentImageBase64 = null;
-                    document.getElementById('imagePreview').innerHTML = '<span><ion-icon name="image-outline"></ion-icon> クリックして画像を選択</span>';
-                    router('dashboard');
-                    refreshData();
-                }
+            colSelect.innerHTML = '';
+            for (let c = 1; c <= config.cols; c++) {
+                if (config.skip && config.skip.includes(String(c))) continue;
+                const op = document.createElement('option');
+                op.value = c;
+                op.textContent = c;
+                colSelect.appendChild(op);
             }
+        }
 
-            let currentShipId = null;
-            function openShipModal(id) {
-                currentShipId = id;
-                const item = appState.inventory.find(i => i.id === id);
-                document.getElementById('shipTargetName').textContent = item.name;
-                document.getElementById('shipModal').classList.add('open');
-            }
+        async function submitEdit() {
+            const id = document.getElementById('editId').value;
+            console.log("Saving ID:", id);
+            const status = document.getElementById('editStatus').value;
+            const name = document.getElementById('editName').value;
+            const qty = document.getElementById('editQty').value;
 
-            function closeModal(id) {
-                document.getElementById(id).classList.remove('open');
-            }
+            let area = document.getElementById('editArea').value;
+            let shelf = document.getElementById('editShelf').value;
+            let col = document.getElementById('editCol').value;
 
-            async function submitShip() {
-                const qty = document.getElementById('shipQty').value;
-                const memo = document.getElementById('shipMemo').value;
+            // 予備処理: 取得できなかった場合はデフォルト値をセット
+            if (!area) area = 'A';
+            if (!shelf) shelf = '天';
+            if (!col) col = '1';
 
-                if (!qty) return;
+            // エラー箇所の特定を分かりやすく変更
+            if (!id) { alert("IDが取得できませんでした。"); return; }
+            if (!name) { alert("商品名が入力されていません。"); return; }
+            if (qty === '' || qty === null) { alert("数量が入力されていません。"); return; }
 
-                const res = await API.post('ship', {
-                    qty_diff: qty,
-                    memo: memo,
-                    user: 'User' // Mock user
+            const loc_code = `${area}-${shelf}-${col}`;
+
+            // 必要であればローディング表示
+            if (typeof toggleLoading === 'function') toggleLoading(true);
+
+            try {
+                const res = await API.post('edit', {
+                    id: id,
+                    status: status,
+                    name: name,
+                    qty: parseInt(qty, 10),
+                    area: area,
+                    shelf: shelf,
+                    column: col,
+                    loc_code: loc_code
                 });
 
                 if (res.status === 'success') {
-                    closeModal('shipModal');
-                    refreshData();
-                }
-            }
-
-
-            function openEditModal(id) {
-                console.log("Opening modal for ID:", id);
-                const item = appState.inventory.find(i => String(i.id) === String(id));
-                if (!item) {
-                    console.error("Item not found:", id);
-                    return;
-                }
-                
-                console.log("Found item in openEditModal:", item);
-
-                // フォームに現在の値を確実にセット（ここで確実に editId.value へ代入）
-                document.getElementById('editId').value = item.id;
-                document.getElementById('editName').value = item.name !== undefined ? item.name : '';
-                document.getElementById('editQty').value = item.qty !== undefined ? item.qty : 0;
-                document.getElementById('editStatus').value = item.status || '有効';
-
-                let area = item.area;
-                let shelf = item.shelf;
-                let col = item.column;
-
-                // もし個別のプロパティが無く、loc_code がある場合はそこから抽出
-                if ((!area || !shelf || !col) && item.loc_code) {
-                    const parts = item.loc_code.split('-');
-                    if (parts.length >= 3) {
-                        area = parts[0];
-                        shelf = parts[1];
-                        col = parts[2];
-                    }
-                }
-
-                if (area) {
-                    document.getElementById('editArea').value = area;
-                    // 棚と列の選択肢を更新してから値をセット
-                    updateEditLocOptions(area);
-                    if (shelf) document.getElementById('editShelf').value = shelf;
-                    if (col) document.getElementById('editCol').value = col;
+                    closeModal('editModal');
+                    alert('更新しました');
+                    await refreshData();
                 } else {
-                    // エリア情報がない場合の予備処理
-                    document.getElementById('editArea').value = 'A';
-                    updateEditLocOptions('A');
-                    document.getElementById('editShelf').value = '天';
-                    document.getElementById('editCol').value = '1';
+                    alert('更新に失敗しました: ' + (res.message || '不明なエラー'));
                 }
+            } catch (e) {
+                console.error("Edit submission error:", e);
+                alert("通信エラーが発生しました");
+            } finally {
+                if (typeof toggleLoading === 'function') toggleLoading(false);
+            }
+        }
 
-                // モーダルを表示
-                document.getElementById('editModal').classList.add('open');
+        // function submitEdit() // End of function
+
+        async function deleteItem() {
+            if (!confirm('本当に削除しますか？')) return;
+
+            const id = document.getElementById('editId').value;
+            console.log("Deleting ID:", id);
+            if (!id) {
+                alert('削除対象のIDが取得できませんでした。');
+                return;
             }
 
-            function updateEditLocOptions(area) {
-                const config = SHELF_CONFIG[area];
-                const shelfSelect = document.getElementById('editShelf');
-                const colSelect = document.getElementById('editCol');
+            if (typeof toggleLoading === 'function') toggleLoading(true);
 
-                if (!config) {
-                    shelfSelect.innerHTML = '<option value="">-</option>';
-                    colSelect.innerHTML = '<option value="">-</option>';
-                    return;
+            try {
+                const res = await API.post('delete', { id: id });
+                if (res.status === 'success') {
+                    closeModal('editModal');
+                    alert('削除しました');
+                    await refreshData();
+                } else {
+                    alert('削除に失敗しました: ' + (res.message || '不明なエラー'));
                 }
-
-                shelfSelect.innerHTML = '';
-                config.rows.forEach(r => {
-                    const op = document.createElement('option');
-                    op.value = r;
-                    op.textContent = r;
-                    shelfSelect.appendChild(op);
-                });
-
-                colSelect.innerHTML = '';
-                for (let c = 1; c <= config.cols; c++) {
-                    if (config.skip && config.skip.includes(String(c))) continue;
-                    const op = document.createElement('option');
-                    op.value = c;
-                    op.textContent = c;
-                    colSelect.appendChild(op);
-                }
+            } catch (e) {
+                console.error("Delete error:", e);
+                alert("通信エラーが発生しました");
+            } finally {
+                if (typeof toggleLoading === 'function') toggleLoading(false);
             }
+        }
 
-            async function submitEdit() {
-                const id = document.getElementById('editId').value;
-                console.log("Saving ID:", id);
-                const status = document.getElementById('editStatus').value;
-                const name = document.getElementById('editName').value;
-                const qty = document.getElementById('editQty').value;
+        function renderLogs() {
+            const tbody = document.querySelector('#logsTable tbody');
+            tbody.innerHTML = '';
 
-                let area = document.getElementById('editArea').value;
-                let shelf = document.getElementById('editShelf').value;
-                let col = document.getElementById('editCol').value;
-                
-                // 予備処理: 取得できなかった場合はデフォルト値をセット
-                if (!area) area = 'A';
-                if (!shelf) shelf = '天';
-                if (!col) col = '1';
+            // Sort logs desc
+            const sorted = [...appState.logs].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-                // エラー箇所の特定を分かりやすく変更
-                if (!id) { alert("IDが取得できませんでした。"); return; }
-                if (!name) { alert("商品名が入力されていません。"); return; }
-                if (qty === '' || qty === null) { alert("数量が入力されていません。"); return; }
-
-                const loc_code = `${area}-${shelf}-${col}`;
-                
-                // 必要であればローディング表示
-                if(typeof toggleLoading === 'function') toggleLoading(true);
-
-                try {
-                    const res = await API.post('edit', {
-                        id: id,
-                        status: status,
-                        name: name,
-                        qty: parseInt(qty, 10),
-                        area: area,
-                        shelf: shelf,
-                        column: col,
-                        loc_code: loc_code
-                    });
-
-                    if (res.status === 'success') {
-                        closeModal('editModal');
-                        alert('更新しました');
-                        await refreshData();
-                    } else {
-                        alert('更新に失敗しました: ' + (res.message || '不明なエラー'));
-                    }
-                } catch (e) {
-                    console.error("Edit submission error:", e);
-                    alert("通信エラーが発生しました");
-                } finally {
-                    if(typeof toggleLoading === 'function') toggleLoading(false);
-                }
-            }
-
-            // function submitEdit() // End of function
-
-            async function deleteItem() {
-                if (!confirm('本当に削除しますか？')) return;
-                
-                const id = document.getElementById('editId').value;
-                console.log("Deleting ID:", id);
-                if (!id) {
-                    alert('削除対象のIDが取得できませんでした。');
-                    return;
-                }
-
-                if(typeof toggleLoading === 'function') toggleLoading(true);
-
-                try {
-                    const res = await API.post('delete', { id: id });
-                    if (res.status === 'success') {
-                        closeModal('editModal');
-                        alert('削除しました');
-                        await refreshData();
-                    } else {
-                        alert('削除に失敗しました: ' + (res.message || '不明なエラー'));
-                    }
-                } catch (e) {
-                    console.error("Delete error:", e);
-                    alert("通信エラーが発生しました");
-                } finally {
-                    if(typeof toggleLoading === 'function') toggleLoading(false);
-                }
-            }
-
-            function renderLogs() {
-                const tbody = document.querySelector('#logsTable tbody');
-                tbody.innerHTML = '';
-
-                // Sort logs desc
-                const sorted = [...appState.logs].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                sorted.forEach(log => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
+            sorted.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
             <td>${log.date}</td>
             <td>${log.action}</td>
             <td>${log.target_name}</td>
             <td>${log.details}</td>
             <td>${log.user}</td>
         `;
-                    tbody.appendChild(tr);
-                });
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- CSV & Data Management ---
+
+        function exportCSV() {
+            const items = appState.inventory;
+            if (items.length === 0) {
+                alert("データがありません");
+                return;
             }
 
-            // --- CSV & Data Management ---
-
-            function exportCSV() {
-                const items = appState.inventory;
-                if (items.length === 0) {
-                    alert("データがありません");
-                    return;
-                }
-
-                // Define Header
-                const fields = [
-                    "id", "status", "area", "shelf", "column", "name", "qty",
-                    "date_in", "type", "size", "slip_no", "client", "isbn", "memo", "loc_code"
-                ];
-
-                // Convert to CSV
-                const csv = Papa.unparse({
-                    fields: fields,
-                    data: items
-                });
-
-                // Add BOM for Excel
-                const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-                const blob = new Blob([bom, csv], { type: "text/csv;charset=utf-8;" });
-
-                // Download
-                const link = document.createElement("a");
-                const url = URL.createObjectURL(blob);
-                const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-                link.setAttribute("href", url);
-                link.setAttribute("download", `stocker_export_${dateStr}.csv`);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-
-            function importCSV(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                Papa.parse(file, {
-                    header: true,
-                    skipEmptyLines: true,
-                    complete: async function (results) {
-                        if (results.errors.length > 0) {
-                            console.warn("CSV Parse Errors:", results.errors);
-                            alert("CSV読み込み中にエラーが発生しました。コンソールを確認してください。");
-                        }
-
-                        const rows = results.data;
-                        let successCount = 0;
-
-                        if (confirm(`${rows.length}件のデータを読み込みますか？\n既存のIDがある場合は上書き、なければ新規登録されます。`)) {
-                            toggleLoading(true);
-                            // Batch process could be better, but loop is simple for now
-                            const upsertList = rows.map(row => {
-                                // Cleanup fields if necessary
-                                return {
-                                    id: row.id, // if empty, backend should generate? No, for import usually we keep ID if provided.
-                                    status: row.status || '有効',
-                                    area: row.area,
-                                    shelf: row.shelf,
-                                    column: row.column,
-                                    name: row.name,
-                                    qty: parseInt(row.qty) || 0,
-                                    date_in: row.date_in,
-                                    type: row.type,
-                                    size: row.size,
-                                    slip_no: row.slip_no,
-                                    client: row.client,
-                                    isbn: row.isbn,
-                                    memo: row.memo,
-                                    // loc_code will be reconstructed by backend or here
-                                    loc_code: row.loc_code || `${row.area}-${row.shelf}-${row.column}`
-                                };
-                            });
-
-                            await API.post('bulk_upsert', { items: upsertList });
-
-                            toggleLoading(false);
-                            alert("読み込みが完了しました");
-                            event.target.value = ''; // reset
-                            refreshData();
-                        }
-                    }
-                });
-            }
-
-            function cleanIsbn(isbn) {
-                if (!isbn) return "";
-                return isbn.replace(/[^0-9X]/gi, "");
-            }
-
-            async function bulkImportImages(event) {
-                const files = event.target.files;
-                if (!files || files.length === 0) return;
-
-                toggleLoading(true);
-                let updates = [];
-
-                for (let f of files) {
-                    const fname = f.name;
-                    const namePart = fname.substring(0, fname.lastIndexOf('.')) || fname;
-                    const cleanName = cleanIsbn(namePart);
-
-                    try {
-                        const base64 = await readFileAsBase64(f);
-                        // サーバー側 (Code.gs) でISBNマッチングを行うため isbn を送信
-                        updates.push({ isbn: cleanName, image_data: base64 });
-                    } catch (err) {
-                        console.error("Image Read Error", fname, err);
-                    }
-                }
-
-                if (updates.length > 0) {
-                    const res = await API.post('bulk_image_update', { updates: updates });
-                    if (res && res.status === 'success') {
-                        alert(`GAS(サーバー)側で照合を行い、${res.count}件のデータに画像を適用しました。`);
-                    } else {
-                        alert("画像の一括更新に失敗しました。");
-                    }
-                    refreshData();
-                } else {
-                    alert("有効な画像ファイルが見つかりませんでした。ファイル名は「ISBN(ハイフンなし).jpg」などにしてください。");
-                }
-
-                event.target.value = '';
-                toggleLoading(false);
-            }
-
-            function readFileAsBase64(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.onload = e => resolve(e.target.result);
-                    reader.onerror = e => reject(e);
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            function toggleLoading(show) {
-                const el = document.getElementById('loading');
-                if (show) el.classList.add('active');
-                else el.classList.remove('active');
-            }
-
-            // --- Paper Master Data ---
-            const PAPER_MASTER_RAW = [
-                ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "63kg", "250枚包"],
-                ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "68kg", "250枚包"],
-                ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "73kg", "250枚包"],
-                ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
-                ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
-                ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "135kg", "125枚包"],
-                ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "40.5kg", "500枚包"],
-                ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "43.5kg", "500枚包"],
-                ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "46.5kg", "500枚包"],
-                ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
-                ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
-                ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "86.5kg", "250枚包"],
-                ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "43.5kg", "500枚包"],
-                ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "47kg", "500枚包"],
-                ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "50.5kg", "500枚包"],
-                ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "62.5kg", "250枚包"],
-                ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "76.5kg", "250枚包"],
-                ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "93.5kg", "250枚包"],
-                ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "70kg", "250枚包"],
-                ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
-                ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
-                ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "135kg", "125枚包"],
-                ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "44.5kg", "500枚包"],
-                ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
-                ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
-                ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "86.5kg", "250枚包"],
-                ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "48.5kg", "500枚包"],
-                ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "62.5kg", "250枚包"],
-                ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "76.5kg", "250枚包"],
-                ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "93.5kg", "250枚包"],
-                ["OKプリンス上質(王子製紙)", "4/6判(788×1091)T目", "180kg", "125枚包"],
-                ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "45kg", "500枚包"],
-                ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "55kg", "500枚包"],
-                ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "70kg", "250枚包"],
-                ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
-                ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
-                ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "135kg", "125枚包"],
-                ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "28.5kg", "500枚包"],
-                ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "35kg", "500枚包"],
-                ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "44.5kg", "500枚包"],
-                ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
-                ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
-                ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "86.5kg", "250枚包"],
-                ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "31kg", "500枚包"],
-                ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "38kg", "500枚包"],
-                ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "48.5kg", "500枚包"],
-                ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "62.5kg", "250枚包"],
-                ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "76.5kg", "250枚包"],
-                ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "93.5kg", "250枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "45Kg", "500枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "55kg", "500枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "70kg", "250枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "135Kg", "125枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "28.5Kg", "500枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "35kg", "500枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "44.5kg", "500枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "86.5Kg", "250枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "31Kg", "500枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "38Kg", "500枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "48.5Kg", "500枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "62.5Kg", "250枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "76.5Kg", "250枚包"],
-                ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "93.5Kg", "250枚包"],
-                ["コートグリーン100", "A判(625×880)T目", "40.5kg", "500枚包"],
-                ["コートグリーン100", "A判(625×880)T目", "43.5kg", "500枚包"],
-                ["コートグリーン100", "A判(625×880)T目", "46.5kg", "500枚包"],
-                ["コートグリーン100", "A判(625×880)T目", "57.5kg", "250枚包"],
-                ["コートグリーン100", "A判(625×880)T目", "70.5kg", "250枚包"],
-                ["コートグリーン100", "A判(625×880)T目", "86.5kg", "250枚包"],
-                ["コートマットグリーン", "A判(625×880)T目", "44.5kg", "500枚包"],
-                ["コートマットグリーン", "A判(625×880)T目", "57.5kg", "250枚包"],
-                ["コートマットグリーン", "A判(625×880)T目", "70.5kg", "250枚包"],
-                ["コートマットグリーン", "A判(625×880)T目", "86.5kg", "250枚包"],
-                ["パールコート", "A判(625×880)T目", "40.5kg", "500枚包"],
-                ["パールコート", "A判(625×880)T目", "43.5kg", "500枚包"],
-                ["パールコート", "A判(625×880)T目", "46.5kg", "500枚包"],
-                ["パールコート", "A判(625×880)T目", "57.5kg", "250枚包"],
-                ["パールコート", "A判(625×880)T目", "70.5kg", "250枚包"],
-                ["パールコート", "A判(625×880)T目", "86.5kg", "250枚包"],
-                ["ニューVマット", "A判(625×880)T目", "40.5kg", "500枚包"],
-                ["ニューVマット", "A判(625×880)T目", "43.5kg", "500枚包"],
-                ["ニューVマット", "A判(625×880)T目", "46.5kg", "500枚包"],
-                ["ニューVマット", "A判(625×880)T目", "57.5kg", "250枚包"],
-                ["ニューVマット", "A判(625×880)T目", "70.5kg", "250枚包"],
-                ["ニューVマット", "A判(625×880)T目", "86.5kg", "250枚包"],
-                ["テイクGA110T", "2切", "63kg", "250枚包"],
-                ["テイクGA110T", "2切", "68kg", "250枚包"],
-                ["テイクGA110T", "2切", "73kg", "250枚包"],
-                ["テイクGA110T", "2切", "90kg", "250枚包"],
-                ["テイクGA110T", "2切", "110kg", "250枚包"],
-                ["テイクGA110T", "2切", "135kg", "125枚包"],
-                ["オペラクリームウルトラ", "AT", "57.5kg", "-"],
-                ["アートポスト", "菊Y", "125kg", "-"],
-                ["シルバーダイヤ", "AY", "86.5kg", "-"],
-                ["b7バルキー", "AT", "46.5kg", "-"],
-                ["色上質", "4/6判", "特厚(若草)", "-"],
-                ["色上質", "4/6判", "特厚(鶯)", "-"],
-                ["色上質", "4/6判", "特厚(ピュアライトクリーム)", "-"],
-                ["色上質", "4/6判", "特厚(やまぶき)", "-"],
-                ["色上質", "A判", "特厚(レモン)", "-"],
-                ["色上質", "A判", "特厚(淡象牙)", "-"]
+            // Define Header
+            const fields = [
+                "id", "status", "area", "shelf", "column", "name", "qty",
+                "date_in", "type", "size", "slip_no", "client", "isbn", "memo", "loc_code"
             ];
 
-            function initPaperSelect() {
-                const nameSelect = document.getElementById('paperNameSelect');
-                // Unique names
-                const names = [...new Set(PAPER_MASTER_RAW.map(row => row[0]))];
-                names.forEach(n => {
-                    const op = document.createElement('option');
-                    op.value = n;
-                    op.textContent = n;
-                    nameSelect.appendChild(op);
-                });
-            }
+            // Convert to CSV
+            const csv = Papa.unparse({
+                fields: fields,
+                data: items
+            });
 
-            function addNewPaperMaster() {
-                const newName = prompt("新しい用紙名を入力してください:");
-                if (newName) {
-                    // Add dummy entry to master for now
-                    PAPER_MASTER_RAW.push([newName, "-", "-", "-"]);
-                    initPaperSelect(); // Refresh
-                    // Select the new one
-                    document.getElementById('paperNameSelect').value = newName;
-                    updatePaperSpecs();
-                }
-            }
+            // Add BOM for Excel
+            const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+            const blob = new Blob([bom, csv], { type: "text/csv;charset=utf-8;" });
 
-            function updatePaperSpecs() {
-                const name = document.getElementById('paperNameSelect').value;
-                const specSelect = document.getElementById('paperSpecSelect');
-                specSelect.innerHTML = '<option value="">-</option>';
+            // Download
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `stocker_export_${dateStr}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
-                if (!name) return;
+        function importCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-                const relevant = PAPER_MASTER_RAW.filter(r => r[0] === name);
-                relevant.forEach((r, idx) => {
-                    const op = document.createElement('option');
-                    // Value works as index in the relevant array
-                    op.value = idx;
-                    const sizeShort = r[1].split(/[（(]/)[0]; // simple display
-                    op.textContent = `${r[1]} / ${r[2]}`;
-                    specSelect.appendChild(op);
-                });
-            }
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: async function (results) {
+                    if (results.errors.length > 0) {
+                        console.warn("CSV Parse Errors:", results.errors);
+                        alert("CSV読み込み中にエラーが発生しました。コンソールを確認してください。");
+                    }
 
-            function fillPaperData() {
-                const name = document.getElementById('paperNameSelect').value;
-                const specIdx = document.getElementById('paperSpecSelect').value;
-                if (!name || specIdx === "") return;
+                    const rows = results.data;
+                    let successCount = 0;
 
-                const row = PAPER_MASTER_RAW.filter(r => r[0] === name)[parseInt(specIdx)];
+                    if (confirm(`${rows.length}件のデータを読み込みますか？\n既存のIDがある場合は上書き、なければ新規登録されます。`)) {
+                        toggleLoading(true);
+                        // Batch process could be better, but loop is simple for now
+                        const upsertList = rows.map(row => {
+                            // Cleanup fields if necessary
+                            return {
+                                id: row.id, // if empty, backend should generate? No, for import usually we keep ID if provided.
+                                status: row.status || '有効',
+                                area: row.area,
+                                shelf: row.shelf,
+                                column: row.column,
+                                name: row.name,
+                                qty: parseInt(row.qty) || 0,
+                                date_in: row.date_in,
+                                type: row.type,
+                                size: row.size,
+                                slip_no: row.slip_no,
+                                client: row.client,
+                                isbn: row.isbn,
+                                memo: row.memo,
+                                // loc_code will be reconstructed by backend or here
+                                loc_code: row.loc_code || `${row.area}-${row.shelf}-${row.column}`
+                            };
+                        });
 
-                document.getElementById('regName').value = `${row[0]} ${row[2]}`;
-                document.getElementById('regSize').value = row[1];
+                        await API.post('bulk_upsert', { items: upsertList });
 
-                // Auto-fill memo with packaging info if available
-                const pack = row[3];
-                if (pack && pack !== '-') {
-                    const currentMemo = document.getElementById('regMemo').value;
-                    if (!currentMemo.includes(pack)) {
-                        document.getElementById('regMemo').value = (currentMemo ? currentMemo + '\n' : '') + `梱包: ${pack}`;
+                        toggleLoading(false);
+                        alert("読み込みが完了しました");
+                        event.target.value = ''; // reset
+                        refreshData();
                     }
                 }
+            });
+        }
+
+        function cleanIsbn(isbn) {
+            if (!isbn) return "";
+            return isbn.replace(/[^0-9X]/gi, "");
+        }
+
+        async function bulkImportImages(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            toggleLoading(true);
+            let updates = [];
+
+            for (let f of files) {
+                const fname = f.name;
+                const namePart = fname.substring(0, fname.lastIndexOf('.')) || fname;
+                const cleanName = cleanIsbn(namePart);
+
+                try {
+                    const base64 = await readFileAsBase64(f);
+                    // サーバー側 (Code.gs) でISBNマッチングを行うため isbn を送信
+                    updates.push({ isbn: cleanName, image_data: base64 });
+                } catch (err) {
+                    console.error("Image Read Error", fname, err);
+                }
             }
 
-            function handleTypeChange() {
-                const type = document.getElementById('regType').value;
-
-                // Toggle Paper Selection
-                const paperContainer = document.getElementById('paperSelectContainer');
-                if (type === '用紙') {
-                    paperContainer.style.display = 'block';
-                    if (document.getElementById('paperNameSelect').options.length <= 1) initPaperSelect();
+            if (updates.length > 0) {
+                const res = await API.post('bulk_image_update', { updates: updates });
+                if (res && res.status === 'success') {
+                    alert(`GAS(サーバー)側で照合を行い、${res.count}件のデータに画像を適用しました。`);
                 } else {
-                    paperContainer.style.display = 'none';
-                    // Clear if hidden? Maybe not, to allow undo.
+                    alert("画像の一括更新に失敗しました。");
                 }
-
-                // Toggle Image Upload (Books) & ISBN & BookID
-                const imageContainer = document.getElementById('imageUploadContainer');
-                const isbnContainer = document.getElementById('isbnInputContainer');
-                const bookIdContainer = document.getElementById('bookIdInputContainer');
-
-                if (type === '書籍') {
-                    imageContainer.style.display = 'block';
-                    isbnContainer.style.display = 'block';
-                    if (bookIdContainer) bookIdContainer.style.display = 'block';
-                } else {
-                    imageContainer.style.display = 'none';
-                    isbnContainer.style.display = 'none';
-                    if (bookIdContainer) bookIdContainer.style.display = 'none';
-                }
+                refreshData();
+            } else {
+                alert("有効な画像ファイルが見つかりませんでした。ファイル名は「ISBN(ハイフンなし).jpg」などにしてください。");
             }
 
-            let currentImageBase64 = null;
-            function handleImageSelect(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    // 2MB Limit check?
-                    if (file.size > 2 * 1024 * 1024) {
-                        alert("画像サイズが大きすぎます(2MB以下推奨)");
-                        return;
-                    }
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        currentImageBase64 = e.target.result;
-                        document.getElementById('imagePreview').innerHTML = `<img src="${currentImageBase64}">`;
-                    };
-                    reader.readAsDataURL(file);
+            event.target.value = '';
+            toggleLoading(false);
+        }
+
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.onerror = e => reject(e);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function toggleLoading(show) {
+            const el = document.getElementById('loading');
+            if (show) el.classList.add('active');
+            else el.classList.remove('active');
+        }
+
+        // --- Paper Master Data ---
+        const PAPER_MASTER_RAW = [
+            ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "63kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "68kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "73kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "4/6判(1091×788)Y目", "135kg", "125枚包"],
+            ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "40.5kg", "500枚包"],
+            ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "43.5kg", "500枚包"],
+            ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "46.5kg", "500枚包"],
+            ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "43.5kg", "500枚包"],
+            ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "47kg", "500枚包"],
+            ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "50.5kg", "500枚包"],
+            ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "62.5kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "76.5kg", "250枚包"],
+            ["OKトップコート＋(王子製紙)", "菊判(636×939)T目", "93.5kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "70kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "4/6判(1091×788)Y目", "135kg", "125枚包"],
+            ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "44.5kg", "500枚包"],
+            ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "48.5kg", "500枚包"],
+            ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "62.5kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "76.5kg", "250枚包"],
+            ["OKトップコートマットN(王子製紙)", "菊判(636×939)T目", "93.5kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(788×1091)T目", "180kg", "125枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "45kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "55kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "70kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "4/6判(1091×788)Y目", "135kg", "125枚包"],
+            ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "28.5kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "35kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "44.5kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "31kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "38kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "48.5kg", "500枚包"],
+            ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "62.5kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "76.5kg", "250枚包"],
+            ["OKプリンス上質(王子製紙)", "菊判(636×939)T目", "93.5kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "45Kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "55kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "70kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "90kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "110kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "4/6判(1091×788)Y目", "135Kg", "125枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "28.5Kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "35kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "44.5kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "A判(625×880)T目", "86.5Kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "31Kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "38Kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "48.5Kg", "500枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "62.5Kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "76.5Kg", "250枚包"],
+            ["OKプリンス上質エコG100(王子製紙)", "菊判(636×939)T目", "93.5Kg", "250枚包"],
+            ["コートグリーン100", "A判(625×880)T目", "40.5kg", "500枚包"],
+            ["コートグリーン100", "A判(625×880)T目", "43.5kg", "500枚包"],
+            ["コートグリーン100", "A判(625×880)T目", "46.5kg", "500枚包"],
+            ["コートグリーン100", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["コートグリーン100", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["コートグリーン100", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["コートマットグリーン", "A判(625×880)T目", "44.5kg", "500枚包"],
+            ["コートマットグリーン", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["コートマットグリーン", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["コートマットグリーン", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["パールコート", "A判(625×880)T目", "40.5kg", "500枚包"],
+            ["パールコート", "A判(625×880)T目", "43.5kg", "500枚包"],
+            ["パールコート", "A判(625×880)T目", "46.5kg", "500枚包"],
+            ["パールコート", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["パールコート", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["パールコート", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["ニューVマット", "A判(625×880)T目", "40.5kg", "500枚包"],
+            ["ニューVマット", "A判(625×880)T目", "43.5kg", "500枚包"],
+            ["ニューVマット", "A判(625×880)T目", "46.5kg", "500枚包"],
+            ["ニューVマット", "A判(625×880)T目", "57.5kg", "250枚包"],
+            ["ニューVマット", "A判(625×880)T目", "70.5kg", "250枚包"],
+            ["ニューVマット", "A判(625×880)T目", "86.5kg", "250枚包"],
+            ["テイクGA110T", "2切", "63kg", "250枚包"],
+            ["テイクGA110T", "2切", "68kg", "250枚包"],
+            ["テイクGA110T", "2切", "73kg", "250枚包"],
+            ["テイクGA110T", "2切", "90kg", "250枚包"],
+            ["テイクGA110T", "2切", "110kg", "250枚包"],
+            ["テイクGA110T", "2切", "135kg", "125枚包"],
+            ["オペラクリームウルトラ", "AT", "57.5kg", "-"],
+            ["アートポスト", "菊Y", "125kg", "-"],
+            ["シルバーダイヤ", "AY", "86.5kg", "-"],
+            ["b7バルキー", "AT", "46.5kg", "-"],
+            ["色上質", "4/6判", "特厚(若草)", "-"],
+            ["色上質", "4/6判", "特厚(鶯)", "-"],
+            ["色上質", "4/6判", "特厚(ピュアライトクリーム)", "-"],
+            ["色上質", "4/6判", "特厚(やまぶき)", "-"],
+            ["色上質", "A判", "特厚(レモン)", "-"],
+            ["色上質", "A判", "特厚(淡象牙)", "-"]
+        ];
+
+        function initPaperSelect() {
+            const nameSelect = document.getElementById('paperNameSelect');
+            // Unique names
+            const names = [...new Set(PAPER_MASTER_RAW.map(row => row[0]))];
+            names.forEach(n => {
+                const op = document.createElement('option');
+                op.value = n;
+                op.textContent = n;
+                nameSelect.appendChild(op);
+            });
+        }
+
+        function addNewPaperMaster() {
+            const newName = prompt("新しい用紙名を入力してください:");
+            if (newName) {
+                // Add dummy entry to master for now
+                PAPER_MASTER_RAW.push([newName, "-", "-", "-"]);
+                initPaperSelect(); // Refresh
+                // Select the new one
+                document.getElementById('paperNameSelect').value = newName;
+                updatePaperSpecs();
+            }
+        }
+
+        function updatePaperSpecs() {
+            const name = document.getElementById('paperNameSelect').value;
+            const specSelect = document.getElementById('paperSpecSelect');
+            specSelect.innerHTML = '<option value="">-</option>';
+
+            if (!name) return;
+
+            const relevant = PAPER_MASTER_RAW.filter(r => r[0] === name);
+            relevant.forEach((r, idx) => {
+                const op = document.createElement('option');
+                // Value works as index in the relevant array
+                op.value = idx;
+                const sizeShort = r[1].split(/[（(]/)[0]; // simple display
+                op.textContent = `${r[1]} / ${r[2]}`;
+                specSelect.appendChild(op);
+            });
+        }
+
+        function fillPaperData() {
+            const name = document.getElementById('paperNameSelect').value;
+            const specIdx = document.getElementById('paperSpecSelect').value;
+            if (!name || specIdx === "") return;
+
+            const row = PAPER_MASTER_RAW.filter(r => r[0] === name)[parseInt(specIdx)];
+
+            document.getElementById('regName').value = `${row[0]} ${row[2]}`;
+            document.getElementById('regSize').value = row[1];
+
+            // Auto-fill memo with packaging info if available
+            const pack = row[3];
+            if (pack && pack !== '-') {
+                const currentMemo = document.getElementById('regMemo').value;
+                if (!currentMemo.includes(pack)) {
+                    document.getElementById('regMemo').value = (currentMemo ? currentMemo + '\n' : '') + `梱包: ${pack}`;
                 }
             }
+        }
+
+        function handleTypeChange() {
+            const type = document.getElementById('regType').value;
+
+            // Toggle Paper Selection
+            const paperContainer = document.getElementById('paperSelectContainer');
+            if (type === '用紙') {
+                paperContainer.style.display = 'block';
+                if (document.getElementById('paperNameSelect').options.length <= 1) initPaperSelect();
+            } else {
+                paperContainer.style.display = 'none';
+                // Clear if hidden? Maybe not, to allow undo.
+            }
+
+            // Toggle Image Upload (Books) & ISBN & BookID
+            const imageContainer = document.getElementById('imageUploadContainer');
+            const isbnContainer = document.getElementById('isbnInputContainer');
+            const bookIdContainer = document.getElementById('bookIdInputContainer');
+
+            if (type === '書籍') {
+                imageContainer.style.display = 'block';
+                isbnContainer.style.display = 'block';
+                if (bookIdContainer) bookIdContainer.style.display = 'block';
+            } else {
+                imageContainer.style.display = 'none';
+                isbnContainer.style.display = 'none';
+                if (bookIdContainer) bookIdContainer.style.display = 'none';
+            }
+        }
+
+        let currentImageBase64 = null;
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // 2MB Limit check?
+                if (file.size > 2 * 1024 * 1024) {
+                    alert("画像サイズが大きすぎます(2MB以下推奨)");
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    currentImageBase64 = e.target.result;
+                    document.getElementById('imagePreview').innerHTML = `<img src="${currentImageBase64}">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
 
 
 
@@ -3194,11 +3269,11 @@ const filtered = appState.inventory.filter(item => {
                 badge.className = 'copy-badge';
                 badge.textContent = 'Copied!';
                 target.appendChild(badge);
-                
+
                 // trigger reflow
                 void badge.offsetWidth;
                 badge.classList.add('show');
-                
+
                 setTimeout(() => {
                     badge.classList.remove('show');
                     setTimeout(() => badge.remove(), 200);
@@ -3221,7 +3296,7 @@ const filtered = appState.inventory.filter(item => {
             const count = appState.memoList.length;
             document.getElementById('memoCount').textContent = count;
             document.getElementById('memoFabBadge').textContent = count;
-            
+
             if (count > 0) {
                 document.getElementById('memoFab').style.display = 'flex';
             } else {
@@ -3234,7 +3309,7 @@ const filtered = appState.inventory.filter(item => {
                 content.innerHTML = '<div style="text-align:center;color:#999;padding:10px;">メモはありません</div>';
                 return;
             }
-            
+
             content.innerHTML = appState.memoList.map(item => `
                 <div class="memo-item">
                     <div style="flex:1; overflow:hidden;">
@@ -3291,8 +3366,8 @@ const filtered = appState.inventory.filter(item => {
                     uniqueItems.push(item);
                 }
             });
-            uniqueItems.sort((a,b) => String(a.id).localeCompare(String(b.id)));
-            
+            uniqueItems.sort((a, b) => String(a.id).localeCompare(String(b.id)));
+
             const q = filterQuery.toLowerCase();
             uniqueItems.forEach(item => {
                 const text = `${item.id} : ${item.name} (${item.type})`;
@@ -3317,12 +3392,12 @@ const filtered = appState.inventory.filter(item => {
 
             if (document.getElementById('regType')) document.getElementById('regType').value = item.type || '書籍';
             handleTypeChange();
-            
+
             if (document.getElementById('regName')) document.getElementById('regName').value = item.name || '';
             if (document.getElementById('regSize')) document.getElementById('regSize').value = item.size || '';
             if (document.getElementById('regQty')) document.getElementById('regQty').value = '';
             if (document.getElementById('regISBN')) document.getElementById('regISBN').value = item.isbn || '';
-            
+
             if (item.genre && document.getElementById('regGenre')) document.getElementById('regGenre').value = item.genre;
             if (item.base_price && document.getElementById('regBasePrice')) document.getElementById('regBasePrice').value = item.base_price;
             if (item.retail_price && document.getElementById('regPrice')) document.getElementById('regPrice').value = item.retail_price;
@@ -3332,17 +3407,18 @@ const filtered = appState.inventory.filter(item => {
             if (item.format && document.getElementById('regFormat')) document.getElementById('regFormat').value = item.format;
             if (item.sales && document.getElementById('regSales')) document.getElementById('regSales').value = item.sales;
             if (item.book_id && document.getElementById('regBookId')) document.getElementById('regBookId').value = item.book_id;
-            
+
             // Clear Image
             if (document.getElementById('regShowFile')) document.getElementById('regShowFile').value = '';
             currentImageBase64 = null;
             if (document.getElementById('imagePreview')) {
                 document.getElementById('imagePreview').innerHTML = '<span><ion-icon name="image-outline"></ion-icon> クリックして画像を選択</span>';
             }
-            
+
             alert(`「${item.name}」の基本情報をコピーしました。\\n新しい保管場所と数量を設定して「登録」してください。`);
         }
 
     </script>
 </body>
+
 </html>
