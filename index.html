@@ -1614,8 +1614,8 @@
                                 <th>担当</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Javascript populates -->
+                        <tbody id="inventoryBody">
+                            <!-- Javascript populates this -->
                         </tbody>
                     </table>
                 </div>
@@ -2102,22 +2102,29 @@
          * Rendering
          */
         function renderTable() {
-            const tbody = document.querySelector('#inventoryTable tbody');
+            const tbody = document.getElementById('inventoryBody');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
             const filtered = appState.inventory.filter(item => {
-                const matchText = (String(item.name || '') + String(item.id || '') + String(item.isbn || '')).toLowerCase().includes(appState.filter.text);
-                const matchArea = appState.filter.area ? item.area === appState.filter.area : true;
+                const searchLower = (appState.filter.text || "").toLowerCase();
+                const matchText = (
+                    String(item.name || '') +
+                    String(item.id || '') +
+                    String(item.isbn || '') +
+                    String(item.loc_code || '')
+                ).toLowerCase().includes(searchLower);
 
-                // ステータスの判定をより確実にする修正
+                const itemArea = item.area || (item.loc_code ? item.loc_code.split('-')[0] : '');
+                const matchArea = appState.filter.area ? itemArea === appState.filter.area : true;
+
+                // ステータスが届かない場合は在庫数で判定
+                const status = item.status || (parseInt(item.stock_qty || 0) > 0 ? '有効' : '空き');
                 let matchStatus = true;
                 if (appState.filter.status === '有効') {
-                    // 「有効」以外（欠品や削除など）を除外する
-                    matchStatus = (item.status === '有効' || item.status === '');
+                    matchStatus = (status === '有効');
                 } else if (appState.filter.status === '空き') {
-                    matchStatus = (item.status === '空き');
-                } else if (appState.filter.status === 'all') {
-                    matchStatus = true;
+                    matchStatus = (status === '空き');
                 }
 
                 return matchText && matchArea && matchStatus;
@@ -2129,15 +2136,15 @@
             if (aggregateToggle && aggregateToggle.checked) {
                 const grouped = {};
                 filtered.forEach(item => {
-                    const key = item.id || item.name; // IDがあればID、なければ名称でグループ化
+                    const key = item.id || item.name;
                     if (!grouped[key]) {
                         grouped[key] = { ...item };
                         grouped[key].loc_code = item.loc_code || '-';
-                        grouped[key].qty = parseInt(item.qty || 0);
+                        grouped[key].stock_qty = parseInt(item.stock_qty || 0);
                         grouped[key].isAggregated = true;
                     } else {
-                        grouped[key].qty += parseInt(item.qty || 0);
-                        if (!grouped[key].loc_code.includes(item.loc_code)) {
+                        grouped[key].stock_qty += parseInt(item.stock_qty || 0);
+                        if (item.loc_code && !grouped[key].loc_code.includes(item.loc_code)) {
                             grouped[key].loc_code += `, ${item.loc_code}`;
                         }
                     }
@@ -2153,8 +2160,8 @@
 
             displayList.forEach(item => {
                 const ageColor = getAgeColor(item.date_in);
+                const status = item.status || (parseInt(item.stock_qty || 0) > 0 ? '有効' : '空き');
 
-                // 日付の表示形式を加工 (例: 2026-04-04T15:00:00.000Z -> 2026-04-04)
                 let displayDate = item.date_in || '';
                 if (displayDate && String(displayDate).includes('T')) {
                     displayDate = String(displayDate).split('T')[0];
@@ -2162,10 +2169,8 @@
 
                 const tr = document.createElement('tr');
 
-                // Image Indicator (if exists)
                 let imgIcon = '';
-                // URLの中に "http" という文字が含まれているかチェックするようにします
-                const imgPath = item.image || item.Image;
+                const imgPath = item.image_url;
                 if (imgPath && String(imgPath).includes('http')) {
                     imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${imgPath}')"></ion-icon> `;
                 }
@@ -2189,18 +2194,18 @@
             <td>
                 <span class="id-clickable" onclick="copyId(event, '${item.id}')">${item.id}</span>
             </td>
-            <td><span class="status-badge ${item.status === '有効' ? 'status-ok' : 'status-empty'}">${item.status}</span></td>
+            <td><span class="status-badge ${status === '有効' ? 'status-ok' : 'status-empty'}">${status}</span></td>
             <td><strong>${item.loc_code}</strong></td>
             <td style="white-space: normal; min-width: 150px;">
                 <div>${imgIcon}${item.name}</div>
-                <div style="font-size:0.8rem;color:#666">${item.type} / ${item.size || '-'}</div>
+                <div style="font-size:0.8rem;color:#666">${item.category || item.type || '-'} / ${item.size || '-'}</div>
             </td>
-            <td>${item.qty}</td>
+            <td>${item.stock_qty}</td>
             <td style="width: 120px;">
                 <span class="age-dot ${ageColor}"></span>
                 ${displayDate}
             </td>
-            <td>${item.type}</td>
+            <td>${item.category || item.type || '-'}</td>
             <td style="display:flex; gap:0.5rem; align-items:center; min-width: 200px;">
                 ${actionsHtml}
             </td>
@@ -2230,7 +2235,7 @@
             }
 
             // 新しい数量を計算
-            let currentQty = parseInt(item.qty) || 0;
+            let currentQty = parseInt(item.stock_qty || item.qty || 0);
             let newQty = currentQty + (val * multiplier);
 
             // 0未満にならないようにする（マイナス在庫防止）
@@ -2247,7 +2252,7 @@
                     id: item.id,
                     status: item.status || '有効',
                     name: item.name,
-                    qty: newQty,
+                    stock_qty: newQty,
                     area: item.area || '',
                     shelf: item.shelf || '',
                     column: item.column || '',
@@ -2332,7 +2337,7 @@
                     if (items.length > 0) {
                         let itemsHTML = items.map(item => {
                             let imgStr = '';
-                            const imgPath = item.image || item.Image;
+                            const imgPath = item.image_url || item.image || item.Image;
                             if (imgPath && String(imgPath).includes('http')) {
                                 imgStr = `<img src="${imgPath}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; flex-shrink:0;">`;
                             }
@@ -2341,7 +2346,7 @@
                                         ${imgStr}
                                         <div style="font-weight:normal; white-space:normal; line-height:1.3; overflow:hidden;">
                                             <div style="font-weight:bold; font-size:0.9rem;">${item.name}</div>
-                                            <div style="font-size:0.75rem; color:#ccc;">在庫: ${item.qty}</div>
+                                            <div style="font-size:0.75rem; color:#ccc;">在庫: ${item.stock_qty || item.qty}</div>
                                         </div>
                                     </div>
                                 `;
@@ -2373,7 +2378,7 @@
             if (items.length > 0) {
                 let itemsHTML = items.map(item => {
                     let imgStr = '';
-                    const imgPath = item.image || item.Image;
+                    const imgPath = item.image_url || item.image || item.Image;
                     if (imgPath && String(imgPath).includes('http')) {
                         imgStr = `<img src="${imgPath}">`;
                     }
@@ -2382,7 +2387,7 @@
                                 ${imgStr}
                                 <div>
                                     <div style="font-weight:bold; font-size:0.95rem;">${item.name}</div>
-                                    <div style="font-size:0.8rem; color:#666;">在庫: ${item.qty}</div>
+                                    <div style="font-size:0.8rem; color:#666;">在庫: ${item.stock_qty || item.qty}</div>
                                 </div>
                             </div>
                         `;
@@ -2559,7 +2564,7 @@
             <p style="margin: 0.25rem 0; color: var(--text-muted);">ISBN: ${hit.isbn || '-'}</p>
             <div style="background: #F3F4F6; border-radius: 8px; padding: 1rem; margin: 1rem 0;">
                 <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">現在の在庫数</p>
-                <div style="font-size: 1.8rem; font-weight: 700; color: var(--status-ok);">${hit.qty} <span style="font-size: 1rem; font-weight: normal; color: var(--text-main);">冊</span></div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: var(--status-ok);">${hit.stock_qty || hit.qty} <span style="font-size: 1rem; font-weight: normal; color: var(--text-main);">冊</span></div>
             </div>
             <div style="background: #EEF2FF; border-radius: 8px; padding: 1rem; margin: 1rem 0; border: 1px solid var(--primary);">
                 <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">置き場</p>
@@ -2712,8 +2717,8 @@
             // フォームに現在の値を確実にセット（ここで確実に editId.value へ代入）
             document.getElementById('editId').value = item.id;
             document.getElementById('editName').value = item.name !== undefined ? item.name : '';
-            document.getElementById('editQty').value = item.qty !== undefined ? item.qty : 0;
-            document.getElementById('editStatus').value = item.status || '有効';
+            document.getElementById('editQty').value = item.stock_qty !== undefined ? item.stock_qty : (item.qty !== undefined ? item.qty : 0);
+            document.getElementById('editStatus').value = item.status || (parseInt(item.stock_qty || item.qty || 0) > 0 ? '有効' : '空き');
 
             let area = item.area;
             let shelf = item.shelf;
@@ -2807,7 +2812,7 @@
                     id: id,
                     status: status,
                     name: name,
-                    qty: parseInt(qty, 10),
+                    stock_qty: parseInt(qty, 10),
                     area: area,
                     shelf: shelf,
                     column: col,
@@ -3370,7 +3375,8 @@
 
             const q = filterQuery.toLowerCase();
             uniqueItems.forEach(item => {
-                const text = `${item.id} : ${item.name} (${item.type})`;
+                const category = item.category || item.type || '-';
+                const text = `${item.id} : ${item.name} (${category})`;
                 if (!q || text.toLowerCase().includes(q)) {
                     const opt = document.createElement('option');
                     opt.value = item.id;
@@ -3390,7 +3396,8 @@
             const item = appState.inventory.find(i => String(i.id) === String(cloneId));
             if (!item) return;
 
-            if (document.getElementById('regType')) document.getElementById('regType').value = item.type || '書籍';
+            const category = item.category || item.type || '書籍';
+            if (document.getElementById('regType')) document.getElementById('regType').value = category;
             handleTypeChange();
 
             if (document.getElementById('regName')) document.getElementById('regName').value = item.name || '';
