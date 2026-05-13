@@ -2034,17 +2034,20 @@
             try {
                 const result = await API.getData();
                 if (result && result.status === 'success') {
-                    // マトリョーシカの最深部（dataのなかのdataのなかのdata）を狙い撃ち
-                    if (result.data && result.data.data && Array.isArray(result.data.data.data)) {
-                        appState.inventory = result.data.data.data;
-                    } else if (result.data && Array.isArray(result.data.data)) {
-                        appState.inventory = result.data.data;
-                    } else {
-                        appState.inventory = result.data || [];
+                    // 配列（Array）が見つかるまで最大4回まで 'data' プロパティを掘り進む
+                    let potentialData = result.data;
+                    for (let i = 0; i < 4; i++) {
+                        if (Array.isArray(potentialData)) break;
+                        if (potentialData && potentialData.data) {
+                            potentialData = potentialData.data;
+                        } else {
+                            break;
+                        }
                     }
+                    appState.inventory = Array.isArray(potentialData) ? potentialData : [];
 
-                    // デバッグ用：最終的な在庫データをログ出力
-                    console.log('REAL ARRAY DATA:', appState.inventory);
+                    // デバッグ用：最終確認ログ
+                    console.log('FINAL CHECK:', appState.inventory);
 
                     // 特定の棚制限設定
                     appState.disabledShelves = [
