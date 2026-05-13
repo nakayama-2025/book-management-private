@@ -2157,17 +2157,19 @@
             document.getElementById('emptyState').style.display = 'none';
 
             displayList.forEach(item => {
-                const id = item[0] || '';
-                const name = item[1] || '';
-                const loc_code = item[2] || '';
-                const category = item[3] || '';
+                // 配列インデックスの厳密な割り当て (0:ID, 1:名, 2:所, 3:種, 4:価, 5:数, 6:日, 7:画)
+                const id = item[0] || 'ID無';
+                const name = item[1] || '名称未設定';
+                const loc_code = item[2] || '位置無';
+                const category = item[3] || '種別無';
                 const price = item[4] || '0';
                 const stock_qty = item[5] || '0';
-                const image_url = item[6] || '';
-
+                const date_in = item[6] || '-';
+                const image_url = item[7] || '';
+                
                 const status = parseInt(stock_qty) > 0 ? '有効' : '空き';
                 const isMemo = appState.memoList.some(m => String(m.id) === String(id));
-                const safeName = name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const safeName = String(name).replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
                 let imgIcon = '';
                 if (image_url && String(image_url).includes('http')) {
@@ -2196,7 +2198,10 @@
                         <div style="font-size:0.8rem;color:#666">${category} / ¥${price}</div>
                     </td>
                     <td>${stock_qty}</td>
-                    <td style="width: 120px;">-</td>
+                    <td style="width: 120px;">
+                        <span class="age-dot" style="display:none;"></span>
+                        ${date_in}
+                    </td>
                     <td>${category}</td>
                     <td style="display:flex; gap:0.5rem; align-items:center; min-width: 200px;">
                         ${actionsHtml}
