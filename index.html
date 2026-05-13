@@ -2034,8 +2034,12 @@
             try {
                 const result = await API.getData();
                 if (result && result.status === 'success') {
-                    // レスポンスの data プロパティ（配列）を直接在庫データとして使用
-                    appState.inventory = result.data || [];
+                    // データが単一オブジェクトでも必ず配列として扱うようにガード
+                    const rawData = result.data;
+                    appState.inventory = Array.isArray(rawData) ? rawData : (rawData ? [rawData] : []);
+
+                    // デバッグ用：最終的な在庫データをログ出力
+                    console.log('Final Inventory Data:', appState.inventory);
 
                     // 特定の棚制限設定
                     appState.disabledShelves = [
@@ -2166,7 +2170,7 @@
                 const stock_qty = item[5] || '0';
                 const date_in = item[6] || '-';
                 const image_url = item[7] || '';
-                
+
                 const status = parseInt(stock_qty) > 0 ? '有効' : '空き';
                 const isMemo = appState.memoList.some(m => String(m.id) === String(id));
                 const safeName = String(name).replace(/'/g, "\\'").replace(/"/g, '&quot;');
