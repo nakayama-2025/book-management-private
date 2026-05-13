@@ -1829,11 +1829,6 @@
         /**
          * Configuration & State
          */
-        const CONFIG = {
-            USE_REAL_API: true,
-            GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbzymB9lco_JkhGR3DyF9qsKks_suS6Px2zK_pxeZ0-0pJMRvM0c-FEhOJ0ipBAPKO6z/exec",
-        };
-
         let appState = {
             inventory: [],
             logs: [],
@@ -1843,6 +1838,11 @@
             selectedShelves: [],
             disabledShelves: [],
             memoList: []
+        };
+
+        const CONFIG = {
+            USE_REAL_API: true,
+            GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbzymB9lco_JkhGR3DyF9qsKks_suS6Px2zK_pxeZ0-0pJMRvM0c-FEhOJ0ipBAPKO6z/exec",
         };
 
         const SHELF_CONFIG = {
@@ -2298,26 +2298,27 @@
                     let tooltipHTML = '';
                     if (items.length > 0) {
                         let itemsHTML = items.map(item => {
-                            let imgStr = '';
-                            <div style="font-weight:normal; white-space:normal; line-height:1.3; overflow:hidden;">
-                                <div style="font-weight:bold; font-size:0.9rem;">${item[1]}</div>
-                                <div style="font-size:0.75rem; color:#ccc;">在庫: ${item[5]}</div>
-                            </div>
-                                    </div >
+                            return `
+                                <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px;">
+                                    <div style="font-weight:normal; white-space:normal; line-height:1.3; overflow:hidden;">
+                                        <div style="font-weight:bold; font-size:0.9rem;">${item[1]}</div>
+                                        <div style="font-size:0.75rem; color:#ccc;">在庫: ${item[5]}</div>
+                                    </div>
+                                </div>
                             `;
                         }).join('');
-                        tooltipHTML = `< div class="pc-tooltip" > ${ itemsHTML }</div > `;
+                        tooltipHTML = `<div class="pc-tooltip">${itemsHTML}</div>`;
                     } else if (isDisabled) {
-                        tooltipHTML = `< div class="pc-tooltip" style = "text-align:center;" > 選択不可（グレーアウト）</div > `;
+                        tooltipHTML = `<div class="pc-tooltip" style="text-align:center;">選択不可（グレーアウト）</div>`;
                     } else {
-                        tooltipHTML = `< div class="pc-tooltip" style = "text-align:center;" > 空き棚</div > `;
+                        tooltipHTML = `<div class="pc-tooltip" style="text-align:center;">空き棚</div>`;
                     }
 
                     cell.innerHTML = `
-                            < span class="code" > ${ shelf } -${ col }</span >
-                                <span class="count">${isDisabled ? '-' : (isOccupied ? items.length + '件' : '空')}</span>
-                ${ tooltipHTML }
-                        `;
+                        <span class="code">${shelf}-${col}</span>
+                        <span class="count">${isDisabled ? '-' : (isOccupied ? items.length + '件' : '空')}</span>
+                        ${tooltipHTML}
+                    `;
                     grid.appendChild(cell);
                 }
             });
@@ -2332,15 +2333,15 @@
             const contentDiv = document.getElementById('poContent');
             if (items.length > 0) {
                 let itemsHTML = items.map(item => {
-                            <div class="popover-item">
-                                ${imgStr}
-                                <div>
-                                    <div style="font-weight:bold; font-size:0.95rem;">${item[1]}</div>
-                                    <div style="font-size:0.8rem; color:#666;">在庫: ${item[5]}</div>
-                                </div>
+                    return `
+                        <div class="popover-item">
+                            <div>
+                                <div style="font-weight:bold; font-size:0.95rem;">${item[1]}</div>
+                                <div style="font-size:0.8rem; color:#666;">在庫: ${item[5]}</div>
                             </div>
-                        `;
-                    }).join('');
+                        </div>
+                    `;
+                }).join('');
             contentDiv.innerHTML = itemsHTML;
         } else if (isDisabled) {
             contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">選択不可（グレーアウト）</div>`;
@@ -2370,7 +2371,7 @@
             const locCode = currentPopoverLoc;
 
             if (disable) {
-                const isOccupied = appState.inventory.some(i => i.loc_code === locCode && i.status === "有効");
+                const isOccupied = appState.inventory.some(i => i[2] === locCode && parseInt(i[5] || 0) > 0);
                 if (isOccupied) {
                     alert("この棚には在庫があるため、使用不可(グレーアウト)にできません。");
                     return;
@@ -2484,7 +2485,7 @@
                 const status = parseInt(i[5] || 0) > 0 ? '有効' : '空き';
                 if (status !== '有効') return false;
                 if (i[0] === decodedText) return true;
-                if (i.isbn && cleanIsbn(i.isbn) === cleanScanText) return true;
+                if (i[8] && cleanIsbn(i[8]) === cleanScanText) return true;
                 return false;
             });
 
@@ -2504,29 +2505,29 @@
                 document.body.appendChild(card);
             }
 
-            let coverImg = hit.image_url ? `<img src="${hit.image_url}" alt="表紙" style="max-height: 200px; max-width: 100%; border-radius: 8px; margin-bottom: 1rem; box-shadow: var(--shadow-md); object-fit: contain;">` : `<div style="height: 150px; background: #f3f4f6; border-radius: 8px; display:flex; align-items:center; justify-content:center; color: var(--text-muted); margin-bottom: 1rem;"><ion-icon name="image-outline" style="font-size: 3rem;"></ion-icon></div>`;
+            let coverImg = hit[7] ? `<img src="${hit[7]}" alt="表紙" style="max-height: 200px; max-width: 100%; border-radius: 8px; margin-bottom: 1rem; box-shadow: var(--shadow-md); object-fit: contain;">` : `<div style="height: 150px; background: #f3f4f6; border-radius: 8px; display:flex; align-items:center; justify-content:center; color: var(--text-muted); margin-bottom: 1rem;"><ion-icon name="image-outline" style="font-size: 3rem;"></ion-icon></div>`;
 
             card.innerHTML = `
-        <div class="modal-content" style="text-align: center; max-width: 350px;">
-            <h3 style="margin-top: 0; color: var(--primary); font-size: 1.2rem;">書籍を特定しました</h3>
-            ${coverImg}
-            <h4 style="margin: 0.5rem 0; font-size: 1.1rem; color: var(--text-main);">${hit.name}</h4>
-            <p style="margin: 0.25rem 0; color: var(--text-muted);">ISBN: ${hit.isbn || '-'}</p>
-            <div style="background: #F3F4F6; border-radius: 8px; padding: 1rem; margin: 1rem 0;">
-                <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">現在の在庫数</p>
-                <div style="font-size: 1.8rem; font-weight: 700; color: var(--status-ok);">${hit.stock_qty || hit.qty} <span style="font-size: 1rem; font-weight: normal; color: var(--text-main);">冊</span></div>
-            </div>
-            <div style="background: #EEF2FF; border-radius: 8px; padding: 1rem; margin: 1rem 0; border: 1px solid var(--primary);">
-                <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">置き場</p>
-                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${hit.loc_code}</div>
-            </div>
-            
-            <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1.5rem;">
-                <button class="btn-text" style="flex:1; border: 1px solid var(--border); border-radius: 8px;" onclick="document.getElementById('scanResultCard').classList.remove('open');">閉じる</button>
-                <button class="btn-primary" style="flex:1;" onclick="goToMapLocation('${hit.loc_code}'); document.getElementById('scanResultCard').classList.remove('open');">棚MAPを見る</button>
-            </div>
-        </div>
-    `;
+                <div class="modal-content" style="text-align: center; max-width: 350px;">
+                    <h3 style="margin-top: 0; color: var(--primary); font-size: 1.2rem;">書籍を特定しました</h3>
+                    ${coverImg}
+                    <h4 style="margin: 0.5rem 0; font-size: 1.1rem; color: var(--text-main);">${hit[1]}</h4>
+                    <p style="margin: 0.25rem 0; color: var(--text-muted);">ID: ${hit[0]}</p>
+                    <div style="background: #F3F4F6; border-radius: 8px; padding: 1rem; margin: 1rem 0;">
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">現在の在庫数</p>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: var(--status-ok);">${hit[5]} <span style="font-size: 1rem; font-weight: normal; color: var(--text-main);">冊</span></div>
+                    </div>
+                    <div style="background: #EEF2FF; border-radius: 8px; padding: 1rem; margin: 1rem 0; border: 1px solid var(--primary);">
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">置き場</p>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">${hit[2]}</div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1.5rem;">
+                        <button class="btn-text" style="flex:1; border: 1px solid var(--border); border-radius: 8px;" onclick="document.getElementById('scanResultCard').classList.remove('open');">閉じる</button>
+                        <button class="btn-primary" style="flex:1;" onclick="goToMapLocation('${hit[2]}'); document.getElementById('scanResultCard').classList.remove('open');">棚MAPを見る</button>
+                    </div>
+                </div>
+            `;
 
             card.classList.add('open');
         }
