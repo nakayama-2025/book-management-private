@@ -2034,10 +2034,13 @@
             try {
                 const result = await API.getData();
                 if (result && result.status === 'success') {
-                    appState.inventory = result.data;
+                    // ネストされた構造 (result.data.data) を考慮して配列を抽出
+                    appState.inventory = (result.data && Array.isArray(result.data.data)) 
+                        ? result.data.data 
+                        : (Array.isArray(result.data) ? result.data : []);
 
                     // デバッグ用：最終的な在庫データをログ出力
-                    console.log('Final Inventory Data (Unwrapped):', appState.inventory);
+                    console.log('Final Inventory Data:', appState.inventory);
 
                     // 特定の棚制限設定
                     appState.disabledShelves = [
