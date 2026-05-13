@@ -2107,17 +2107,18 @@
 
             const filtered = data.filter(item => {
                 const searchLower = (appState.filter.text || "").toLowerCase();
+                // 0:id, 1:name, 2:loc_code, 3:category
                 const matchText = (
-                    String(item.name || '') +
-                    String(item.id || '') +
-                    String(item.loc_code || '') +
-                    String(item.category || '')
+                    String(item[1] || '') +
+                    String(item[0] || '') +
+                    String(item[2] || '') +
+                    String(item[3] || '')
                 ).toLowerCase().includes(searchLower);
 
-                const itemArea = item.loc_code ? item.loc_code.split('-')[0] : '';
+                const itemArea = item[2] ? String(item[2]).split('-')[0] : '';
                 const matchArea = appState.filter.area ? itemArea === appState.filter.area : true;
 
-                const stockQty = parseInt(item.stock_qty || 0);
+                const stockQty = parseInt(item[5] || 0);
                 const status = stockQty > 0 ? '有効' : '空き';
                 let matchStatus = true;
                 if (appState.filter.status === '有効') {
@@ -2134,15 +2135,15 @@
             if (aggregateToggle && aggregateToggle.checked) {
                 const grouped = {};
                 filtered.forEach(item => {
-                    const key = item.id || item.name;
+                    const key = item[0] || item[1];
                     if (!grouped[key]) {
-                        grouped[key] = { ...item };
-                        grouped[key].stock_qty = parseInt(item.stock_qty || 0);
+                        grouped[key] = [...item];
+                        grouped[key][5] = parseInt(item[5] || 0);
                         grouped[key].isAggregated = true;
                     } else {
-                        grouped[key].stock_qty += parseInt(item.stock_qty || 0);
-                        if (item.loc_code && !String(grouped[key].loc_code).includes(item.loc_code)) {
-                            grouped[key].loc_code += `, ${item.loc_code}`;
+                        grouped[key][5] += parseInt(item[5] || 0);
+                        if (item[2] && !String(grouped[key][2]).includes(item[2])) {
+                            grouped[key][2] += `, ${item[2]}`;
                         }
                     }
                 });
@@ -2156,13 +2157,13 @@
             document.getElementById('emptyState').style.display = 'none';
 
             displayList.forEach(item => {
-                const id = item.id || '';
-                const name = item.name || '';
-                const loc_code = item.loc_code || '';
-                const category = item.category || '';
-                const price = item.price || '0';
-                const stock_qty = item.stock_qty || '0';
-                const image_url = item.image_url || '';
+                const id = item[0] || '';
+                const name = item[1] || '';
+                const loc_code = item[2] || '';
+                const category = item[3] || '';
+                const price = item[4] || '0';
+                const stock_qty = item[5] || '0';
+                const image_url = item[6] || '';
 
                 const status = parseInt(stock_qty) > 0 ? '有効' : '空き';
                 const isMemo = appState.memoList.some(m => String(m.id) === String(id));
