@@ -2342,23 +2342,23 @@
                         </div>
                     `;
                 }).join('');
-            contentDiv.innerHTML = itemsHTML;
-        } else if (isDisabled) {
-            contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">選択不可（グレーアウト）</div>`;
-        } else {
-            contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">空き棚</div>`;
-        }
+                contentDiv.innerHTML = itemsHTML;
+            } else if (isDisabled) {
+                contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">選択不可（グレーアウト）</div>`;
+            } else {
+                contentDiv.innerHTML = `<div style="text-align:center; color:#666; padding:10px 0;">空き棚</div>`;
+            }
 
-        const toggleBtn = document.getElementById('poToggleBtn');
-        if (isDisabled) {
-            toggleBtn.textContent = '使用可能にする（グレー解除）';
-            toggleBtn.onclick = () => toggleSingleShelfStatus(false);
-        } else {
-            toggleBtn.textContent = 'この棚を選択不可にする';
-            toggleBtn.onclick = () => toggleSingleShelfStatus(true);
-        }
+            const toggleBtn = document.getElementById('poToggleBtn');
+            if (isDisabled) {
+                toggleBtn.textContent = '使用可能にする（グレー解除）';
+                toggleBtn.onclick = () => toggleSingleShelfStatus(false);
+            } else {
+                toggleBtn.textContent = 'この棚を選択不可にする';
+                toggleBtn.onclick = () => toggleSingleShelfStatus(true);
+            }
 
-        document.getElementById('shelfPopover').style.display = 'block';
+            document.getElementById('shelfPopover').style.display = 'block';
         }
 
         function closeShelfPopover() {
