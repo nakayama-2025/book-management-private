@@ -2034,12 +2034,16 @@
             try {
                 const result = await API.getData();
                 if (result && result.status === 'success') {
-                    // データが単一の配列（1行）でも複数行の2次元配列でも、正しく2次元配列として扱うようにガード
-                    const rawData = result.data;
-                    appState.inventory = (rawData && Array.isArray(rawData[0])) ? rawData : (rawData ? [rawData] : []);
+                    // データの「一重化（Unwrap）」を徹底
+                    let rawData = result.data;
+                    // もし result.data が [[[...]]] や [[row1, row2, ...]] のように届いているなら一段階フラットにする
+                    if (Array.isArray(rawData) && rawData.length === 1 && Array.isArray(rawData[0])) {
+                        rawData = rawData[0];
+                    }
+                    appState.inventory = Array.isArray(rawData[0]) ? rawData : [rawData];
 
                     // デバッグ用：最終的な在庫データをログ出力
-                    console.log('Final Inventory Data:', appState.inventory);
+                    console.log('Final Inventory Data (Unwrapped):', appState.inventory);
 
                     // 特定の棚制限設定
                     appState.disabledShelves = [
@@ -2110,22 +2114,8 @@
             if (!data || !Array.isArray(data)) return;
 
             // 一時的にフィルタを解除し、全データを表示対象にする
-            const filtered = data.filter(item => {
-                const searchLower = (appState.filter.text || "").toLowerCase();
-                const id = item[0] || item.id || '';
-                const name = item[1] || item.name || '';
-                const loc = item[2] || item.loc_code || '';
-
-                const matchText = (
-                    String(name) + String(id) + String(loc)
-                ).toLowerCase().includes(searchLower);
-
-                // エリアフィルタのみ維持し、ステータスによる除外を解除
-                const itemArea = loc ? String(loc).split('-')[0] : '';
-                const matchArea = appState.filter.area ? itemArea === appState.filter.area : true;
-
-                return matchText && matchArea;
-            });
+            // フィルタを一時的に完全に無効化し、全データを表示対象にする
+            const filtered = data;
 
             const aggregateToggle = document.getElementById('aggregateToggle');
             let displayList = filtered;
@@ -2133,28 +2123,19 @@
             if (aggregateToggle && aggregateToggle.checked) {
                 const grouped = {};
                 filtered.forEach(item => {
-                    const key = (item[0] || item.id) || (item[1] || item.name);
+                    const id = item[0];
+                    const name = item[1];
+                    const key = id || name;
                     if (!grouped[key]) {
-                        grouped[key] = Array.isArray(item) ? [...item] : { ...item };
-                        const qty = (item[5] !== undefined ? item[5] : item.stock_qty) || 0;
-                        if (Array.isArray(grouped[key])) {
-                            grouped[key][5] = parseInt(qty);
-                        } else {
-                            grouped[key].stock_qty = parseInt(qty);
-                        }
+                        grouped[key] = [...item];
+                        const qty = parseInt(item[5] || 0);
+                        grouped[key][5] = qty;
                         grouped[key].isAggregated = true;
                     } else {
-                        const qty = (item[5] !== undefined ? item[5] : item.stock_qty) || 0;
-                        if (Array.isArray(grouped[key])) {
-                            grouped[key][5] += parseInt(qty);
-                            if (item[2] && !String(grouped[key][2]).includes(item[2])) {
-                                grouped[key][2] += `, ${item[2]}`;
-                            }
-                        } else {
-                            grouped[key].stock_qty += parseInt(qty);
-                            if (item.loc_code && !String(grouped[key].loc_code).includes(item.loc_code)) {
-                                grouped[key].loc_code += `, ${item.loc_code}`;
-                            }
+                        const qty = parseInt(item[5] || 0);
+                        grouped[key][5] += qty;
+                        if (item[2] && !String(grouped[key][2]).includes(item[2])) {
+                            grouped[key][2] += `, ${item[2]}`;
                         }
                     }
                 });
@@ -2168,15 +2149,15 @@
             document.getElementById('emptyState').style.display = 'none';
 
             displayList.forEach(item => {
-                // トリプル・チェック方式によるデータ抽出 (配列インデックス || オブジェクトプロパティ || デフォルト)
-                const id = item[0] || item.id || 'ID無';
-                const name = item[1] || item.name || '名称未設定';
-                const loc_code = item[2] || item.loc_code || '場所未定';
-                const category = item[3] || item.category || '種別無';
-                const price = item[4] || item.price || '0';
-                const stock_qty = (item[5] !== undefined ? item[5] : item.stock_qty) || '0';
-                const date_in = item[6] || item.date_in || '-';
-                const image_url = item[7] || item.image_url || '';
+                // 配列インデックス（10個の要素を持つ配列）を前提にデータを抽出
+                const id = item[0] || 'ID無';
+                const name = item[1] || '名称未設定';
+                const loc_code = item[2] || '場所未定';
+                const category = item[3] || '種別無';
+                const price = item[4] || '0';
+                const stock_qty = (item[5] !== undefined ? item[5] : '0');
+                const date_in = item[6] || '-';
+                const image_url = item[7] || '';
 
                 const status = parseInt(stock_qty) > 0 ? '有効' : '空き';
                 const isMemo = appState.memoList.some(m => String(m.id) === String(id));
