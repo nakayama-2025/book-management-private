@@ -2605,7 +2605,6 @@
                 slip_no: document.getElementById('regSlip').value,
                 client: document.getElementById('regClient').value,
                 memo: document.getElementById('regMemo').value,
-                memo: document.getElementById('regMemo').value,
                 isbn: document.getElementById('regISBN').value, // ISBN
                 book_id: document.getElementById('regBookId').value, // Book ID
                 sales: document.getElementById('regSales').value, // Sales Rep
@@ -2627,8 +2626,10 @@
         let currentShipId = null;
         function openShipModal(id) {
             currentShipId = id;
-            const item = appState.inventory.find(i => i.id === id);
-            document.getElementById('shipTargetName').textContent = item.name;
+            const item = appState.inventory.find(i => String(i[0]) === String(id));
+            if (item) {
+                document.getElementById('shipTargetName').textContent = item[1];
+            }
             document.getElementById('shipModal').classList.add('open');
         }
 
@@ -2657,7 +2658,7 @@
 
         function openEditModal(id) {
             console.log("Opening modal for ID:", id);
-            const item = appState.inventory.find(i => String(i.id) === String(id));
+            const item = appState.inventory.find(i => String(i[0]) === String(id));
             if (!item) {
                 console.error("Item not found:", id);
                 return;
@@ -2665,41 +2666,27 @@
 
             console.log("Found item in openEditModal:", item);
 
-            // フォームに現在の値を確実にセット（ここで確実に editId.value へ代入）
-            document.getElementById('editId').value = item.id;
-            document.getElementById('editName').value = item.name !== undefined ? item.name : '';
-            document.getElementById('editQty').value = item.stock_qty !== undefined ? item.stock_qty : (item.qty !== undefined ? item.qty : 0);
-            document.getElementById('editStatus').value = item.status || (parseInt(item.stock_qty || item.qty || 0) > 0 ? '有効' : '空き');
+            // フォームに現在の値をセット
+            document.getElementById('editId').value = item[0] || '';
+            document.getElementById('editName').value = item[1] || '';
+            document.getElementById('editQty').value = item[5] !== undefined ? item[5] : 0;
+            document.getElementById('editStatus').value = (parseInt(item[5] || 0) > 0 ? '有効' : '空き');
 
-            let area = item.area;
-            let shelf = item.shelf;
-            let col = item.column;
-
-            // もし個別のプロパティが無く、loc_code がある場合はそこから抽出
-            if ((!area || !shelf || !col) && item.loc_code) {
-                const parts = item.loc_code.split('-');
-                if (parts.length >= 3) {
-                    area = parts[0];
-                    shelf = parts[1];
-                    col = parts[2];
-                }
-            }
-
-            if (area) {
+            const loc_code = item[2] || '';
+            const parts = loc_code.split('-');
+            if (parts.length >= 3) {
+                const area = parts[0];
                 document.getElementById('editArea').value = area;
-                // 棚と列の選択肢を更新してから値をセット
                 updateEditLocOptions(area);
-                if (shelf) document.getElementById('editShelf').value = shelf;
-                if (col) document.getElementById('editCol').value = col;
+                document.getElementById('editShelf').value = parts[1];
+                document.getElementById('editCol').value = parts[2];
             } else {
-                // エリア情報がない場合の予備処理
                 document.getElementById('editArea').value = 'A';
                 updateEditLocOptions('A');
                 document.getElementById('editShelf').value = '天';
                 document.getElementById('editCol').value = '1';
             }
 
-            // モーダルを表示
             document.getElementById('editModal').classList.add('open');
         }
 
@@ -2785,7 +2772,6 @@
             }
         }
 
-        // function submitEdit() // End of function
 
         async function deleteItem() {
             if (!confirm('本当に削除しますか？')) return;
@@ -3203,13 +3189,6 @@
 
 
 
-        function showImage(url) {
-            const modal = document.getElementById('imageDisplayModal');
-            const content = document.getElementById('imagePopupContent');
-            content.innerHTML = `<img src="${url}" style="max-width:100%; max-height:80vh; border-radius:8px;">`;
-            modal.classList.add('open');
-        }
-
         function openMapModal() {
             document.getElementById('mapViewModal').classList.add('open');
         }
@@ -3318,20 +3297,20 @@
             const uniqueItems = [];
             const seenIds = new Set();
             appState.inventory.forEach(item => {
-                if (item.id && !seenIds.has(item.id)) {
-                    seenIds.add(item.id);
+                if (item[0] && !seenIds.has(item[0])) {
+                    seenIds.add(item[0]);
                     uniqueItems.push(item);
                 }
             });
-            uniqueItems.sort((a, b) => String(a.id).localeCompare(String(b.id)));
+            uniqueItems.sort((a, b) => String(a[0]).localeCompare(String(b[0])));
 
             const q = filterQuery.toLowerCase();
             uniqueItems.forEach(item => {
-                const category = item.category || item.type || '-';
-                const text = `${item.id} : ${item.name} (${category})`;
+                const category = item[3] || '-';
+                const text = `${item[0]} : ${item[1]} (${category})`;
                 if (!q || text.toLowerCase().includes(q)) {
                     const opt = document.createElement('option');
-                    opt.value = item.id;
+                    opt.value = item[0];
                     opt.textContent = text;
                     select.appendChild(opt);
                 }
@@ -3345,27 +3324,27 @@
 
         function fillCloneData(cloneId) {
             if (!cloneId) return;
-            const item = appState.inventory.find(i => String(i.id) === String(cloneId));
+            const item = appState.inventory.find(i => String(i[0]) === String(cloneId));
             if (!item) return;
 
-            const category = item.category || item.type || '書籍';
+            const category = item[3] || '書籍';
             if (document.getElementById('regType')) document.getElementById('regType').value = category;
             handleTypeChange();
 
-            if (document.getElementById('regName')) document.getElementById('regName').value = item.name || '';
-            if (document.getElementById('regSize')) document.getElementById('regSize').value = item.size || '';
+            if (document.getElementById('regName')) document.getElementById('regName').value = item[1] || '';
+            if (document.getElementById('regSize')) document.getElementById('regSize').value = item[9] || '';
             if (document.getElementById('regQty')) document.getElementById('regQty').value = '';
-            if (document.getElementById('regISBN')) document.getElementById('regISBN').value = item.isbn || '';
+            if (document.getElementById('regISBN')) document.getElementById('regISBN').value = item[8] || '';
 
-            if (item.genre && document.getElementById('regGenre')) document.getElementById('regGenre').value = item.genre;
-            if (item.base_price && document.getElementById('regBasePrice')) document.getElementById('regBasePrice').value = item.base_price;
-            if (item.retail_price && document.getElementById('regPrice')) document.getElementById('regPrice').value = item.retail_price;
-            if (item.author && document.getElementById('regAuthor')) document.getElementById('regAuthor').value = item.author;
-            if (item.weight && document.getElementById('regWeight')) document.getElementById('regWeight').value = item.weight;
-            if (item.thickness && document.getElementById('regThickness')) document.getElementById('regThickness').value = item.thickness;
-            if (item.format && document.getElementById('regFormat')) document.getElementById('regFormat').value = item.format;
-            if (item.sales && document.getElementById('regSales')) document.getElementById('regSales').value = item.sales;
-            if (item.book_id && document.getElementById('regBookId')) document.getElementById('regBookId').value = item.book_id;
+            if (item[10] && document.getElementById('regGenre')) document.getElementById('regGenre').value = item[10];
+            if (item[11] && document.getElementById('regBasePrice')) document.getElementById('regBasePrice').value = item[11];
+            if (item[4] && document.getElementById('regPrice')) document.getElementById('regPrice').value = item[4];
+            if (item[13] && document.getElementById('regAuthor')) document.getElementById('regAuthor').value = item[13];
+            if (item[14] && document.getElementById('regWeight')) document.getElementById('regWeight').value = item[14];
+            if (item[15] && document.getElementById('regThickness')) document.getElementById('regThickness').value = item[15];
+            if (item[16] && document.getElementById('regFormat')) document.getElementById('regFormat').value = item[16];
+            if (item[17] && document.getElementById('regSales')) document.getElementById('regSales').value = item[17];
+            if (item[18] && document.getElementById('regBookId')) document.getElementById('regBookId').value = item[18];
 
             // Clear Image
             if (document.getElementById('regShowFile')) document.getElementById('regShowFile').value = '';
@@ -3374,7 +3353,7 @@
                 document.getElementById('imagePreview').innerHTML = '<span><ion-icon name="image-outline"></ion-icon> クリックして画像を選択</span>';
             }
 
-            alert(`「${item.name}」の基本情報をコピーしました。\\n新しい保管場所と数量を設定して「登録」してください。`);
+            alert(`「${item[1]}」の基本情報をコピーしました。\n新しい保管場所と数量を設定して「登録」してください。`);
         }
 
     </script>
