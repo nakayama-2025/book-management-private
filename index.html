@@ -1338,7 +1338,7 @@
                                 <th>メモ</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="inventoryBody">
                             <!-- Javascript populates this -->
                         </tbody>
                     </table>
@@ -1614,7 +1614,7 @@
                                 <th>担当</th>
                             </tr>
                         </thead>
-                        <tbody id="inventoryBody">
+                        <tbody id="logsBody">
                             <!-- Javascript populates this -->
                         </tbody>
                     </table>
@@ -2046,7 +2046,7 @@
                         appState.inventory = response.data; // fallback
                     }
                     updateCloneSelect();
-                    renderTable();
+                    renderTable(appState.inventory);
                 } else {
                     console.error(response.message);
                 }
@@ -2101,12 +2101,13 @@
         /**
          * Rendering
          */
-        function renderTable() {
+        function renderTable(data = appState.inventory) {
             const tbody = document.getElementById('inventoryBody');
             if (!tbody) return;
             tbody.innerHTML = '';
+            if (!data || !Array.isArray(data)) return;
 
-            const filtered = appState.inventory.filter(item => {
+            const filtered = data.filter(item => {
                 const searchLower = (appState.filter.text || "").toLowerCase();
                 const matchText = (
                     String(item.name || '') +
@@ -2198,14 +2199,14 @@
             <td><strong>${item.loc_code}</strong></td>
             <td style="white-space: normal; min-width: 150px;">
                 <div>${imgIcon}${item.name}</div>
-                <div style="font-size:0.8rem;color:#666">${item.category || item.type || '-'} / ${item.size || '-'}</div>
+                <div style="font-size:0.8rem;color:#666">${item.category || '-'} / ¥${item.price || '0'}</div>
             </td>
             <td>${item.stock_qty}</td>
             <td style="width: 120px;">
                 <span class="age-dot ${ageColor}"></span>
                 ${displayDate}
             </td>
-            <td>${item.category || item.type || '-'}</td>
+            <td>${item.category || '-'}</td>
             <td style="display:flex; gap:0.5rem; align-items:center; min-width: 200px;">
                 ${actionsHtml}
             </td>
@@ -2866,7 +2867,8 @@
         }
 
         function renderLogs() {
-            const tbody = document.querySelector('#logsTable tbody');
+            const tbody = document.getElementById('logsBody');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
             // Sort logs desc
