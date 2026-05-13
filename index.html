@@ -2034,13 +2034,7 @@
             try {
                 const result = await API.getData();
                 if (result && result.status === 'success') {
-                    // データの「一重化（Unwrap）」を徹底
-                    let rawData = result.data;
-                    // もし result.data が [[[...]]] や [[row1, row2, ...]] のように届いているなら一段階フラットにする
-                    if (Array.isArray(rawData) && rawData.length === 1 && Array.isArray(rawData[0])) {
-                        rawData = rawData[0];
-                    }
-                    appState.inventory = Array.isArray(rawData[0]) ? rawData : [rawData];
+                    appState.inventory = result.data;
 
                     // デバッグ用：最終的な在庫データをログ出力
                     console.log('Final Inventory Data (Unwrapped):', appState.inventory);
@@ -2113,42 +2107,13 @@
             tbody.innerHTML = '';
             if (!data || !Array.isArray(data)) return;
 
-            // 一時的にフィルタを解除し、全データを表示対象にする
-            // フィルタを一時的に完全に無効化し、全データを表示対象にする
-            const filtered = data;
-
-            const aggregateToggle = document.getElementById('aggregateToggle');
-            let displayList = filtered;
-
-            if (aggregateToggle && aggregateToggle.checked) {
-                const grouped = {};
-                filtered.forEach(item => {
-                    const id = item[0];
-                    const name = item[1];
-                    const key = id || name;
-                    if (!grouped[key]) {
-                        grouped[key] = [...item];
-                        const qty = parseInt(item[5] || 0);
-                        grouped[key][5] = qty;
-                        grouped[key].isAggregated = true;
-                    } else {
-                        const qty = parseInt(item[5] || 0);
-                        grouped[key][5] += qty;
-                        if (item[2] && !String(grouped[key][2]).includes(item[2])) {
-                            grouped[key][2] += `, ${item[2]}`;
-                        }
-                    }
-                });
-                displayList = Object.values(grouped);
-            }
-
-            if (displayList.length === 0) {
+            if (data.length === 0) {
                 document.getElementById('emptyState').style.display = 'block';
                 return;
             }
             document.getElementById('emptyState').style.display = 'none';
 
-            displayList.forEach(item => {
+            data.forEach(item => {
                 // 配列インデックス（10個の要素を持つ配列）を前提にデータを抽出
                 const id = item[0] || 'ID無';
                 const name = item[1] || '名称未設定';
