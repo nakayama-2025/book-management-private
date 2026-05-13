@@ -2112,22 +2112,21 @@
                 const matchText = (
                     String(item.name || '') +
                     String(item.id || '') +
-                    String(item.isbn || '') +
-                    String(item.loc_code || '')
+                    String(item.loc_code || '') +
+                    String(item.category || '')
                 ).toLowerCase().includes(searchLower);
 
-                const itemArea = item.area || (item.loc_code ? item.loc_code.split('-')[0] : '');
+                const itemArea = item.loc_code ? item.loc_code.split('-')[0] : '';
                 const matchArea = appState.filter.area ? itemArea === appState.filter.area : true;
 
-                // ステータスが届かない場合は在庫数で判定
-                const status = item.status || (parseInt(item.stock_qty || 0) > 0 ? '有効' : '空き');
+                const stockQty = parseInt(item.stock_qty || 0);
+                const status = stockQty > 0 ? '有効' : '空き';
                 let matchStatus = true;
                 if (appState.filter.status === '有効') {
                     matchStatus = (status === '有効');
                 } else if (appState.filter.status === '空き') {
                     matchStatus = (status === '空き');
                 }
-
                 return matchText && matchArea && matchStatus;
             });
 
@@ -2140,12 +2139,11 @@
                     const key = item.id || item.name;
                     if (!grouped[key]) {
                         grouped[key] = { ...item };
-                        grouped[key].loc_code = item.loc_code || '-';
                         grouped[key].stock_qty = parseInt(item.stock_qty || 0);
                         grouped[key].isAggregated = true;
                     } else {
                         grouped[key].stock_qty += parseInt(item.stock_qty || 0);
-                        if (item.loc_code && !grouped[key].loc_code.includes(item.loc_code)) {
+                        if (item.loc_code && !String(grouped[key].loc_code).includes(item.loc_code)) {
                             grouped[key].loc_code += `, ${item.loc_code}`;
                         }
                     }
@@ -2160,62 +2158,56 @@
             document.getElementById('emptyState').style.display = 'none';
 
             displayList.forEach(item => {
-                const ageColor = getAgeColor(item.date_in);
-                const status = item.status || (parseInt(item.stock_qty || 0) > 0 ? '有効' : '空き');
+                const id = item.id || '';
+                const name = item.name || '';
+                const loc_code = item.loc_code || '';
+                const category = item.category || '';
+                const price = item.price || '0';
+                const stock_qty = item.stock_qty || '0';
+                const image_url = item.image_url || '';
 
-                let displayDate = item.date_in || '';
-                if (displayDate && String(displayDate).includes('T')) {
-                    displayDate = String(displayDate).split('T')[0];
-                }
-
-                const tr = document.createElement('tr');
+                const status = parseInt(stock_qty) > 0 ? '有効' : '空き';
+                const isMemo = appState.memoList.some(m => String(m.id) === String(id));
+                const safeName = name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
                 let imgIcon = '';
-                const imgPath = item.image_url;
-                if (imgPath && String(imgPath).includes('http')) {
-                    imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${imgPath}')"></ion-icon> `;
+                if (image_url && String(image_url).includes('http')) {
+                    imgIcon = `<ion-icon name="image" style="color:var(--primary);cursor:pointer;" onclick="showImage('${image_url}')"></ion-icon> `;
                 }
 
                 let actionsHtml = '';
                 if (item.isAggregated) {
-                    actionsHtml = '<span style="font-size:0.8rem;color:#999;">集約表示中は編集不可</span>';
+                    actionsHtml = '<span style="font-size:0.8rem;color:#999;">集約中は編集不可</span>';
                 } else {
                     actionsHtml = `
-                            <input type="number" id="qty-diff-${item.id}" class="qty-input-mini" placeholder="0" min="1" style="width:60px; padding:4px;">
-                            <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', -1)" title="出庫">出</button>
-                            <button class="btn-sm btn-secondary" onclick="quickStockOp('${item.id}', 1)" title="入庫">入</button>
-                            <button class="btn-sm btn-text" onclick="openEditModal('${item.id}')"><ion-icon name="create-outline"></ion-icon></button>
-                        `;
+                        <input type="number" id="qty-diff-${id}" class="qty-input-mini" placeholder="0" min="1" style="width:60px; padding:4px;">
+                        <button class="btn-sm btn-secondary" onclick="quickStockOp('${id}', -1)">出</button>
+                        <button class="btn-sm btn-secondary" onclick="quickStockOp('${id}', 1)">入</button>
+                        <button class="btn-sm btn-text" onclick="openEditModal('${id}')"><ion-icon name="create-outline"></ion-icon></button>
+                    `;
                 }
 
-                const safeName = (item.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/`/g, "\\`");
-                const isMemo = appState.memoList.some(m => m.id === item.id);
-
+                const tr = document.createElement('tr');
                 tr.innerHTML = `
-            <td>
-                <span class="id-clickable" onclick="copyId(event, '${item.id}')">${item.id}</span>
-            </td>
-            <td><span class="status-badge ${status === '有効' ? 'status-ok' : 'status-empty'}">${status}</span></td>
-            <td><strong>${item.loc_code}</strong></td>
-            <td style="white-space: normal; min-width: 150px;">
-                <div>${imgIcon}${item.name}</div>
-                <div style="font-size:0.8rem;color:#666">${item.category || '-'} / ¥${item.price || '0'}</div>
-            </td>
-            <td>${item.stock_qty}</td>
-            <td style="width: 120px;">
-                <span class="age-dot ${ageColor}"></span>
-                ${displayDate}
-            </td>
-            <td>${item.category || '-'}</td>
-            <td style="display:flex; gap:0.5rem; align-items:center; min-width: 200px;">
-                ${actionsHtml}
-            </td>
-            <td>
-                <button class="btn-sm ${isMemo ? 'btn-primary' : 'btn-text'}" onclick="toggleMemo('${item.id}', '${safeName}')" title="メモに追加">
-                    <ion-icon name="${isMemo ? 'checkmark-circle' : 'add-circle-outline'}"></ion-icon>
-                </button>
-            </td>
-        `;
+                    <td><span class="id-clickable" onclick="copyId(event, '${id}')">${id}</span></td>
+                    <td><span class="status-badge ${status === '有効' ? 'status-ok' : 'status-empty'}">${status}</span></td>
+                    <td><strong>${loc_code}</strong></td>
+                    <td style="white-space: normal; min-width: 150px;">
+                        <div>${imgIcon}${name}</div>
+                        <div style="font-size:0.8rem;color:#666">${category} / ¥${price}</div>
+                    </td>
+                    <td>${stock_qty}</td>
+                    <td style="width: 120px;">-</td>
+                    <td>${category}</td>
+                    <td style="display:flex; gap:0.5rem; align-items:center; min-width: 200px;">
+                        ${actionsHtml}
+                    </td>
+                    <td>
+                        <button class="btn-sm ${isMemo ? 'btn-primary' : 'btn-text'}" onclick="toggleMemo('${id}', '${safeName}')">
+                            <ion-icon name="${isMemo ? 'checkmark-circle' : 'add-circle-outline'}"></ion-icon>
+                        </button>
+                    </td>
+                `;
                 tbody.appendChild(tr);
             });
         }
