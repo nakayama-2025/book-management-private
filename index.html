@@ -2109,32 +2109,22 @@
             tbody.innerHTML = '';
             if (!data || !Array.isArray(data)) return;
 
+            // 一時的にフィルタを解除し、全データを表示対象にする
             const filtered = data.filter(item => {
                 const searchLower = (appState.filter.text || "").toLowerCase();
-                // 0:id, 1:name, 2:loc_code, 3:category
+                const id = item[0] || item.id || '';
+                const name = item[1] || item.name || '';
+                const loc = item[2] || item.loc_code || '';
+
                 const matchText = (
-                    String(item[1] || '') +
-                    String(item[0] || '') +
-                    String(item[2] || '') +
-                    String(item[3] || '')
+                    String(name) + String(id) + String(loc)
                 ).toLowerCase().includes(searchLower);
 
-                const itemArea = item[2] ? String(item[2]).split('-')[0] : '';
+                // エリアフィルタのみ維持し、ステータスによる除外を解除
+                const itemArea = loc ? String(loc).split('-')[0] : '';
                 const matchArea = appState.filter.area ? itemArea === appState.filter.area : true;
 
-                const stockQty = parseInt(item[5] || 0);
-                const status = stockQty > 0 ? '有効' : '空き';
-                let matchStatus = true;
-                if (appState.filter.status === '有効') {
-                    matchStatus = (status === '有効');
-                } else if (appState.filter.status === '空き') {
-                    matchStatus = (status === '空き');
-                }
-
-                // 配列の9番目（item[8]）が '有効' または空でないことを確認（削除済み等を除外するためのフラグとして使用）
-                const matchActive = item[8] ? (String(item[8]) === '有効' || String(item[8]).trim() !== '') : true;
-
-                return matchText && matchArea && matchStatus && matchActive;
+                return matchText && matchArea;
             });
 
             const aggregateToggle = document.getElementById('aggregateToggle');
@@ -2143,15 +2133,28 @@
             if (aggregateToggle && aggregateToggle.checked) {
                 const grouped = {};
                 filtered.forEach(item => {
-                    const key = item[0] || item[1];
+                    const key = (item[0] || item.id) || (item[1] || item.name);
                     if (!grouped[key]) {
-                        grouped[key] = [...item];
-                        grouped[key][5] = parseInt(item[5] || 0);
+                        grouped[key] = Array.isArray(item) ? [...item] : { ...item };
+                        const qty = (item[5] !== undefined ? item[5] : item.stock_qty) || 0;
+                        if (Array.isArray(grouped[key])) {
+                            grouped[key][5] = parseInt(qty);
+                        } else {
+                            grouped[key].stock_qty = parseInt(qty);
+                        }
                         grouped[key].isAggregated = true;
                     } else {
-                        grouped[key][5] += parseInt(item[5] || 0);
-                        if (item[2] && !String(grouped[key][2]).includes(item[2])) {
-                            grouped[key][2] += `, ${item[2]}`;
+                        const qty = (item[5] !== undefined ? item[5] : item.stock_qty) || 0;
+                        if (Array.isArray(grouped[key])) {
+                            grouped[key][5] += parseInt(qty);
+                            if (item[2] && !String(grouped[key][2]).includes(item[2])) {
+                                grouped[key][2] += `, ${item[2]}`;
+                            }
+                        } else {
+                            grouped[key].stock_qty += parseInt(qty);
+                            if (item.loc_code && !String(grouped[key].loc_code).includes(item.loc_code)) {
+                                grouped[key].loc_code += `, ${item.loc_code}`;
+                            }
                         }
                     }
                 });
@@ -2165,15 +2168,15 @@
             document.getElementById('emptyState').style.display = 'none';
 
             displayList.forEach(item => {
-                // 配列インデックスの厳密な割り当て (0:ID, 1:名, 2:所, 3:種, 4:価, 5:数, 6:日, 7:画)
-                const id = item[0] || 'ID無';
-                const name = item[1] || '名称未設定';
-                const loc_code = item[2] || '位置無';
-                const category = item[3] || '種別無';
-                const price = item[4] || '0';
-                const stock_qty = item[5] || '0';
-                const date_in = item[6] || '-';
-                const image_url = item[7] || '';
+                // トリプル・チェック方式によるデータ抽出 (配列インデックス || オブジェクトプロパティ || デフォルト)
+                const id = item[0] || item.id || 'ID無';
+                const name = item[1] || item.name || '名称未設定';
+                const loc_code = item[2] || item.loc_code || '場所未定';
+                const category = item[3] || item.category || '種別無';
+                const price = item[4] || item.price || '0';
+                const stock_qty = (item[5] !== undefined ? item[5] : item.stock_qty) || '0';
+                const date_in = item[6] || item.date_in || '-';
+                const image_url = item[7] || item.image_url || '';
 
                 const status = parseInt(stock_qty) > 0 ? '有効' : '空き';
                 const isMemo = appState.memoList.some(m => String(m.id) === String(id));
