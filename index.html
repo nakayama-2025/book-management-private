@@ -2034,9 +2034,9 @@
             try {
                 const result = await API.getData();
                 if (result && result.status === 'success') {
-                    // データが単一オブジェクトでも必ず配列として扱うようにガード
+                    // データが単一の配列（1行）でも複数行の2次元配列でも、正しく2次元配列として扱うようにガード
                     const rawData = result.data;
-                    appState.inventory = Array.isArray(rawData) ? rawData : (rawData ? [rawData] : []);
+                    appState.inventory = (rawData && Array.isArray(rawData[0])) ? rawData : (rawData ? [rawData] : []);
 
                     // デバッグ用：最終的な在庫データをログ出力
                     console.log('Final Inventory Data:', appState.inventory);
@@ -2130,7 +2130,11 @@
                 } else if (appState.filter.status === '空き') {
                     matchStatus = (status === '空き');
                 }
-                return matchText && matchArea && matchStatus;
+
+                // 配列の9番目（item[8]）が '有効' または空でないことを確認（削除済み等を除外するためのフラグとして使用）
+                const matchActive = item[8] ? (String(item[8]) === '有効' || String(item[8]).trim() !== '') : true;
+
+                return matchText && matchArea && matchStatus && matchActive;
             });
 
             const aggregateToggle = document.getElementById('aggregateToggle');
