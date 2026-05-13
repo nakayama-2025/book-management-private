@@ -2032,26 +2032,24 @@
         async function refreshData() {
             toggleLoading(true);
             try {
-                const response = await API.getData();
-                if (response.status === 'success') {
-                    // Support both formats for backward compat if needed, but here we change mock
-                    if (response.data.inventory) {
-                        appState.inventory = response.data.inventory;
-                        // 過去のグレーアウト設定（D・E棚など）を完全に解除し、A棚の指定箇所のみに固定（クリーン化）
-                        appState.disabledShelves = [
-                            'A-天-5', 'A-上-5', 'A-中-5', 'A-下-5', 'A-底-5',
-                            'A-天-10', 'A-上-10', 'A-中-10', 'A-下-10', 'A-底-10'
-                        ];
-                    } else {
-                        appState.inventory = response.data; // fallback
-                    }
+                const result = await API.getData();
+                if (result && result.status === 'success') {
+                    // レスポンスの data プロパティ（配列）を直接在庫データとして使用
+                    appState.inventory = result.data || [];
+
+                    // 特定の棚制限設定
+                    appState.disabledShelves = [
+                        'A-天-5', 'A-上-5', 'A-中-5', 'A-下-5', 'A-底-5',
+                        'A-天-10', 'A-上-10', 'A-中-10', 'A-下-10', 'A-底-10'
+                    ];
+
                     updateCloneSelect();
                     renderTable(appState.inventory);
                 } else {
-                    console.error(response.message);
+                    console.error("Data fetch failed:", result ? result.message : "Unknown error");
                 }
             } catch (e) {
-                console.error(e);
+                console.error("Fetch error:", e);
             } finally {
                 toggleLoading(false);
             }
