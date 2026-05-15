@@ -2084,7 +2084,7 @@
                     const loc_code = String(item[2] || '');
                     const qty = parseInt(item[5] || 0);
                     const isbn = String(item[8] || '').toLowerCase();
-                    
+
                     // Area Filter
                     if (area && !loc_code.startsWith(area + '-')) return false;
 
