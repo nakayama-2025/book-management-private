@@ -2065,11 +2065,49 @@
             }
         }
 
+        let filterTimeout = null;
+
         function filterItems() {
-            appState.filter.text = document.getElementById('searchInput').value.toLowerCase();
-            appState.filter.area = document.getElementById('filterArea').value;
-            appState.filter.status = document.getElementById('filterStatus').value;
-            renderTable();
+            clearTimeout(filterTimeout);
+            filterTimeout = setTimeout(() => {
+                const query = document.getElementById('searchInput').value.toLowerCase();
+                const area = document.getElementById('filterArea') ? document.getElementById('filterArea').value : '';
+                const statusFilter = document.getElementById('filterStatus') ? document.getElementById('filterStatus').value : '';
+
+                appState.filter.text = query;
+                appState.filter.area = area;
+                appState.filter.status = statusFilter;
+
+                const filtered = appState.inventory.filter(item => {
+                    const id = String(item[0] || '').toLowerCase();
+                    const name = String(item[1] || '').toLowerCase();
+                    const loc_code = String(item[2] || '');
+                    const qty = parseInt(item[5] || 0);
+                    const isbn = String(item[8] || '').toLowerCase();
+                    
+                    // Area Filter
+                    if (area && !loc_code.startsWith(area + '-')) return false;
+
+                    // Status Filter
+                    if (statusFilter === 'active' && qty <= 0) return false;
+                    if (statusFilter === 'empty' && qty > 0) return false;
+
+                    // Text Search
+                    if (query) {
+                        if (!id.includes(query) && !name.includes(query) && !isbn.includes(query) && !loc_code.toLowerCase().includes(query)) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+
+                console.log("SEARCH QUERY:", query);
+                console.log("SEARCH RESULT:", filtered.length);
+                console.log("INVENTORY SOURCE:", appState.inventory.length);
+
+                renderTable(filtered);
+            }, 250);
         }
 
         async function loadShelfStateFromServer() {
