@@ -2245,16 +2245,20 @@
 
             try {
                 // edit APIを使用してスプレッドシート全体を安全に更新
-                const res = await API.post('edit', {
+                const payload = {
                     id: item[0],
                     status: (parseInt(newQty) > 0 ? '有効' : '空き'),
                     name: item[1],
-                    stock_qty: newQty,
+                    qty: newQty,
                     area: (item[2] || '').split('-')[0],
                     shelf: (item[2] || '').split('-')[1],
                     column: (item[2] || '').split('-')[2],
                     loc_code: item[2]
-                });
+                };
+                
+                console.log("SHIP PAYLOAD:", payload);
+                const res = await API.post('edit', payload);
+                console.log("POST RESULT:", res);
 
                 if (res.status === 'success') {
                     // 入力欄をクリア
@@ -2678,11 +2682,16 @@
 
             if (!qty) return;
 
-            const res = await API.post('ship', {
-                qty_diff: qty,
+            const payload = {
+                id: currentShipId,
+                qty_diff: qty, // or qty?
                 memo: memo,
                 user: 'User' // Mock user
-            });
+            };
+            
+            console.log("SHIP PAYLOAD:", payload);
+            const res = await API.post('ship', payload);
+            console.log("POST RESULT:", res);
 
             if (res.status === 'success') {
                 closeModal('shipModal');
@@ -2781,16 +2790,20 @@
             if (typeof toggleLoading === 'function') toggleLoading(true);
 
             try {
-                const res = await API.post('edit', {
+                const payload = {
                     id: id,
                     status: status,
                     name: name,
-                    stock_qty: parseInt(qty, 10),
+                    qty: parseInt(qty, 10),
                     area: area,
                     shelf: shelf,
                     column: col,
                     loc_code: loc_code
-                });
+                };
+                
+                console.log("EDIT PAYLOAD:", payload);
+                const res = await API.post('edit', payload);
+                console.log("POST RESULT:", res);
 
                 if (res.status === 'success') {
                     closeModal('editModal');
