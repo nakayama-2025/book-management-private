@@ -2166,7 +2166,10 @@
                 const category = item[3] || '種別無';
                 const price = item[4] || '0';
                 const stock_qty = (item[5] !== undefined ? item[5] : '0');
-                const date_in = item[6] || '-';
+                let date_in = item[6] || '-';
+                if (typeof date_in === 'string' && date_in.includes('T')) {
+                    date_in = date_in.split('T')[0];
+                }
                 const image_url = item[7] || '';
 
                 const status = parseInt(stock_qty) > 0 ? '有効' : '空き';
