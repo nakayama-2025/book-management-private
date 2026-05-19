@@ -2081,22 +2081,25 @@
                 const filtered = appState.inventory.filter(item => {
                     const id = String(item[0] || '').toLowerCase();
                     const name = String(item[1] || '').toLowerCase();
-                    const loc_code = String(item[2] || '');
+                    const loc_code = String(item[2] || '').toLowerCase();
                     const qty = parseInt(item[5] || 0);
                     const isbn = String(item[8] || '').toLowerCase();
-
+                    const memo = String(item[12] || '').toLowerCase();
+                    
                     // Area Filter
-                    if (area && !loc_code.startsWith(area + '-')) return false;
+                    if (area && !String(item[2] || '').startsWith(area + '-')) return false;
 
                     // Status Filter
                     if (statusFilter === 'active' && qty <= 0) return false;
                     if (statusFilter === 'empty' && qty > 0) return false;
 
-                    // Text Search
+                    // Text Search (AND search with spaces)
                     if (query) {
-                        if (!id.includes(query) && !name.includes(query) && !isbn.includes(query) && !loc_code.toLowerCase().includes(query)) {
-                            return false;
-                        }
+                        const keywords = query.replace(/　/g, ' ').split(' ').filter(k => k.trim() !== '');
+                        const searchableText = `${id} ${name} ${isbn} ${loc_code} ${memo}`;
+                        
+                        const isMatch = keywords.every(kw => searchableText.includes(kw));
+                        if (!isMatch) return false;
                     }
 
                     return true;
