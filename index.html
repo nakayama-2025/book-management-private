@@ -1902,11 +1902,26 @@
             }
 
             static async post(action, payload) {
+                // パスコード未設定時は入力を促す
+                let token = localStorage.getItem('appToken');
+                if (!token) {
+                    token = prompt('データの書き込みには社内用パスコードが必要です。\nパスコードを入力してください:');
+                    if (!token) {
+                        return { status: 'error', message: 'パスコード未入力' };
+                    }
+                    localStorage.setItem('appToken', token);
+                }
+
                 try {
                     // 401エラー対策: 指示に従い全通信をGETメソッドで行うように変更
                     // mode: 'cors', redirect: 'follow' を適用
                     const url = new URL(this.getUrl());
                     url.searchParams.set('action', action);
+                    
+                    // payloadにパスコードを含める
+                    if (!payload) payload = {};
+                    payload.appToken = token;
+
                     if (payload) {
                         url.searchParams.set('payload', JSON.stringify(payload));
                     }
@@ -1919,7 +1934,15 @@
 
                     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
-                    return await res.json();
+                    const json = await res.json();
+                    
+                    // 認証エラーらしい場合は次回再入力させるためクリアしておく
+                    if (json.status === 'error' && json.message && (json.message.includes('token') || json.message.includes('認証') || json.message.includes('パスコード'))) {
+                        localStorage.removeItem('appToken');
+                        alert('パスコードが正しくないか期限切れです。次回再度入力してください。');
+                    }
+
+                    return json;
                 } catch (err) {
                     console.error("GAS API Error:", err);
                     return { status: 'error' };
