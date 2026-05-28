@@ -1938,7 +1938,7 @@
                     
                     // 認証エラーらしい場合は次回再入力させるためクリアしておく
                     if (json.status === 'error' && json.message && (json.message.includes('token') || json.message.includes('認証') || json.message.includes('パスコード'))) {
-                        localStorage.removeItem('appToken');
+                        // localStorage.removeItem('appToken');
                         alert('パスコードが正しくないか期限切れです。次回再度入力してください。');
                     }
 
