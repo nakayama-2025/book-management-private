@@ -1936,10 +1936,20 @@
 
                     const json = await res.json();
                     
-                    // 認証エラーらしい場合は次回再入力させるためクリアしておく
-                    if (json.status === 'error' && json.message && (json.message.includes('token') || json.message.includes('認証') || json.message.includes('パスコード'))) {
-                        // localStorage.removeItem('appToken');
-                        alert('パスコードが正しくないか期限切れです。次回再度入力してください。');
+                    // 認証エラー時のみパスコードをクリアする安全な判定
+                    if (json.status === 'error' && json.message) {
+                        const msg = json.message.toLowerCase();
+                        const isAuthError = 
+                            msg.includes('unauthorized') || 
+                            msg.includes('invalid token') || 
+                            msg.includes('app_token') || 
+                            msg.includes('認証エラー') || 
+                            msg.includes('パスコードが正しくありません');
+                        
+                        if (isAuthError) {
+                            localStorage.removeItem('appToken');
+                            alert('パスコードが正しくないか期限切れです。次回再度入力してください。');
+                        }
                     }
 
                     return json;
